@@ -90,7 +90,7 @@ class HomeViewController: UIViewController {
         drawTasks()
     }
     
-    private func updateViews() {
+    func updateViews() {
         navigationItem.title = Date().dateRepr
         
         view.addSubview(tableView)
@@ -99,7 +99,7 @@ class HomeViewController: UIViewController {
         newEventButtonShadowView.addSubview(newEventButton)
     }
     
-    private func updateLayouts() {
+    func updateLayouts() {
         tableView.snp.makeConstraints { (make) in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.bottom.equalTo(view.safeAreaLayoutGuide)
@@ -227,8 +227,17 @@ extension HomeViewController: EventEditViewControllerDelegate {
         // Updates the displaying event.
         if let eventDisplayController = navigationController?.topViewController
             as? EventDisplayViewController {
-            eventDisplayController.task = newTask
+            eventDisplayController.updateTaskWith(newTask)
         }
+    }
+    
+    internal func findTaskConflicted(with newTask: Task) -> Task? {
+        for task in tasks {
+            if task.dateInterval.intersects(newTask.dateInterval) {
+                return task
+            }
+        }
+        return nil
     }
 }
 
@@ -262,7 +271,7 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
         )
     }
     
-    internal func delete(_ task: Task) {
+    internal func remove(_ task: Task) {
         tasks.remove(task)
     }
     
@@ -292,6 +301,10 @@ extension HomeViewController {
     static let newEventButtonDiameter = 65
 }
 
-protocol HomeViewControllerDelegate {
+protocol HomeViewControllerYOffsetDelegate {
     var horizontalSeparatorYOffset: CGFloat { get }
+}
+
+protocol HomeViewControllerEditDelegate {
+    func updateTaskWith(_ task: Task)
 }

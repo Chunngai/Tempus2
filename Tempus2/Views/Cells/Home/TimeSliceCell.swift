@@ -45,7 +45,7 @@ class TimeSliceCell: UITableViewCell {
         updateLayouts()
     }
     
-    private func updateViews() {
+    func updateViews() {
         selectionStyle = .none
         
         contentView.addSubview(timeSliceLabel)
@@ -53,7 +53,7 @@ class TimeSliceCell: UITableViewCell {
         contentView.addSubview(verticalSeparator)
     }
     
-    private func updateLayouts() {
+    func updateLayouts() {
         timeSliceLabel.snp.makeConstraints { (make) in
             make.leading.equalToSuperview().offset(TimeSliceCell.timeSliceLabelLeadingOffset)
             make.width.equalTo(TimeSliceCell.timeSliceLabelWidth)
@@ -79,7 +79,7 @@ class TimeSliceCell: UITableViewCell {
     }
 }
 
-extension TimeSliceCell: HomeViewControllerDelegate {
+extension TimeSliceCell: HomeViewControllerYOffsetDelegate {
     
     // MARK: - HomeViewController Delegate
     

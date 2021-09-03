@@ -1,5 +1,5 @@
 //
-//  TaskTableCellForTimeSelection.swift
+//  DateAndTimeSelectionCell.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/8/31.
@@ -8,20 +8,45 @@
 
 import UIKit
 
-class DateAndTimeSelectionCell: EventCell {
+class DateAndTimeSelectionCell: EventBaseCell {
     
-    var row: Int!
+    private var targetPickerRow: Int!
+    
+    internal var isDateValid: Bool = true {
+        didSet {
+            var color: UIColor
+            if isDateValid {
+                color = Theme.textColor
+            } else {
+                color = Theme.errorTextColor
+            }
+            dateButton.textColor = color
+            timeButton.setTitleColor(color, for: .normal)
+        }
+    }
     
     // MARK: - Controllers
     
-    var delegate: EventEditViewController!
+    private var delegate: EventEditViewController!
     
     // MARK: - Views
     
-    let button: UIButton = {
+    private let dateButton: UITextView = {  // For left alignment consistence.
+        let textView = UITextView()
+        textView.isScrollEnabled = false
+        textView.textColor = Theme.textColor
+        textView.textAlignment = .left
+        textView.font = Theme.bodyFont
+        textView.sizeToFit()
+        return textView
+    }()
+    
+    private let timeButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(Theme.textColor, for: .normal)
-        button.titleLabel?.textAlignment = .center
+        button.contentHorizontalAlignment = .center
+        button.titleLabel?.font = Theme.bodyFont
+        button.sizeToFit()
         return button
     }()
     
@@ -34,11 +59,11 @@ class DateAndTimeSelectionCell: EventCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        textView.addGestureRecognizer(UITapGestureRecognizer(
+        dateButton.addGestureRecognizer(UITapGestureRecognizer(
             target: self,
-            action:  #selector(dateTapped)
+            action: #selector(dateTapped)
         ))
-        button.addTarget(
+        timeButton.addTarget(
             self,
             action: #selector(timeTapped),
             for: .touchUpInside
@@ -51,55 +76,54 @@ class DateAndTimeSelectionCell: EventCell {
     override func updateViews() {
         super.updateViews()
         
-        textView.isEditable = false
-        textView.isSelectable = false
-        
-        contentView.addSubview(button)
+        rightView.addSubview(dateButton)
+        rightView.addSubview(timeButton)
     }
     
     override func updateLayouts() {
         super.updateLayouts()
         
-        // https://stackoverflow.com/questions/23107948/add-button-inside-a-text-view
-        button.snp.makeConstraints { (make) in
-            make.top.bottom.trailing.equalTo(textView)
-            make.width.equalTo(100)
+        timeButton.snp.makeConstraints { (make) in
+            make.top.bottom.trailing.equalToSuperview()
+            make.width.equalTo(EventBaseCell.widthUnit)
+        }
+        
+        dateButton.snp.makeConstraints { (make) in
+            make.top.bottom.leading.equalToSuperview()
+            make.trailing.equalTo(timeButton.snp.leading)
         }
     }
     
     func updateValues(
-        icon: String, font: UIFont = Theme.bodyFont,
-        delegate: EventEditViewController, tag: Int
+        iconName: String,
+        delegate: EventEditViewController, targetPickerRow: Int
     ) {
-        super.updateValues(icon: icon, placeHolder: nil, text: nil, delegate: delegate, row: tag)
+        super.updateValues(iconName: iconName)
         
         self.delegate = delegate
-        self.row = tag
-        
-        textView.textColor = Theme.textColor
-        button.titleLabel?.font = font
+        self.targetPickerRow = targetPickerRow
     }
     
-    func updateDateAndTime(with dateAndTime: Date, font: UIFont = Theme.bodyFont) {  // TODO: wrap here
-        let dateRepr = NSMutableAttributedString(string: dateAndTime.dateRepr)
-        dateRepr.set(font: font)
-        textView.attributedText = dateRepr
-        
-        button.setTitle(dateAndTime.timeRepr, for: .normal)
+    func updateDateAndTimeRepr(with dateAndTime: Date) {
+        dateButton.text = dateAndTime.dateRepr
+        timeButton.setTitle(dateAndTime.timeRepr, for: .normal)
     }
 }
 
 extension DateAndTimeSelectionCell {
+    
+    // MARK: - Actions
+    
     @objc func dateTapped() {
-        delegate.displayOrHideDatePicker(inRow: row + 1)
+        delegate.toggleDatePickerVisibility(inRow: targetPickerRow)
     }
     
     @objc func timeTapped() {
-        delegate.displayOrHideTimePicker(inRow: row + 1)
+        delegate.toggleTimePickerVisibility(inRow: targetPickerRow)
     }
 }
 
 protocol DateAndTimeSelectionCellDelegate {
-    func displayOrHideDatePicker(inRow row: Int)
-    func displayOrHideTimePicker(inRow row: Int)
+    func toggleDatePickerVisibility(inRow pickerRow: Int)
+    func toggleTimePickerVisibility(inRow pickerRow: Int)
 }

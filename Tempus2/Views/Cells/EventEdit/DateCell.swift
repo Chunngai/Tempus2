@@ -13,7 +13,7 @@ class DateCell: JTACDayCell {
     
     // MARK: - Views
     
-    let dateLabel: UILabel = {
+    private let dateLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = Theme.footNoteFont
@@ -33,7 +33,7 @@ class DateCell: JTACDayCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func updateViews() {
+    func updateViews() {
         contentView.addSubview(dateLabel)
         
         dateLabel.snp.makeConstraints { (make) in
@@ -42,16 +42,38 @@ class DateCell: JTACDayCell {
         }
     }
     
-    func updateValues(text: String, backgroundColor: UIColor) {
-        dateLabel.text = text
-        dateLabel.backgroundColor = backgroundColor
+    func updateValues(date: Date, cellState: CellState) {
+        dateLabel.text = cellState.dateBelongsTo == .thisMonth
+            ? cellState.text
+            : ""
+        dateLabel.backgroundColor = (
+            Calendar.current.isDateInToday(date)
+                && cellState.dateBelongsTo == .thisMonth
+            )
+            ? DateCell.todayColor
+            : DateCell.commonColor
+    }
+}
+
+extension DateCell {
+    func configSelection(of state: CellState) {
+        if state.isSelected {
+            if !Calendar.current.isDateInToday(state.date) {
+                dateLabel.backgroundColor = DateCell.selectedColor
+            }
+        } else {
+            if !Calendar.current.isDateInToday(state.date) {
+                dateLabel.backgroundColor = DateCell.commonColor
+            }
+        }
+        
     }
 }
 
 extension DateCell {
     static let diameter: CGFloat = 25
     
-    static let bgColorOfToday = UIColor.systemBlue
-    static let bgColorOfSelection = Theme.dateCellBgColor
-    static let commonBgColor = UIColor.white
+    static let todayColor = UIColor.systemBlue
+    static let selectedColor = Theme.dateCellBgColor
+    static let commonColor = UIColor.white
 }

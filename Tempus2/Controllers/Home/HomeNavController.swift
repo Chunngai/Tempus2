@@ -16,7 +16,7 @@ class HomeNavController: UINavigationController {
         updateViews()
     }
     
-    private func updateViews() {
+    func updateViews() {
         view.backgroundColor = .white
     }
 }

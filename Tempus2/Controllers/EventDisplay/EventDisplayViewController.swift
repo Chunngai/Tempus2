@@ -10,13 +10,12 @@ import UIKit
 
 class EventDisplayViewController: UITableViewController {
     
-    var titleCell: EventDisplayCell!
-    var DateIntervalCell: EventDisplayCell!
-    var descriptionCell: EventDisplayCell!
+    private var titleCell: EventDisplayCell!
+    private var descriptionCell: EventDisplayCell!
         
     // MARK: - Models
     
-    var task: Task! {
+    private var task: Task! {
         didSet {
             tableView.reloadData()
         }
@@ -24,29 +23,11 @@ class EventDisplayViewController: UITableViewController {
     
     // MARK: - Controllers
     
-    var delegate: HomeViewController!
+    private var delegate: HomeViewController!
     
     // MARK: - Views
     
-    var editButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(
-            barButtonSystemItem: .edit,
-            target: nil,
-            action: nil
-        )
-        return button
-    }()
-    
-    var deleteButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(
-            barButtonSystemItem: .trash,
-            target: nil,
-            action: nil
-        )
-        return button
-    }()
-    
-    let eventCompletionTogglingBottomView: EventCompletionTogglingView = {
+    private let eventCompletionTogglingBottomView: EventCompletionTogglingView = {
         let view = EventCompletionTogglingView()
         return view
     }()
@@ -65,21 +46,25 @@ class EventDisplayViewController: UITableViewController {
         updateLayouts()
     }
     
-    // https://stackoverflow.com/questions/26390072/how-to-remove-border-of-the-navigationbar-in-swift
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.hideBarSeparator()
     }
+    
     override func viewWillDisappear(_ animated: Bool) {
-        self.navigationController?.navigationBar.setBackgroundImage(nil, for: UIBarMetrics.default)
-        self.navigationController?.navigationBar.shadowImage = nil
+        self.navigationController?.navigationBar.showBarSeparator()
     }
     
     func updateViews() {
-        editButton.target = self
-        editButton.action = #selector(editButtonTapped)
-        deleteButton.target = self
-        deleteButton.action = #selector(deleteButtonTapped)
+        let editButton = UIBarButtonItem(
+            barButtonSystemItem: .edit,
+            target: self,
+            action: #selector(editButtonTapped)
+        )
+        let deleteButton = UIBarButtonItem(
+            barButtonSystemItem: .trash,
+            target: self,
+            action: #selector(deleteButtonTapped)
+        )
         navigationItem.rightBarButtonItems = [deleteButton, editButton]
         
         tableView.separatorStyle = .none
@@ -105,54 +90,24 @@ class EventDisplayViewController: UITableViewController {
 
 extension EventDisplayViewController {
     
-    // MARK: - Table view data source
+    // MARK: - UITableView Data Source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
+        3
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let row = indexPath.row
         switch row {
         case 0:
-            let title = task.title
-            let time = task.dateInterval.start.dateRepr
-                + " · "
-                + task.dateInterval.start.timeRepr + "-" +  task.dateInterval.end.timeRepr
-            let attributedText = NSMutableAttributedString(string: title  + "\n" + time)
-            
-            // TODO: wrap the code here.
-            attributedText.set(attributes: [.font : Theme.title2Font], for: title)
-            if task.isCompleted {
-                attributedText.set(attributes: [
-                    .strikethroughStyle: NSUnderlineStyle.single.rawValue,
-                    .strikethroughColor: UIColor.black,
-                    .font : Theme.title2Font
-                ], for: title)
-            }
-            
-            attributedText.set(attributes: [.font : Theme.bodyFont], for: time)
-            
-            attributedText.set(attributes: [.paragraphStyle : {
-                let paraStyle = NSMutableParagraphStyle()
-                paraStyle.lineSpacing = 10
-                return paraStyle
-            }()])
-            
-            titleCell = tableView.dequeueReusableCell(
-                withIdentifier: EventDisplayViewController.eventDisplayCellReusableIdentifier,
-                for: indexPath
-                ) as? EventDisplayCell
+            titleCell = EventDisplayCell()
             titleCell.updateValues(
-                icon: "title",
-                attributedText: attributedText,
-                delegate: self,
-                row: row
+                iconName: "title",
+                attributedText: task.titleAndDateTimeRepr
             )
             return titleCell
         case 1:
@@ -160,18 +115,10 @@ extension EventDisplayViewController {
                 break
             }
             
-            let attributedText = NSMutableAttributedString(string: task.description)
-            attributedText.set(attributes: [.font : Theme.bodyFont])
-            
-            descriptionCell = tableView.dequeueReusableCell(
-                withIdentifier: EventDisplayViewController.eventDisplayCellReusableIdentifier,
-                for: indexPath
-                ) as? EventDisplayCell
+            descriptionCell = EventDisplayCell()
             descriptionCell.updateValues(
-                icon: "description",
-                attributedText: attributedText,
-                delegate: self,
-                row: row
+                iconName: "description",
+                attributedText: task.descriptionRepr
             )
             return descriptionCell
         default:
@@ -182,34 +129,45 @@ extension EventDisplayViewController {
 }
 
 extension EventDisplayViewController {
+    
     // MARK: - Actions
     
-    @objc func editButtonTapped() {
+    @objc private func editButtonTapped() {
         delegate.edit(task)
     }
     
-    @objc func deleteButtonTapped() {
-        delegate.delete(task)
+    @objc private func deleteButtonTapped() {
+        delegate.remove(task)
         navigationController?.popViewController(animated: true)
     }
 }
 
 extension EventDisplayViewController: EventCompletionTogglingViewDelegate {
-    func toggleCompletion() {
+    
+    // MARK: - EventCompletionTogglingView Delegate
+    
+    internal func toggleCompletion() {
         self.task.isCompleted.toggle()
-        eventCompletionTogglingBottomView.isCompleted = task.isCompleted
-        
         self.delegate.toggleCompletion(of: task)
     }
 }
 
-extension EventDisplayViewController {    
+extension EventDisplayViewController: HomeViewControllerEditDelegate {
+    
+    // MARK: - HomeViewControllerEditDelegate
+    
+    internal func updateTaskWith(_ task: Task) {
+        self.task = task
+    }
+}
+
+extension EventDisplayViewController {
     static let eventDisplayCellReusableIdentifier = "EventDisplayCell"
 }
 
 protocol EventDisplayViewControllerDelegate {
     func edit(_ task: Task)
-    func delete(_ task: Task)
+    func remove(_ task: Task)
     
     func toggleCompletion(of task: Task)
 }

@@ -24,7 +24,7 @@ class Separator: UIView {
         super.init(coder: coder)
     }
     
-    private func updateViews() {
+    func updateViews() {
         backgroundColor = color
     }
     

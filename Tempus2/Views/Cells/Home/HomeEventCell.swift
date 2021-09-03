@@ -50,7 +50,7 @@ class HomeEventCell: UIView {
         super.init(coder: coder)
     }
     
-    private func updateViews() {
+    func updateViews() {
         addSubview(mainView)
         mainView.addSubview(label)
         
@@ -60,13 +60,14 @@ class HomeEventCell: UIView {
         ))
     }
     
-    private func updateLayouts() {
+    func updateLayouts() {
         mainView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
         
         label.snp.makeConstraints { (make) in
-            make.top.bottom.leading.trailing.equalToSuperview().inset(10)
+            make.leading.trailing.equalToSuperview().inset(10)
+            make.top.equalToSuperview().inset(5)
         }
     }
     

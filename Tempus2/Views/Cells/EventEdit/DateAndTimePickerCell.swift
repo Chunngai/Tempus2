@@ -1,5 +1,5 @@
 //
-//  TimePickerTableViewCell.swift
+//  DateAndTimePickerCell.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/8/31.
@@ -11,11 +11,14 @@ import JTAppleCalendar
 
 class DateAndTimePickerCell: UITableViewCell {
     
-    var targetRow: Int!
+    private var targetSelectionRow: Int!
     
     var dateAndTime: Date {
         get {
-            return Date.combine(date: datePicker.selectedDates[0], with: timePicker.date)
+            return Date.combine(
+                date: datePicker.selectedDates[0],
+                with: timePicker.date
+            )
         }
         set {
             datePicker.selectDates([newValue])
@@ -25,7 +28,7 @@ class DateAndTimePickerCell: UITableViewCell {
     
     // MARK: - Controllers
     
-    var delegate: EventEditViewController!
+    private var delegate: EventEditViewController!
     
     // MARK: - Views
     
@@ -33,6 +36,8 @@ class DateAndTimePickerCell: UITableViewCell {
         let picker = UIDatePicker()
         picker.datePickerMode = .time
         picker.isHidden = true
+        // https://stackoverflow.com/questions/30245341/uidatepicker-15-minute-increments-swift
+        picker.minuteInterval = 5
         return picker
     }()
     
@@ -56,21 +61,12 @@ class DateAndTimePickerCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        updateViews()
-        updateLayouts()
-    }
-    
-    func updateViews() {
-        selectionStyle = .none
-        
-        contentView.addSubview(timePicker)
         timePicker.addTarget(
             self,
             action: #selector(timePickerValueChanged),
             for: .valueChanged
         )
         
-        contentView.addSubview(datePicker)
         datePicker.calendarDataSource = self
         datePicker.calendarDelegate = self
         datePicker.register(
@@ -82,6 +78,16 @@ class DateAndTimePickerCell: UITableViewCell {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: DateAndTimePickerCell.headerReuseIdentifier
         )
+        
+        updateViews()
+        updateLayouts()
+    }
+    
+    func updateViews() {
+        selectionStyle = .none
+        
+        contentView.addSubview(timePicker)
+        contentView.addSubview(datePicker)
     }
     
     func updateLayouts() {
@@ -95,20 +101,23 @@ class DateAndTimePickerCell: UITableViewCell {
         }
     }
     
-    func updateValues(targetRow: Int, delegate: EventEditViewController, date: Date, time: Date) {
-        self.targetRow = targetRow
+    func updateValues(targetSelectionRow: Int, delegate: EventEditViewController, dateAndTime: Date) {
+        self.targetSelectionRow = targetSelectionRow
         self.delegate = delegate
         
-        //        datePicker.scrollToDate(date, animateScroll: false)
-        datePicker.scrollToHeaderForDate(date, withAnimation: false)
-        datePicker.selectDates([date])
-        timePicker.date = time
+        datePicker.scrollToHeaderForDate(dateAndTime, withAnimation: false)
+        datePicker.selectDates([dateAndTime])
+        
+        timePicker.date = dateAndTime
     }
 }
 
 extension DateAndTimePickerCell {
+    
+    // MARK: - Actions
+    
     @objc func timePickerValueChanged() {
-        delegate.updateDateAndTime(ofCellInRow: targetRow, with: dateAndTime)
+        delegate.updateDateAndTime(ofCellInRow: targetSelectionRow, with: dateAndTime)
     }
 }
 
@@ -124,35 +133,46 @@ extension DateAndTimePickerCell: JTACMonthViewDataSource {
 
 extension DateAndTimePickerCell: JTACMonthViewDelegate {
     func calendar(_ calendar: JTACMonthView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTACDayCell {
-        let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: DateAndTimePickerCell.cellReuseIdentifier, for: indexPath)
-            as! DateCell
-        self.calendar(datePicker, willDisplay: cell, forItemAt: date, cellState: cellState, indexPath: indexPath)
+        guard let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: DateAndTimePickerCell.cellReuseIdentifier, for: indexPath)
+            as? DateCell else {
+                return JTACDayCell()
+        }
+        self.calendar(
+            datePicker,
+            willDisplay: cell,
+            forItemAt: date,
+            cellState: cellState,
+            indexPath: indexPath
+        )
         return cell
     }
     
     func calendar(_ calendar: JTACMonthView, willDisplay cell: JTACDayCell, forItemAt date: Date, cellState: CellState, indexPath: IndexPath) {
-        let cell = cell as! DateCell
+        guard let cell = cell as? DateCell else {
+            return
+        }
         
-        let text = cellState.dateBelongsTo == .thisMonth ? cellState.text : ""
-        let bgColor = (Calendar.current.isDateInToday(date) && cellState.dateBelongsTo == .thisMonth) ? DateCell.bgColorOfToday : DateCell.commonBgColor
         cell.updateValues(
-            text: text,
-            backgroundColor: bgColor
+            date: date,
+            cellState: cellState
         )
     }
     
     func calendar(_ calendar: JTACMonthView, didSelectDate date: Date, cell: JTACDayCell?, cellState: CellState, indexPath: IndexPath) {
-        let cell = cell as! DateCell
-        configSelection(for: cell, of: cellState)
+        guard let cell = cell as? DateCell else {
+            return
+        }
         
-        delegate.updateDateAndTime(ofCellInRow: targetRow, with: dateAndTime)
+        cell.configSelection(of: cellState)
+        
+        delegate.updateDateAndTime(ofCellInRow: targetSelectionRow, with: dateAndTime)
     }
     
     func calendar(_ calendar: JTACMonthView, didDeselectDate date: Date, cell: JTACDayCell?, cellState: CellState, indexPath: IndexPath) {
         guard let cell = cell as? DateCell else {
             return
         }
-        configSelection(for: cell, of: cellState)
+        cell.configSelection(of: cellState)
     }
     
     func calendar(_ calendar: JTACMonthView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
@@ -160,28 +180,15 @@ extension DateAndTimePickerCell: JTACMonthViewDelegate {
     }
         
     func calendar(_ calendar: JTACMonthView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTACMonthReusableView {
-        let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: DateAndTimePickerCell.headerReuseIdentifier, for: indexPath)
-            as! WeekdaysHeader
+        guard let header = calendar.dequeueReusableJTAppleSupplementaryView(withReuseIdentifier: DateAndTimePickerCell.headerReuseIdentifier, for: indexPath)
+            as? WeekdaysHeader else {
+                return JTACMonthReusableView()
+        }
         return header
     }
     
     func calendarSizeForMonths(_ calendar: JTACMonthView?) -> MonthSize? {
         return MonthSize(defaultSize: 50)
-    }
-}
-
-extension DateAndTimePickerCell {
-    func configSelection(for cell: DateCell, of state: CellState) {
-        if state.isSelected {
-            if !Calendar.current.isDateInToday(state.date) {
-                cell.dateLabel.backgroundColor = DateCell.bgColorOfSelection
-            }
-        } else {
-            if !Calendar.current.isDateInToday(state.date) {
-                cell.dateLabel.backgroundColor = DateCell.commonBgColor
-            }
-        }
-        
     }
 }
 

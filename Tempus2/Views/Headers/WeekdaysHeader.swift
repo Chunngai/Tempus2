@@ -1,5 +1,5 @@
 //
-//  DateHeader.swift
+//  WeekdaysHeader.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/9/1.
@@ -11,7 +11,7 @@ import JTAppleCalendar
 
 class WeekdaysHeader: JTACMonthReusableView {
     
-    let weekdays: UIStackView = {
+    private let weekdays: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
@@ -40,7 +40,7 @@ class WeekdaysHeader: JTACMonthReusableView {
         super.init(coder: coder)
     }
     
-    private func updateViews() {
+    func updateViews() {
         addSubview(weekdays)
     }
      

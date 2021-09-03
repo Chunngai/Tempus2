@@ -55,7 +55,7 @@ class EventCompletionTogglingView: UIView {
         super.init(coder: coder)
     }
     
-    private func updateViews() {
+    func updateViews() {
         backgroundColor = .white
         
         addSubview(horizontalSeparator)
@@ -68,7 +68,7 @@ class EventCompletionTogglingView: UIView {
         )
     }
 
-    private func updateLayouts() {
+    func updateLayouts() {
         horizontalSeparator.snp.makeConstraints { (make) in
             make.top.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
@@ -89,6 +89,7 @@ class EventCompletionTogglingView: UIView {
 
 extension EventCompletionTogglingView {
     @objc func toggleCompletion() {
+        isCompleted.toggle()
         delegate.toggleCompletion()
     }
 }

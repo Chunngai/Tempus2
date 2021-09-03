@@ -17,3 +17,19 @@ extension TimeInterval {
         return 60 * secsOfOneMinute
     }
 }
+
+extension TimeInterval {
+    var durationRepr: String {
+        let hours = Int(self) / Int(TimeInterval.secsOfOneHour)
+        let minutes = Int(self) % Int(TimeInterval.secsOfOneHour) / Int(TimeInterval.secsOfOneMinute)
+        
+        var repr = ""
+        if hours != 0 {
+            repr += "\(hours)h"
+        }
+        if minutes != 0 {
+            repr += " \(minutes)m"
+        }
+        return repr.trimmingWhitespacesAndNewlines()
+    }
+}

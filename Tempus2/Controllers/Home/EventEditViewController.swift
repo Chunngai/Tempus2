@@ -29,17 +29,30 @@ class EventEditViewController: UITableViewController {
         }
         set {
             if !newValue {
-                removeSeparator(below: endDateAndTimeSelectionCell)
+                endDateAndTimeSelectionCell.removeSeparator()
             }
         }
     }
     
-    private var titleCell: EventCell!
+    private var titleCell: EventTextViewCell!
     private var startDateAndTimeSelectionCell: DateAndTimeSelectionCell!
     private var startDateAndTimePickerCell: DateAndTimePickerCell!
     private var endDateAndTimeSelectionCell: DateAndTimeSelectionCell!
     private var endDateAndTimePickerCell: DateAndTimePickerCell!
-    private var descriptionCell: EventCell!
+    private var descriptionCell: EventTextViewCell!
+    
+    private var oldTitle: String!
+    private var oldStartDateAndTime: Date!
+    private var oldEndDateAndTime: Date!
+    private var oldDescription: String!
+    private var isContentChanged: Bool {
+        return oldTitle != titleCell.textView.content
+            || oldStartDateAndTime.dateRepr != startDateAndTimePickerCell.dateAndTime.dateRepr
+            || oldStartDateAndTime.timeRepr != startDateAndTimePickerCell.dateAndTime.timeRepr
+            || oldEndDateAndTime.dateRepr != endDateAndTimePickerCell.dateAndTime.dateRepr
+            || oldEndDateAndTime.timeRepr != endDateAndTimePickerCell.dateAndTime.timeRepr
+            || oldDescription != descriptionCell.textView.content
+    }
     
     // MARK: - Models
     
@@ -48,35 +61,15 @@ class EventEditViewController: UITableViewController {
     // MARK: - Controllers
     
     private var delegate: HomeViewController!
-    
-    // MARK: - Views
-    
-    private let saveButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(
-            barButtonSystemItem: .save,
-            target: nil,
-            action: nil
-        )
-        return button
-    }()
-    
-    private let cancelButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(
-            barButtonSystemItem: .cancel,
-            target: nil,
-            action: nil
-        )
-        return button
-    }()
-    
+        
     // MARK: - Init
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         tableView.register(
-            EventCell.classForCoder(),
-            forCellReuseIdentifier: EventEditViewController.eventCellReusableIdentifier
+            EventTextViewCell.classForCoder(),
+            forCellReuseIdentifier: EventEditViewController.eventTextViewCellReusableIdentifier
         )
         tableView.register(
             DateAndTimeSelectionCell.classForCoder(),
@@ -87,6 +80,9 @@ class EventEditViewController: UITableViewController {
             forCellReuseIdentifier: EventEditViewController.dateAndTimePickerCellReuseIdentifier
         )
         
+        // https://sarunw.com/posts/modality-changes-in-ios13/
+        navigationController?.presentationController?.delegate = self
+        
         updateViews()
         updateLayouts()
     }
@@ -94,30 +90,31 @@ class EventEditViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         // https://stackoverflow.com/questions/27652227/add-placeholder-text-inside-uitextview-in-swift
         // "(Note: Since the OP wanted to have the text view selected as soon as the view loads, I incorporated text view selection into the above code. If this is not your desired behavior and you do not want the text view selected upon view load, remove the last two lines from the above code chunk.)"
-        titleCell.textView.becomeFirstResponder()
-        if titleCell.content == titleCell.placeHolder {
-            titleCell.textView.selectMostLeft()
-        }
+        let _ = titleCell.textView.becomeFirstResponder()
     }
     
-    // https://stackoverflow.com/questions/26390072/how-to-remove-border-of-the-navigationbar-in-swift
     override func viewWillAppear(_ animated: Bool) {
-        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
-        self.navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.hideBarSeparator()
     }
+    
     override func viewWillDisappear(_ animated: Bool) {
-        self.navigationController?.navigationBar.setBackgroundImage(nil, for: UIBarMetrics.default)
-        self.navigationController?.navigationBar.shadowImage = nil
+        navigationController?.navigationBar.showBarSeparator()
     }
     
     func updateViews() {
-        navigationItem.leftBarButtonItem = cancelButton
-        cancelButton.target = self
-        cancelButton.action = #selector(cancelButtonTapped)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .cancel,
+            target: self,
+            action: #selector(cancelButtonTapped)
+        )
         
-        navigationItem.rightBarButtonItem = saveButton
-        saveButton.target = self
-        saveButton.action = #selector(saveBarButtonItemTapped)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            barButtonSystemItem: .save,
+            target: self,
+            action: #selector(saveBarButtonItemTapped)
+        )
+        
+        tableView.tableFooterView = UIView()
     }
     
     func updateLayouts() {
@@ -125,15 +122,39 @@ class EventEditViewController: UITableViewController {
     
     func updateValues(task: Task? = nil, delegate: HomeViewController) {
         self.task = task
-        
         self.delegate = delegate
     }
 }
 
 extension EventEditViewController {
+    
+    // MARK: - Utils
+    
+    // http://swiftdeveloperblog.com/uialertcontroller-confirmation-dialog-swift/
+    private func displayInvalidDateIntervalWarning() {
+        let invalidDateIntervalAlert = UIAlertController(
+            title: "Invalid date interval",
+            message: "The event end time cannot be set before the start time.",
+            preferredStyle: .alert
+        )
+        
+        let okButton = UIAlertAction(
+            title: "OK",
+            style: .default,
+            handler: { (action) -> Void in
+                return
+        })
+        
+        invalidDateIntervalAlert.addAction(okButton)
+        
+        self.present(invalidDateIntervalAlert, animated: true, completion: nil)
+    }
+    
     // https://stackoverflow.com/questions/36116490/how-to-create-alert-sliding-from-bottom-with-buttons-on-ios
     // https://stackoverflow.com/questions/28487743/show-a-space-below-actions-in-uialertcontroller
-    @objc func cancelButtonTapped() {
+    //
+    // https://stackoverflow.com/questions/38990882/closure-use-of-non-escaping-parameter-may-allow-it-to-escape
+    private func displayEditDiscardingWarning(completion: @escaping (_ shouldDiscard: Bool) -> Void) {
         let unsaveAndQuitAlert = UIAlertController(
             title: nil,
             message: "Changes may be made.\nAre you sure you want to discard your changes?",
@@ -142,18 +163,17 @@ extension EventEditViewController {
         
         let discardChangesButton = UIAlertAction(
             title: "Discard Changes",
-            style: .destructive,
+            style: .default,
             handler: { (action) -> Void in
-                self.delegate.dismiss(animated: true, completion: nil)
+                completion(true)
         })
         
         let keepEditingButton = UIAlertAction(
             title: "Keep Editing",
             style: .cancel
         ) { (action) -> Void in
-            return
+            completion(false)
         }
-        keepEditingButton.setValue(UIColor.systemRed, forKey: "titleTextColor")
         
         unsaveAndQuitAlert.addAction(discardChangesButton)
         unsaveAndQuitAlert.addAction(keepEditingButton)
@@ -161,47 +181,114 @@ extension EventEditViewController {
         self.present(unsaveAndQuitAlert, animated: true, completion: nil)
     }
     
-    @objc func saveBarButtonItemTapped() {
-        let title = titleCell.content
+    func displayDateIntervalConflictWarning(conflictedTask: Task) {
+        let dateIntervalConflictAlert = UIAlertController(
+            title: "Date interval conflict",
+            message: "The current date interval is conflicted with task:  \(conflictedTask.title)"
+                + " (\(conflictedTask.timeReprText))",
+            preferredStyle: .alert
+        )
+        
+        let okButton = UIAlertAction(
+            title: "OK",
+            style: .default,
+            handler: { (action) -> Void in
+                return
+        })
+        
+        dateIntervalConflictAlert.addAction(okButton)
+        
+        self.present(dateIntervalConflictAlert, animated: true, completion: nil)
+    }
+}
+
+
+extension EventEditViewController {
+    
+    // MARK: - Actions
+    
+    @objc private func cancelButtonTapped() {
+        if !isContentChanged {
+            self.delegate.dismiss(animated: true, completion: nil)
+            return
+        }
+        
+        // https://stackoverflow.com/questions/36241970/trouble-returning-a-string-from-alert
+        displayEditDiscardingWarning { (shouldDiscard) in
+            if shouldDiscard {
+                self.delegate.dismiss(animated: true, completion: nil)
+            } else {
+                return
+            }
+        }
+    }
+    
+    @objc private func saveBarButtonItemTapped() {
+        let title = titleCell.textView.content
         let startDateAndTime = startDateAndTimePickerCell.dateAndTime
         let endDateAndTime = endDateAndTimePickerCell.dateAndTime
-        let description = descriptionCell.content
+        let description = descriptionCell.textView.content
         
         if startDateAndTime > endDateAndTime {
             displayInvalidDateIntervalWarning()
             return
         }
+        let dateInterval = DateInterval(
+            start: startDateAndTime,
+            end: endDateAndTime
+        )
         
         let newTask = Task(
             title: title,
-            dateInterval: DateInterval(
-                start: startDateAndTime,
-                end: endDateAndTime
-            ),
+            dateInterval: dateInterval,
             description: description,
             isCompleted: task?.isCompleted ?? false
         )
         
         if let task = task {
-            delegate.dismiss(animated: true, completion: nil)
             delegate.replace(task, with: newTask)
         } else {
-            delegate.add(newTask)
-            delegate.dismiss(animated: true, completion: nil)
+            if let conflictedTask = delegate.findTaskConflicted(with: newTask) {
+                displayDateIntervalConflictWarning(conflictedTask: conflictedTask)
+                return
+            } else {
+                delegate.add(newTask)
+            }
         }
+        delegate.dismiss(animated: true, completion: nil)
+    }
+}
+
+extension EventEditViewController: UIAdaptivePresentationControllerDelegate {
+
+    // MARK: - UIAdaptivePresentationController Delegate
+    
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        if !isContentChanged {
+            return true
+        }
+
+        displayEditDiscardingWarning { (shouldDiscard) in
+            if shouldDiscard {
+                self.delegate.dismiss(animated: true, completion: nil)
+            } else {
+                return
+            }
+        }
+        return false
     }
 }
 
 extension EventEditViewController {
     
-    // MARK: - Table view data source
+    // MARK: - UITableView Data Source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        1
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 6
+        6
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -209,105 +296,68 @@ extension EventEditViewController {
         let row = indexPath.row
         switch row {
         case 0:
-            titleCell = tableView.dequeueReusableCell(
-                withIdentifier: EventEditViewController.eventCellReusableIdentifier,
-                for: indexPath
-                ) as? EventCell
+            oldTitle = task?.title ?? ""
             
-            let placeHolder = (task == nil || (task != nil && task!.title.isEmpty)) ? NSMutableAttributedString(string: "Add title") : nil
-            placeHolder?.set(font: Theme.title2Font)
-            let text = task != nil ? NSMutableAttributedString(string: task!.title) : nil
-            text?.set(font: Theme.title2Font)
-            
+            titleCell = EventTextViewCell()
             titleCell.updateValues(
-                icon: "title",
-                placeHolder: placeHolder,
-                text: text,
-                delegate: self,
-                row: row
+                iconName: "title",
+                placeHolder: EventEditViewController.titlePlaceHolder,
+                text: oldTitle,
+                delegate: self
             )
+            titleCell.textView.font = Theme.title2Font
             return titleCell
         case 1:
-            startDateAndTimeSelectionCell = tableView.dequeueReusableCell(
-                withIdentifier: EventEditViewController.dateAndTimeSelectionCellReuseIdentifier,
-                for: indexPath
-                ) as? DateAndTimeSelectionCell
-            
-            let date = task?.dateInterval.start ?? EventEditViewController.defaultStartDate
-            
+            startDateAndTimeSelectionCell = DateAndTimeSelectionCell()
             startDateAndTimeSelectionCell.updateValues(
-                icon: "startTime",
+                iconName: "startTime",
                 delegate: self,
-                tag: row
+                targetPickerRow: row + 1
             )
-            startDateAndTimeSelectionCell.updateDateAndTime(with: date)
-            removeSeparator(below: startDateAndTimeSelectionCell)
+            let dateAndTime = task?.dateInterval.start ?? EventEditViewController.defaultStartDate
+            startDateAndTimeSelectionCell.updateDateAndTimeRepr(with: dateAndTime)
+            startDateAndTimeSelectionCell.removeSeparator()
             return startDateAndTimeSelectionCell
         case 2:
-            startDateAndTimePickerCell = tableView.dequeueReusableCell(
-                withIdentifier: EventEditViewController.dateAndTimePickerCellReuseIdentifier,
-                for: indexPath
-                ) as? DateAndTimePickerCell
+            oldStartDateAndTime = task?.dateInterval.start ?? EventEditViewController.defaultStartDate
             
-            let date = task?.dateInterval.start ?? EventEditViewController.defaultStartDate
-            let time = date
-            
+            startDateAndTimePickerCell = DateAndTimePickerCell()
             startDateAndTimePickerCell.updateValues(
-                targetRow: row - 1,
+                targetSelectionRow: row - 1,
                 delegate: self,
-                date: date,
-                time: time
+                dateAndTime: oldStartDateAndTime
             )
-            removeSeparator(below: startDateAndTimePickerCell)
+            startDateAndTimePickerCell.removeSeparator()
             return startDateAndTimePickerCell
         case 3:
-            endDateAndTimeSelectionCell = tableView.dequeueReusableCell(
-                withIdentifier: EventEditViewController.dateAndTimeSelectionCellReuseIdentifier,
-                for: indexPath
-                ) as? DateAndTimeSelectionCell
-            
-            let date = task?.dateInterval.end ?? EventEditViewController.defaultEndDate
-            
+            endDateAndTimeSelectionCell = DateAndTimeSelectionCell()
             endDateAndTimeSelectionCell.updateValues(
-                icon: "finishTime",
+                iconName: "finishTime",
                 delegate: self,
-                tag: row
+                targetPickerRow: row + 1
             )
-            endDateAndTimeSelectionCell.updateDateAndTime(with: date)
+            let dateAndTime = task?.dateInterval.end ?? EventEditViewController.defaultEndDate
+            endDateAndTimeSelectionCell.updateDateAndTimeRepr(with: dateAndTime)
             return endDateAndTimeSelectionCell
         case 4:
-            endDateAndTimePickerCell = tableView.dequeueReusableCell(
-                withIdentifier: EventEditViewController.dateAndTimePickerCellReuseIdentifier,
-                for: indexPath
-                ) as? DateAndTimePickerCell
+            oldEndDateAndTime = task?.dateInterval.end ?? EventEditViewController.defaultEndDate
             
-            let date = task?.dateInterval.end ?? EventEditViewController.defaultEndDate
-            let time = date
-            
+            endDateAndTimePickerCell = DateAndTimePickerCell()
             endDateAndTimePickerCell.updateValues(
-                targetRow: row - 1,
+                targetSelectionRow: row - 1,
                 delegate: self,
-                date: date,
-                time: time
+                dateAndTime: oldEndDateAndTime
             )
             return endDateAndTimePickerCell
         case 5:
-            descriptionCell = tableView.dequeueReusableCell(
-                withIdentifier: EventEditViewController.eventCellReusableIdentifier,
-                for: indexPath
-                ) as? EventCell
+            oldDescription = task?.description ?? ""
             
-            let placeHolder = (task == nil || (task != nil && task!.description.isEmpty)) ? NSMutableAttributedString(string: "Add description") : nil
-            placeHolder?.set(font: Theme.bodyFont)
-            let text = task != nil ? NSMutableAttributedString(string: task!.description) : nil
-            text?.set(font: Theme.bodyFont)
-            
+            descriptionCell = EventTextViewCell()
             descriptionCell.updateValues(
-                icon: "description",
-                placeHolder: placeHolder,
-                text: text,
-                delegate: self,
-                row: row
+                iconName: "description",
+                placeHolder: EventEditViewController.descriptionPlaceHolder,
+                text: oldDescription,
+                delegate: self
             )
             return descriptionCell
         default:
@@ -341,104 +391,46 @@ extension EventEditViewController {
     }
 }
 
-extension EventEditViewController {
-    // MARK: - Utils
-    
-    // https://stackoverflow.com/questions/8561774/hide-separator-line-on-one-uitableviewcell
-    func removeSeparator(below cell: UITableViewCell) {
-        cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: .greatestFiniteMagnitude)
-    }
-    
-    // https://stackoverflow.com/questions/42326892/uiview-appereance-from-bottom-to-top-and-vice-versacore-animation
-//    func displayInvalidDateIntervalWarning() {
-//        let invalidDateIntervalWarningView = InvalidDateIntervalWarningView(
-//            frame: CGRect(x: view.frame.minX, y: view.frame.height, width: view.frame.width, height: 0)
-//        )
-//        view.addSubview(invalidDateIntervalWarningView)
-//
-//        let height: CGFloat = 150
-//        UIView.animate(withDuration: 1.0, delay: 0, options: [.curveEaseIn], animations: {
-//            invalidDateIntervalWarningView.backgroundColor = .darkGray
-//            invalidDateIntervalWarningView.frame = CGRect(
-//                x: invalidDateIntervalWarningView.frame.minX,
-//                y: invalidDateIntervalWarningView.frame.minY - height,
-//                width: invalidDateIntervalWarningView.frame.width,
-//                height: height
-//            )
-//        }, completion: { (_: Bool) -> Void in
-//
-//            UIView.animate(withDuration: 1.0, delay: 2, options: [.curveEaseOut], animations: {
-//                invalidDateIntervalWarningView.backgroundColor = .darkGray
-//                invalidDateIntervalWarningView.frame = CGRect(
-//                    x: invalidDateIntervalWarningView.frame.minX,
-//                    y: invalidDateIntervalWarningView.frame.minY + height,
-//                    width: invalidDateIntervalWarningView.frame.width,
-//                    height: 0
-//                )
-//            }, completion: { (_: Bool) -> Void in
-//                invalidDateIntervalWarningView.removeFromSuperview()
-//            })
-//        })
-//    }
-    
-    // http://swiftdeveloperblog.com/uialertcontroller-confirmation-dialog-swift/
-    func displayInvalidDateIntervalWarning() {
-        let invalidDateIntervalAlert = UIAlertController(
-            title: "Invalid date interval",
-            message: "The event end time cannot be set before the start time.",
-            preferredStyle: .alert
-        )
-        
-        let okButton = UIAlertAction(
-            title: "OK",
-            style: .default,
-            handler: { (action) -> Void in
-                return
-        })
-        
-        invalidDateIntervalAlert.addAction(okButton)
-        
-        self.present(invalidDateIntervalAlert, animated: true, completion: nil)
-    }
-}
-
 extension EventEditViewController: DateAndTimePickerDelegate {
     
-    func validateStartDateAndTime() {
+    // MARK: - DateAndTimePicker Delegate
+    
+    private func validateStartDateAndTime() {
         guard endDateAndTimePickerCell != nil else {
             return
         }
         
         if startDateAndTimePickerCell.dateAndTime > endDateAndTimePickerCell.dateAndTime {
             let startDateAndTime = startDateAndTimePickerCell.dateAndTime
-            let newEndDateAndTime = Date(timeInterval: 40 * TimeInterval.secsOfOneMinute, since: startDateAndTime)
+            let newEndDateAndTime = Date(
+                timeInterval: 40 * TimeInterval.secsOfOneMinute,
+                since: startDateAndTime
+            )
             endDateAndTimePickerCell.dateAndTime = newEndDateAndTime
             
-            endDateAndTimeSelectionCell.updateDateAndTime(with: newEndDateAndTime)
+            endDateAndTimeSelectionCell.updateDateAndTimeRepr(with: newEndDateAndTime)
             validateEndDateAndTime()
         } else {
             return
         }
     }
     
-    func validateEndDateAndTime() {
+    private func validateEndDateAndTime() {
         if startDateAndTimePickerCell.dateAndTime <= endDateAndTimePickerCell.dateAndTime {
-            endDateAndTimeSelectionCell.textView.textColor = Theme.textColor
-            endDateAndTimeSelectionCell.button.setTitleColor(Theme.textColor, for: .normal)
+            endDateAndTimeSelectionCell.isDateValid = true
         } else {
-            endDateAndTimeSelectionCell.textView.textColor = Theme.errorTextColor
-            endDateAndTimeSelectionCell.button.setTitleColor(Theme.errorTextColor, for: .normal)
+            endDateAndTimeSelectionCell.isDateValid = false
         }
     }
     
     // MARK: - DateAndTimePicker Delegate
     
-    func updateDateAndTime(ofCellInRow row: Int, with newDateAndTime: Date) {
+    internal func updateDateAndTime(ofCellInRow row: Int, with newDateAndTime: Date) {
         if row == 1 {
-            startDateAndTimeSelectionCell.updateDateAndTime(with: newDateAndTime)
+            startDateAndTimeSelectionCell.updateDateAndTimeRepr(with: newDateAndTime)
             validateStartDateAndTime()
         } else if row == 3 {
-            endDateAndTimeSelectionCell.updateDateAndTime(with: newDateAndTime)
+            endDateAndTimeSelectionCell.updateDateAndTimeRepr(with: newDateAndTime)
             validateEndDateAndTime()
         } else {
             return
@@ -447,6 +439,8 @@ extension EventEditViewController: DateAndTimePickerDelegate {
 }
 
 extension EventEditViewController: UITextViewDelegate {
+    
+    // MARK: - UITextView Delegate
     
     // https://stackoverflow.com/questions/37014919/expand-uitextview-and-uitableview-when-uitextviews-text-extends-beyond-1-line
     func textViewDidChange(_ textView: UITextView) {
@@ -462,88 +456,47 @@ extension EventEditViewController: UITextViewDelegate {
             tableView?.beginUpdates()
             tableView?.endUpdates()
             UIView.setAnimationsEnabled(true)
-            
-            let indexPath = IndexPath(row: textView.tag, section: 0)
-            tableView?.scrollToRow(
-                at: indexPath,
-                at: .bottom,
-                animated: false
-            )
         }
     }
     
     // https://stackoverflow.com/questions/27652227/add-placeholder-text-inside-uitextview-in-swift
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        // Combine the textView text and the replacement text to
-        // create the updated text string
-        let currentText: String = textView.text
-        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
-        
-        // If updated text view will be empty, add the placeholder
-        // and set the cursor to the beginning of the text view
-        if updatedText.isEmpty {
-            var cell: EventCell
-            if textView.tag == 0 {
-                cell = titleCell
-            } else if textView.tag == 5 {
-                cell = descriptionCell
-            } else {
-                return true
-            }
-            
-            textView.text = cell.placeHolder
-            textView.textColor = Theme.placeHolderColor
-            
-            textView.selectMostLeft()
-        }
-            
-            // Else if the text view's placeholder is showing and the
-            // length of the replacement string is greater than 0, set
-            // the text color to black then set its text to the
-            // replacement string
-        else if textView.textColor == Theme.weakTextColor && !text.isEmpty {
-            textView.textColor = Theme.textColor
-            textView.text = text
-        }
-            
-            // For every other case, the text should change with the usual
-            // behavior...
-        else {
+        guard let textView = textView as? TextViewWithPlaceHolder else {
             return true
         }
         
-        // ...otherwise return false since the updates have already
-        // been made
-        return false
+        let currentText: String = textView.text
+        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+        
+        if updatedText.isEmpty {
+            textView.content = ""
+            return false
+        } else if textView.isShowingPlaceHolder {
+            textView.content = text
+            return false
+        } else {
+            return true
+        }
     }
     
     // Ensures that always the left of the placeholders are selected.
     func textViewDidChangeSelection(_ textView: UITextView) {
-        var cell: EventCell
-        if textView.tag == 0 {
-            cell = titleCell
-        } else if textView.tag == 5 {
-            cell = descriptionCell
-        } else {
+        guard let textView = textView as? TextViewWithPlaceHolder else {
             return
         }
         
-        if textView.text == cell.placeHolder {
+        if textView.isShowingPlaceHolder {
             textView.selectMostLeft()
         }
     }
+    
     // Ensures that always the left of the placeholders are selected.
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        var cell: EventCell
-        if textView.tag == 0 {
-            cell = titleCell
-        } else if textView.tag == 5 {
-            cell = descriptionCell
-        } else {
+        guard let textView = textView as? TextViewWithPlaceHolder else {
             return true
         }
         
-        if textView.text == cell.placeHolder {
+        if textView.isShowingPlaceHolder {
             textView.selectMostLeft()
         }
         return true
@@ -551,15 +504,30 @@ extension EventEditViewController: UITextViewDelegate {
 }
 
 extension EventEditViewController: DateAndTimeSelectionCellDelegate {
-    
-    // MARK: - DateAndTimeSelectionCell Delegate
-    
-    func displayOrHideDatePicker(inRow row: Int) {
-        let currentPickerCell: DateAndTimePickerCell = row == 2 ? startDateAndTimePickerCell : endDateAndTimePickerCell
-        let theOtherPickerCell: DateAndTimePickerCell = row == 2 ? endDateAndTimePickerCell : startDateAndTimePickerCell
         
-        currentPickerCell.datePicker.isHidden.toggle()
-        currentPickerCell.timePicker.isHidden = true
+    private func currentPickerCellOf(_ row: Int) -> DateAndTimePickerCell {
+        return row == 2
+            ? startDateAndTimePickerCell
+            : endDateAndTimePickerCell
+    }
+    
+    private func theOtherPickerCellOf(_ row: Int) -> DateAndTimePickerCell {
+        return row == 2
+            ? endDateAndTimePickerCell
+            : startDateAndTimePickerCell
+    }
+    
+    private func togglePickersVisibility(in row: Int, shouldToggleDatePicker: Bool, shouldToggleTimePicker: Bool) {
+        let currentPickerCell = currentPickerCellOf(row)
+        let theOtherPickerCell = theOtherPickerCellOf(row)
+        
+        if shouldToggleDatePicker {
+            currentPickerCell.datePicker.isHidden.toggle()
+            currentPickerCell.timePicker.isHidden = true
+        } else {
+            currentPickerCell.timePicker.isHidden.toggle()
+            currentPickerCell.datePicker.isHidden = true
+        }
         
         theOtherPickerCell.datePicker.isHidden = true
         theOtherPickerCell.timePicker.isHidden = true
@@ -568,24 +536,22 @@ extension EventEditViewController: DateAndTimeSelectionCellDelegate {
         tableView.endUpdates()
     }
     
-    func displayOrHideTimePicker(inRow row: Int) {
-        let currentPickerCell: DateAndTimePickerCell = row == 2 ? startDateAndTimePickerCell : endDateAndTimePickerCell
-        let theOtherPickerCell: DateAndTimePickerCell = row == 2 ? endDateAndTimePickerCell : startDateAndTimePickerCell
-        
-        currentPickerCell.timePicker.isHidden.toggle()
-        currentPickerCell.datePicker.isHidden = true
-        
-        theOtherPickerCell.datePicker.isHidden = true
-        theOtherPickerCell.timePicker.isHidden = true
-        
-        tableView.beginUpdates()
-        tableView.endUpdates()
+    // MARK: - DateAndTimeSelectionCell Delegate
+    
+    internal func toggleDatePickerVisibility(inRow row: Int) {
+        togglePickersVisibility(in: row, shouldToggleDatePicker: true, shouldToggleTimePicker: false)
+    }
+    
+    internal func toggleTimePickerVisibility(inRow row: Int) {
+        togglePickersVisibility(in: row, shouldToggleDatePicker: false, shouldToggleTimePicker: true)
     }
 }
 
 protocol EventEditViewControllerDelegate {
+        
     func add(_ task: Task)
     func replace(_ oldTask: Task, with newTask: Task)
+    func findTaskConflicted(with newTask: Task) -> Task?
 }
 
 extension EventEditViewController {
@@ -596,10 +562,16 @@ extension EventEditViewController {
         Date()
     }
     static var defaultEndDate: Date {
-        Date(timeInterval: 40 * TimeInterval.secsOfOneMinute, since: EventEditViewController.defaultStartDate)
+        Date(
+            timeInterval: 40 * TimeInterval.secsOfOneMinute,
+            since: EventEditViewController.defaultStartDate
+        )
     }
     
-    static let eventCellReusableIdentifier = "EventCell"
+    static let eventTextViewCellReusableIdentifier = "EventTextViewCell"
     static let dateAndTimeSelectionCellReuseIdentifier = "DateAndTimeSelectionCell"
     static let dateAndTimePickerCellReuseIdentifier = "DateAndTimePickerCell"
+    
+    static let titlePlaceHolder = "Add title"
+    static let descriptionPlaceHolder = "Add description"
 }

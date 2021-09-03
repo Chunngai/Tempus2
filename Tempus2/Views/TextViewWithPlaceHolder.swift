@@ -11,6 +11,35 @@ import UIKit
 class TextViewWithPlaceHolder: UITextView {
     
     var placeHolder: String?
+    var isShowingPlaceHolder: Bool {
+        guard let placeHolder = placeHolder else {
+            return false
+        }
+        return text == placeHolder
+    }
+    
+    var content: String {
+        get {
+            guard let text = text else {
+                return ""
+            }
+            if text != placeHolder {
+                return text
+            } else {
+                return ""
+            }
+        }
+        set {
+            if newValue.isEmpty {
+                text = placeHolder
+                textColor = Theme.placeHolderColor
+                selectMostLeft()
+            } else {
+                text = newValue
+                textColor = Theme.textColor
+            }
+        }
+    }
     
     // MARK: - Init
     
@@ -21,5 +50,15 @@ class TextViewWithPlaceHolder: UITextView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+}
+
+extension TextViewWithPlaceHolder {
+    override func becomeFirstResponder() -> Bool {
+        let bool = super.becomeFirstResponder()
+        
+        if text == placeHolder {
+            selectMostLeft()
+        }
+        return bool
+    }
 }
