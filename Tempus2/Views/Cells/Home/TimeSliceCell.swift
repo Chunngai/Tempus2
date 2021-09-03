@@ -1,5 +1,5 @@
 //
-//  TaskCell.swift
+//  TimeSliceCell.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/8/30.
@@ -13,7 +13,7 @@ class TimeSliceCell: UITableViewCell {
     
     // MARK: - Views
     
-    var timeSliceLabel: UILabel = {
+    private var timeSliceLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = Theme.footNoteFont
@@ -22,14 +22,14 @@ class TimeSliceCell: UITableViewCell {
         return label
     }()
     
-    var horizontalSeparator: SeparationLine = {
-        let line = SeparationLine()
-        return line
+    private var horizontalSeparator: Separator = {
+        let separator = Separator()
+        return separator
     }()
     
-    var verticalSeparator: SeparationLine = {
-        let line = SeparationLine()
-        return line
+    private var verticalSeparator: Separator = {
+        let separator = Separator()
+        return separator
     }()
     
     // MARK: - Init
@@ -45,16 +45,15 @@ class TimeSliceCell: UITableViewCell {
         updateLayouts()
     }
     
-    func updateViews() {
+    private func updateViews() {
         selectionStyle = .none
         
         contentView.addSubview(timeSliceLabel)
-        
         contentView.addSubview(horizontalSeparator)
         contentView.addSubview(verticalSeparator)
     }
     
-    func updateLayouts() {
+    private func updateLayouts() {
         timeSliceLabel.snp.makeConstraints { (make) in
             make.leading.equalToSuperview().offset(TimeSliceCell.timeSliceLabelLeadingOffset)
             make.width.equalTo(TimeSliceCell.timeSliceLabelWidth)
@@ -75,8 +74,17 @@ class TimeSliceCell: UITableViewCell {
         }
     }
     
-    func updateValues(time: String) {
-        timeSliceLabel.text = time
+    func updateValues(hour: Int) {
+        timeSliceLabel.text = String(format: "%02d:00", hour)
+    }
+}
+
+extension TimeSliceCell: HomeViewControllerDelegate {
+    
+    // MARK: - HomeViewController Delegate
+    
+    internal var horizontalSeparatorYOffset: CGFloat {
+        horizontalSeparator.frame.minY
     }
 }
 

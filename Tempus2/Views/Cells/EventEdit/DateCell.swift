@@ -52,6 +52,6 @@ extension DateCell {
     static let diameter: CGFloat = 25
     
     static let bgColorOfToday = UIColor.systemBlue
-    static let bgColorOfSelection = Theme.lightBlue
+    static let bgColorOfSelection = Theme.dateCellBgColor
     static let commonBgColor = UIColor.white
 }

@@ -13,17 +13,17 @@
 		FF4CAE7226DCE3F7009BB111 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7126DCE3F7009BB111 /* Theme.swift */; };
 		FF4CAE7526DCE424009BB111 /* UIColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7426DCE424009BB111 /* UIColorExt.swift */; };
 		FF4CAE7726DCE459009BB111 /* StringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7626DCE459009BB111 /* StringExt.swift */; };
-		FF4CAE7926DCE505009BB111 /* SeparationLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7826DCE505009BB111 /* SeparationLine.swift */; };
+		FF4CAE7926DCE505009BB111 /* Separator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7826DCE505009BB111 /* Separator.swift */; };
 		FF4CAE8D26DCF7A9009BB111 /* HomeEventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE8C26DCF7A9009BB111 /* HomeEventCell.swift */; };
 		FF4CAE9226DCFC7D009BB111 /* DateExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE9126DCFC7D009BB111 /* DateExt.swift */; };
 		FF4CAE9526DCFD03009BB111 /* TaskExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE9426DCFD03009BB111 /* TaskExt.swift */; };
-		FF4CAE9F26DD2870009BB111 /* TaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE9E26DD2870009BB111 /* TaskViewController.swift */; };
-		FF4CAEA326DD325C009BB111 /* TaskNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAEA226DD325C009BB111 /* TaskNavController.swift */; };
+		FF4CAE9F26DD2870009BB111 /* EventEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE9E26DD2870009BB111 /* EventEditViewController.swift */; };
+		FF4CAEA326DD325C009BB111 /* EventEditNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAEA226DD325C009BB111 /* EventEditNavController.swift */; };
 		FF50601226DFC3AC00BF1F50 /* EventDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50601126DFC3AC00BF1F50 /* EventDisplayViewController.swift */; };
 		FF50601C26DFD31C00BF1F50 /* EventDisplayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50601B26DFD31C00BF1F50 /* EventDisplayCell.swift */; };
 		FF50602126DFDA8200BF1F50 /* NSAttributedStringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50602026DFDA8200BF1F50 /* NSAttributedStringExt.swift */; };
 		FF50602526E0AB2200BF1F50 /* EventCompletionTogglingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50602426E0AB2200BF1F50 /* EventCompletionTogglingView.swift */; };
-		FF5179DF26DF582400CD0272 /* EventCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5179DC26DF582400CD0272 /* EventCell.swift */; };
+		FF5179DF26DF582400CD0272 /* EventTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5179DC26DF582400CD0272 /* EventTableCell.swift */; };
 		FF5179EC26DF61BE00CD0272 /* UITextViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5179EB26DF61BE00CD0272 /* UITextViewExt.swift */; };
 		FF5179EF26DF808A00CD0272 /* TimeIntervalExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5179EE26DF808A00CD0272 /* TimeIntervalExt.swift */; };
 		FF51D64D26DE0F2B0091ABAA /* UIImageExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF51D64C26DE0F2B0091ABAA /* UIImageExt.swift */; };
@@ -43,7 +43,8 @@
 		FF6EED7626DD4787009483A2 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6EED7526DD4787009483A2 /* HomeViewController.swift */; };
 		FF6EED7A26DD4787009483A2 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6EED7926DD4787009483A2 /* Task.swift */; };
 		FF6EED7E26DD4787009483A2 /* TimeSliceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6EED7D26DD4787009483A2 /* TimeSliceCell.swift */; };
-		FFCB837026E0D21A004A4F53 /* InvalidDateIntervalWarningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB836F26E0D21A004A4F53 /* InvalidDateIntervalWarningView.swift */; };
+		FFCB837426E133B7004A4F53 /* UINavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB837326E133B7004A4F53 /* UINavigationItem.swift */; };
+		FFCB837926E1D132004A4F53 /* TextViewWithPlaceHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB837826E1D132004A4F53 /* TextViewWithPlaceHolder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,17 +105,17 @@
 		FF4CAE7126DCE3F7009BB111 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		FF4CAE7426DCE424009BB111 /* UIColorExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExt.swift; sourceTree = "<group>"; };
 		FF4CAE7626DCE459009BB111 /* StringExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExt.swift; sourceTree = "<group>"; };
-		FF4CAE7826DCE505009BB111 /* SeparationLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeparationLine.swift; sourceTree = "<group>"; };
+		FF4CAE7826DCE505009BB111 /* Separator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Separator.swift; sourceTree = "<group>"; };
 		FF4CAE8C26DCF7A9009BB111 /* HomeEventCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeEventCell.swift; sourceTree = "<group>"; };
 		FF4CAE9126DCFC7D009BB111 /* DateExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExt.swift; sourceTree = "<group>"; };
 		FF4CAE9426DCFD03009BB111 /* TaskExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskExt.swift; sourceTree = "<group>"; };
-		FF4CAE9E26DD2870009BB111 /* TaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TaskViewController.swift; path = ../Home/TaskViewController.swift; sourceTree = "<group>"; };
-		FF4CAEA226DD325C009BB111 /* TaskNavController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TaskNavController.swift; path = ../Home/TaskNavController.swift; sourceTree = "<group>"; };
+		FF4CAE9E26DD2870009BB111 /* EventEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventEditViewController.swift; path = ../Home/EventEditViewController.swift; sourceTree = "<group>"; };
+		FF4CAEA226DD325C009BB111 /* EventEditNavController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventEditNavController.swift; path = ../Home/EventEditNavController.swift; sourceTree = "<group>"; };
 		FF50601126DFC3AC00BF1F50 /* EventDisplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDisplayViewController.swift; sourceTree = "<group>"; };
 		FF50601B26DFD31C00BF1F50 /* EventDisplayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDisplayCell.swift; sourceTree = "<group>"; };
 		FF50602026DFDA8200BF1F50 /* NSAttributedStringExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedStringExt.swift; sourceTree = "<group>"; };
 		FF50602426E0AB2200BF1F50 /* EventCompletionTogglingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventCompletionTogglingView.swift; sourceTree = "<group>"; };
-		FF5179DC26DF582400CD0272 /* EventCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventCell.swift; sourceTree = "<group>"; };
+		FF5179DC26DF582400CD0272 /* EventTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventTableCell.swift; sourceTree = "<group>"; };
 		FF5179EB26DF61BE00CD0272 /* UITextViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewExt.swift; sourceTree = "<group>"; };
 		FF5179EE26DF808A00CD0272 /* TimeIntervalExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalExt.swift; sourceTree = "<group>"; };
 		FF51D64C26DE0F2B0091ABAA /* UIImageExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExt.swift; sourceTree = "<group>"; };
@@ -139,7 +140,8 @@
 		FF6EED7526DD4787009483A2 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		FF6EED7926DD4787009483A2 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		FF6EED7D26DD4787009483A2 /* TimeSliceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSliceCell.swift; sourceTree = "<group>"; };
-		FFCB836F26E0D21A004A4F53 /* InvalidDateIntervalWarningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvalidDateIntervalWarningView.swift; sourceTree = "<group>"; };
+		FFCB837326E133B7004A4F53 /* UINavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationItem.swift; sourceTree = "<group>"; };
+		FFCB837826E1D132004A4F53 /* TextViewWithPlaceHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewWithPlaceHolder.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,6 +192,7 @@
 				FF4CAE7426DCE424009BB111 /* UIColorExt.swift */,
 				FF51D64C26DE0F2B0091ABAA /* UIImageExt.swift */,
 				FF5179EB26DF61BE00CD0272 /* UITextViewExt.swift */,
+				FFCB837326E133B7004A4F53 /* UINavigationItem.swift */,
 			);
 			path = UIExtensions;
 			sourceTree = "<group>";
@@ -249,8 +252,8 @@
 		FF5179E726DF5A7500CD0272 /* EventEdit */ = {
 			isa = PBXGroup;
 			children = (
-				FF4CAEA226DD325C009BB111 /* TaskNavController.swift */,
-				FF4CAE9E26DD2870009BB111 /* TaskViewController.swift */,
+				FF4CAEA226DD325C009BB111 /* EventEditNavController.swift */,
+				FF4CAE9E26DD2870009BB111 /* EventEditViewController.swift */,
 			);
 			path = EventEdit;
 			sourceTree = "<group>";
@@ -281,10 +284,10 @@
 		FF6A09F626DBEA0900A6E09A /* Tempus2 */ = {
 			isa = PBXGroup;
 			children = (
-				FF6EED7B26DD4787009483A2 /* Extensions */,
 				FF6EED7726DD4787009483A2 /* Models */,
 				FF6A0A2926DBEAC300A6E09A /* Controllers */,
 				FF6A0A3226DBED5500A6E09A /* Views */,
+				FF6EED7B26DD4787009483A2 /* Extensions */,
 				FF6A09F726DBEA0900A6E09A /* AppDelegate.swift */,
 				FF6A09F926DBEA0900A6E09A /* SceneDelegate.swift */,
 				FF6A0A0026DBEA0900A6E09A /* Assets.xcassets */,
@@ -328,9 +331,9 @@
 				FF5179E626DF5A6200CD0272 /* Headers */,
 				FF6EED7C26DD4787009483A2 /* Cells */,
 				FF4CAE7126DCE3F7009BB111 /* Theme.swift */,
-				FF4CAE7826DCE505009BB111 /* SeparationLine.swift */,
+				FF4CAE7826DCE505009BB111 /* Separator.swift */,
 				FF50602426E0AB2200BF1F50 /* EventCompletionTogglingView.swift */,
-				FFCB836F26E0D21A004A4F53 /* InvalidDateIntervalWarningView.swift */,
+				FFCB837826E1D132004A4F53 /* TextViewWithPlaceHolder.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -394,7 +397,7 @@
 		FFAB9BA026DF1BA400E57BC6 /* EventEdit */ = {
 			isa = PBXGroup;
 			children = (
-				FF5179DC26DF582400CD0272 /* EventCell.swift */,
+				FF5179DC26DF582400CD0272 /* EventTableCell.swift */,
 				FF51D65126DE45220091ABAA /* DateAndTimeSelectionCell.swift */,
 				FF51D65326DE4D340091ABAA /* DateAndTimePickerCell.swift */,
 				FF6E370226DE7FF400464183 /* DateCell.swift */,
@@ -667,30 +670,31 @@
 				FF6A0A2D26DBEB4B00A6E09A /* HomeNavController.swift in Sources */,
 				FF6EED7626DD4787009483A2 /* HomeViewController.swift in Sources */,
 				FF50602526E0AB2200BF1F50 /* EventCompletionTogglingView.swift in Sources */,
-				FF4CAE9F26DD2870009BB111 /* TaskViewController.swift in Sources */,
+				FF4CAE9F26DD2870009BB111 /* EventEditViewController.swift in Sources */,
 				FF50602126DFDA8200BF1F50 /* NSAttributedStringExt.swift in Sources */,
 				FF5179EF26DF808A00CD0272 /* TimeIntervalExt.swift in Sources */,
 				FF6EED7A26DD4787009483A2 /* Task.swift in Sources */,
-				FF5179DF26DF582400CD0272 /* EventCell.swift in Sources */,
+				FF5179DF26DF582400CD0272 /* EventTableCell.swift in Sources */,
 				FF4CAE7526DCE424009BB111 /* UIColorExt.swift in Sources */,
 				FF4CAE8D26DCF7A9009BB111 /* HomeEventCell.swift in Sources */,
 				FF6A09F826DBEA0900A6E09A /* AppDelegate.swift in Sources */,
 				FF6EED7E26DD4787009483A2 /* TimeSliceCell.swift in Sources */,
-				FF4CAE7926DCE505009BB111 /* SeparationLine.swift in Sources */,
+				FF4CAE7926DCE505009BB111 /* Separator.swift in Sources */,
 				FF51D64D26DE0F2B0091ABAA /* UIImageExt.swift in Sources */,
 				FF51D65226DE45220091ABAA /* DateAndTimeSelectionCell.swift in Sources */,
 				FF4CAE7726DCE459009BB111 /* StringExt.swift in Sources */,
 				FF5179EC26DF61BE00CD0272 /* UITextViewExt.swift in Sources */,
 				FF50601226DFC3AC00BF1F50 /* EventDisplayViewController.swift in Sources */,
+				FFCB837426E133B7004A4F53 /* UINavigationItem.swift in Sources */,
 				FF4CAE7226DCE3F7009BB111 /* Theme.swift in Sources */,
 				FF6A09FA26DBEA0900A6E09A /* SceneDelegate.swift in Sources */,
 				FF6E370326DE7FF400464183 /* DateCell.swift in Sources */,
 				FF51D65426DE4D340091ABAA /* DateAndTimePickerCell.swift in Sources */,
 				FF4CAE9526DCFD03009BB111 /* TaskExt.swift in Sources */,
+				FFCB837926E1D132004A4F53 /* TextViewWithPlaceHolder.swift in Sources */,
 				FF50601C26DFD31C00BF1F50 /* EventDisplayCell.swift in Sources */,
-				FF4CAEA326DD325C009BB111 /* TaskNavController.swift in Sources */,
+				FF4CAEA326DD325C009BB111 /* EventEditNavController.swift in Sources */,
 				FF6E370726DE8CEF00464183 /* WeekdaysHeader.swift in Sources */,
-				FFCB837026E0D21A004A4F53 /* InvalidDateIntervalWarningView.swift in Sources */,
 				FF4CAE9226DCFC7D009BB111 /* DateExt.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

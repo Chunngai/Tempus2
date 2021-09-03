@@ -1,5 +1,5 @@
 //
-//  TaskCell.swift
+//  HomeEventCell.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/8/30.
@@ -12,26 +12,26 @@ class HomeEventCell: UIView {
         
     // MARK: - Models
     
-    var task: Task!
+    private var task: Task!
     
     // MARK: - Controllers
     
-    var delegate: HomeViewController!
+    private var delegate: HomeViewController!
     
     // MARK: - Views
     
-    let mainView: UIView = {
+    private let mainView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 8
         view.layer.masksToBounds = true
-        view.backgroundColor = Theme.lightBlueColor
+        view.backgroundColor = Theme.homeEventCellColor
         return view
     }()
     
-    let label: UILabel = {
+    private let label: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = Theme.footNoteFont
         label.textAlignment = .left
         label.textColor = Theme.textColor
         return label
@@ -50,14 +50,17 @@ class HomeEventCell: UIView {
         super.init(coder: coder)
     }
     
-    func updateViews() {
+    private func updateViews() {
         addSubview(mainView)
         mainView.addSubview(label)
         
-        mainView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapped)))
+        mainView.addGestureRecognizer(UITapGestureRecognizer(
+            target: self,
+            action: #selector(tapped)
+        ))
     }
     
-    func updateLayouts() {
+    private func updateLayouts() {
         mainView.snp.makeConstraints { (make) in
             make.edges.equalToSuperview()
         }
@@ -71,20 +74,16 @@ class HomeEventCell: UIView {
         self.task = task
         self.delegate = delegate
         
-        let attributedTitle = NSMutableAttributedString(string: task.title)
-        if task.isCompleted {
-            attributedTitle.setDeleteLine()
-        }
-        label.attributedText = attributedTitle
+        label.attributedText = task.homeEventLabelText
     }
 }
 
 extension HomeEventCell {
-    @objc func tapped() {
-        delegate.showEvent(of: task)
+    @objc private func tapped() {
+        delegate.display(task)
     }
 }
 
-protocol TaskCellDelegate {
-    func showEvent(of task: Task)
+protocol HomeEventCellDelegate {
+    func display(_ task: Task)
 }

@@ -1,5 +1,5 @@
 //
-//  TaskNavController.swift
+//  EventEditNavController.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/8/30.
@@ -12,6 +12,5 @@ class EventEditNavController: UINavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
     }
 }

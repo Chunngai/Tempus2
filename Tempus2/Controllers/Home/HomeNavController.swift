@@ -1,5 +1,5 @@
 //
-//  ScheduleNavController.swift
+//  HomeNavController.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/8/30.
@@ -16,7 +16,7 @@ class HomeNavController: UINavigationController {
         updateViews()
     }
     
-    func updateViews() {
+    private func updateViews() {
         view.backgroundColor = .white
     }
 }

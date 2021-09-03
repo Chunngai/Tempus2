@@ -1,5 +1,5 @@
 //
-//  ScheduleViewController.swift
+//  HomeViewController.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/8/30.
@@ -8,15 +8,20 @@
 
 import UIKit
 
-class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class HomeViewController: UIViewController {
     
-    var offset: CGFloat!
+    private var horizontalSeparatorYOffset: CGFloat! {
+        (tableView.visibleCells.first as? TimeSliceCell)?
+            .horizontalSeparatorYOffset
+    }
     
     // MARK: - Models
     
-    var tasks: [Task]! {
+    private var tasks: [Task]! {
         didSet {
-            tasks.sort { $0.dateInterval.start < $1.dateInterval.start }
+            tasks.sort {
+                $0.dateInterval.start < $1.dateInterval.start
+            }
             Task.save(tasks)
             
             if tableView.frame != .zero {
@@ -27,14 +32,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     
     // MARK: - Views
     
-    let tableView: UITableView = {
+    private let tableView: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .white
         tableView.separatorStyle = .none
         return tableView
     }()
     
-    let newEventButtonShadowView: UIView = {
+    private let newEventButtonShadowView: UIView = {
         let shadowView = UIView()
         shadowView.layer.shadowColor = UIColor.gray.cgColor
         shadowView.layer.shadowOpacity = 0.3
@@ -43,15 +48,15 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         return shadowView
     }()
     
-    // https://stackoverflow.com/questions/26050655/how-to-create-a-circular-button-in-swift
-    let newEventButton: UIButton = {
+    private let newEventButton: UIButton = {
         let button = UIButton()
         button.setTitle("+", for: .normal)
-        button.setTitleColor(.black, for: .normal)
+        button.setTitleColor(Theme.textColor, for: .normal)
         button.titleLabel?.font = Theme.title1Font
+        button.backgroundColor = .white
+        // https://stackoverflow.com/questions/26050655/how-to-create-a-circular-button-in-swift
         button.layer.cornerRadius = 0.5 * CGFloat(HomeViewController.newEventButtonDiameter)
         button.clipsToBounds = true
-        button.backgroundColor = .white
         return button
     }()
     
@@ -61,14 +66,14 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         super.viewDidLoad()
         
         // Loads tasks.
-        tasks = Task.loadTasks()
+        tasks = Task.load()
         
         // Table view configs.
         tableView.dataSource = self
         tableView.delegate = self
-        self.tableView.register(
+        tableView.register(
             TimeSliceCell.classForCoder(),
-            forCellReuseIdentifier: HomeViewController.cellReuseIdentifier
+            forCellReuseIdentifier: HomeViewController.timeSliceCellReuseIdentifier
         )
         
         newEventButton.addTarget(
@@ -82,13 +87,11 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        offset = (tableView.visibleCells.first as? TimeSliceCell)?.horizontalSeparator.frame.minY
-        
         drawTasks()
     }
     
-    func updateViews() {
-        navigationItem.title = Date().localDateRepr
+    private func updateViews() {
+        navigationItem.title = Date().dateRepr
         
         view.addSubview(tableView)
         
@@ -96,7 +99,7 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
         newEventButtonShadowView.addSubview(newEventButton)
     }
     
-    func updateLayouts() {
+    private func updateLayouts() {
         tableView.snp.makeConstraints { (make) in
             make.top.equalTo(view.safeAreaLayoutGuide)
             make.bottom.equalTo(view.safeAreaLayoutGuide)
@@ -117,9 +120,10 @@ class HomeViewController: UIViewController, UITableViewDataSource, UITableViewDe
 }
 
 extension HomeViewController {
+    
     // MARK: - Actions
     
-    @objc func newEventButtonTapped() {
+    @objc private func newEventButtonTapped() {
         let taskViewController = EventEditViewController()
         taskViewController.updateValues(delegate: self)
         navigationController?.present(
@@ -131,9 +135,11 @@ extension HomeViewController {
 }
 
 extension HomeViewController {
+    
     // MARK: - Utils
     
-    func drawTasks() {
+    private func drawTasks() {
+        // Clears current event cells.
         for subView in tableView.subviews {
             if let homeEventCell = subView as? HomeEventCell {
                 homeEventCell.removeFromSuperview()
@@ -145,7 +151,7 @@ extension HomeViewController {
         }
     }
     
-    func draw(_ task: Task) {
+    private func draw(_ task: Task) {
         let startH = task.dateInterval.start.getComponent(.hour)
         let endH = task.dateInterval.end.getComponent(.hour)
         let hs = endH - startH
@@ -154,79 +160,84 @@ extension HomeViewController {
         let endM = task.dateInterval.end.getComponent(.minute)
         let ms = endM - startM
         
-        let taskCellTop = HomeViewController.cellHeight * (CGFloat(startH) + CGFloat(startM) / 60)
-            + offset
-        var taskCellHeight = HomeViewController.cellHeight * (CGFloat(hs) + CGFloat(ms) / 60)
+        let top = HomeViewController.timeSliceCellHeight
+            * (CGFloat(startH) + CGFloat(startM) / CGFloat(TimeInterval.secsOfOneMinute))
+            + horizontalSeparatorYOffset
+        var height = HomeViewController.timeSliceCellHeight
+            * (CGFloat(hs) + CGFloat(ms) / CGFloat(TimeInterval.secsOfOneMinute))
         // Min height limitation.
-        if taskCellHeight < HomeViewController.cellHeight / 2 {
-            taskCellHeight = HomeViewController.cellHeight / 2
+        if height < HomeViewController.timeSliceCellHeight / 2 {
+            height = HomeViewController.timeSliceCellHeight / 2
         }
-        
-        // TODO: wrap the code above.
-        
-        let taskCell = HomeEventCell()
-        taskCell.updateValues(task: task, delegate: self)
-        tableView.addSubview(taskCell)
-        taskCell.snp.makeConstraints { (make) in
-            make.leading.equalTo(HomeViewController.taskCellLeading)
-            make.width.equalTo(HomeViewController.taskCellWidth * 0.98)
-            make.top.equalTo(taskCellTop)
-            make.height.equalTo(taskCellHeight)
+                
+        let eventCell = HomeEventCell()
+        tableView.addSubview(eventCell)
+        eventCell.updateValues(task: task, delegate: self)
+        eventCell.snp.makeConstraints { (make) in
+            make.leading.equalTo(HomeViewController.homeEventCellLeading)
+            make.width.equalTo(HomeViewController.homeEventCellWidth * 0.98)
+            make.top.equalTo(top)
+            make.height.equalTo(height)
         }
     }
 }
 
-extension HomeViewController {
-    // MARK: - Table view data source
+extension HomeViewController: UITableViewDataSource {
+    
+    // MARK: - UITableView Data Source
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 24
+        24
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: HomeViewController.cellReuseIdentifier)
+        let cell = tableView.dequeueReusableCell(withIdentifier: HomeViewController.timeSliceCellReuseIdentifier)
             as! TimeSliceCell
         
-        let h = indexPath.row
-        cell.updateValues(time: String(format: "%02d:00", h))
+        let hour = indexPath.row
+        cell.updateValues(hour: hour)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return HomeViewController.cellHeight
+        return HomeViewController.timeSliceCellHeight
     }
-    
-    
 }
 
-extension HomeViewController: TaskViewControllerDelegate {
-    func add(_ task: Task) {
+extension HomeViewController: UITableViewDelegate {
+    
+    // MARK: - UITableView Delegate
+}
+
+extension HomeViewController: EventEditViewControllerDelegate {
+    
+    // MARK: - EventEditViewController Delegate
+    
+    internal func add(_ task: Task) {
         tasks.append(task)
     }
     
-    func replace(_ oldTask: Task, with newTask: Task) {
-        guard let index = tasks.firstIndex(of: oldTask) else {
-            return
-        }
-        tasks.replaceSubrange(index...index, with: [newTask])
-        
-        if let displayController = navigationController?.topViewController as? EventDisplayViewController {
-            displayController.task = newTask
+    internal func replace(_ oldTask: Task, with newTask: Task) {
+        tasks.replace(oldTask, with: newTask)
+        // Updates the displaying event.
+        if let eventDisplayController = navigationController?.topViewController
+            as? EventDisplayViewController {
+            eventDisplayController.task = newTask
         }
     }
 }
 
-extension HomeViewController: TaskCellDelegate {
-    func showEvent(of task: Task) {
-        // https://stackoverflow.com/questions/28471164/how-to-set-back-button-text-in-swift
-        let backItem = UIBarButtonItem()
-        backItem.title = ""
-        navigationItem.backBarButtonItem = backItem
+extension HomeViewController: HomeEventCellDelegate {
+    
+    // MARK: - HomeEventCell Delegate
+    
+    internal func display(_ task: Task) {
+        navigationItem.hideBackBarButtonItem()
         
         let eventDisplayViewController = EventDisplayViewController()
         eventDisplayViewController.updateValues(task: task, delegate: self)
@@ -238,24 +249,24 @@ extension HomeViewController: TaskCellDelegate {
 }
 
 extension HomeViewController: EventDisplayViewControllerDelegate {
-    func editTask(_ task: Task) {
-        let taskViewController = EventEditViewController()
-        taskViewController.updateValues(task: task, delegate: self)
+    
+    // MARK: - EventDisplayViewController Delegate
+    
+    internal func edit(_ task: Task) {
+        let eventEditViewController = EventEditViewController()
+        eventEditViewController.updateValues(task: task, delegate: self)
         navigationController?.present(
-            EventEditNavController(rootViewController: taskViewController),
+            EventEditNavController(rootViewController: eventEditViewController),
             animated: true,
             completion: nil
         )
     }
     
-    func deleteTask(_ task: Task) {
-        guard let index = tasks.firstIndex(of: task) else {
-            return
-        }
-        tasks.remove(at: index)
+    internal func delete(_ task: Task) {
+        tasks.remove(task)
     }
     
-    func toggleCompletion(of task: Task) {
+    internal func toggleCompletion(of task: Task) {
         guard let index = tasks.firstIndex(of: task) else {
             return
         }
@@ -264,20 +275,23 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
 }
 
 extension HomeViewController {
-    static let cellHeight: CGFloat = 60
-    static let cellReuseIdentifier: String = "TimeSliceCell"
-    static let indexPathOfFirstCell = IndexPath(row: 0, section: 0)
+    static let timeSliceCellHeight: CGFloat = 60
+    static let timeSliceCellReuseIdentifier: String = "TimeSliceCell"
     
-    static var taskCellLeading: CGFloat {
+    static var homeEventCellLeading: CGFloat {
         CGFloat(
             TimeSliceCell.timeSliceLabelLeadingOffset
                 + TimeSliceCell.timeSliceLabelWidth
                 + TimeSliceCell.verticalSeparatorLeadingOffset
         )
     }
-    static var taskCellWidth: CGFloat {
-        CGFloat(UIScreen.main.bounds.width - HomeViewController.taskCellLeading)
+    static var homeEventCellWidth: CGFloat {
+        CGFloat(UIScreen.main.bounds.width - HomeViewController.homeEventCellLeading)
     }
  
     static let newEventButtonDiameter = 65
+}
+
+protocol HomeViewControllerDelegate {
+    var horizontalSeparatorYOffset: CGFloat { get }
 }

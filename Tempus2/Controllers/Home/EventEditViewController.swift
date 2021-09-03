@@ -1,5 +1,5 @@
 //
-//  TaskViewController.swift
+//  EventEditViewController.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/8/30.
@@ -10,33 +10,48 @@ import UIKit
 
 class EventEditViewController: UITableViewController {
     
-    var bothPickersInRowTwoAreHidden: Bool = true
-    var bothPickersInRowFourAreHidden: Bool = true {
-        didSet {
-            if !bothPickersInRowFourAreHidden {
+    private var bothPickersInRowTwoAreHidden: Bool {
+        guard startDateAndTimePickerCell != nil else {
+            return true
+        }
+        
+        return startDateAndTimePickerCell.datePicker.isHidden
+            && startDateAndTimePickerCell.timePicker.isHidden
+    }
+    private var bothPickersInRowFourAreHidden: Bool {
+        get {
+            guard endDateAndTimePickerCell != nil else {
+                return true
+            }
+            
+            return endDateAndTimePickerCell.datePicker.isHidden
+                && endDateAndTimePickerCell.timePicker.isHidden
+        }
+        set {
+            if !newValue {
                 removeSeparator(below: endDateAndTimeSelectionCell)
             }
         }
     }
     
-    var titleCell: EventCell!
-    var startDateAndTimeSelectionCell: DateAndTimeSelectionCell!
-    var startDateAndTimePickerCell: DateAndTimePickerCell!
-    var endDateAndTimeSelectionCell: DateAndTimeSelectionCell!
-    var endDateAndTimePickerCell: DateAndTimePickerCell!
-    var descriptionCell: EventCell!
+    private var titleCell: EventCell!
+    private var startDateAndTimeSelectionCell: DateAndTimeSelectionCell!
+    private var startDateAndTimePickerCell: DateAndTimePickerCell!
+    private var endDateAndTimeSelectionCell: DateAndTimeSelectionCell!
+    private var endDateAndTimePickerCell: DateAndTimePickerCell!
+    private var descriptionCell: EventCell!
     
     // MARK: - Models
     
-    var task: Task?
+    private var task: Task?
     
     // MARK: - Controllers
     
-    var delegate: HomeViewController!
+    private var delegate: HomeViewController!
     
     // MARK: - Views
     
-    var saveButton: UIBarButtonItem = {
+    private let saveButton: UIBarButtonItem = {
         let button = UIBarButtonItem(
             barButtonSystemItem: .save,
             target: nil,
@@ -45,7 +60,7 @@ class EventEditViewController: UITableViewController {
         return button
     }()
     
-    var cancelButton: UIBarButtonItem = {
+    private let cancelButton: UIBarButtonItem = {
         let button = UIBarButtonItem(
             barButtonSystemItem: .cancel,
             target: nil,
@@ -79,11 +94,20 @@ class EventEditViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         // https://stackoverflow.com/questions/27652227/add-placeholder-text-inside-uitextview-in-swift
         // "(Note: Since the OP wanted to have the text view selected as soon as the view loads, I incorporated text view selection into the above code. If this is not your desired behavior and you do not want the text view selected upon view load, remove the last two lines from the above code chunk.)"
-        
         titleCell.textView.becomeFirstResponder()
         if titleCell.content == titleCell.placeHolder {
             titleCell.textView.selectMostLeft()
         }
+    }
+    
+    // https://stackoverflow.com/questions/26390072/how-to-remove-border-of-the-navigationbar-in-swift
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.navigationBar.setBackgroundImage(nil, for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = nil
     }
     
     func updateViews() {
@@ -191,9 +215,9 @@ extension EventEditViewController {
                 ) as? EventCell
             
             let placeHolder = (task == nil || (task != nil && task!.title.isEmpty)) ? NSMutableAttributedString(string: "Add title") : nil
-            placeHolder?.setFont(font: Theme.title2Font)
+            placeHolder?.set(font: Theme.title2Font)
             let text = task != nil ? NSMutableAttributedString(string: task!.title) : nil
-            text?.setFont(font: Theme.title2Font)
+            text?.set(font: Theme.title2Font)
             
             titleCell.updateValues(
                 icon: "title",
@@ -274,9 +298,9 @@ extension EventEditViewController {
                 ) as? EventCell
             
             let placeHolder = (task == nil || (task != nil && task!.description.isEmpty)) ? NSMutableAttributedString(string: "Add description") : nil
-            placeHolder?.setFont(font: Theme.bodyFont)
+            placeHolder?.set(font: Theme.bodyFont)
             let text = task != nil ? NSMutableAttributedString(string: task!.description) : nil
-            text?.setFont(font: Theme.bodyFont)
+            text?.set(font: Theme.bodyFont)
             
             descriptionCell.updateValues(
                 icon: "description",
@@ -387,7 +411,7 @@ extension EventEditViewController: DateAndTimePickerDelegate {
         
         if startDateAndTimePickerCell.dateAndTime > endDateAndTimePickerCell.dateAndTime {
             let startDateAndTime = startDateAndTimePickerCell.dateAndTime
-            let newEndDateAndTime = Date(timeInterval: 40 * TimeInterval.secsOfOneMin, since: startDateAndTime)
+            let newEndDateAndTime = Date(timeInterval: 40 * TimeInterval.secsOfOneMinute, since: startDateAndTime)
             endDateAndTimePickerCell.dateAndTime = newEndDateAndTime
             
             endDateAndTimeSelectionCell.updateDateAndTime(with: newEndDateAndTime)
@@ -528,13 +552,6 @@ extension EventEditViewController: UITextViewDelegate {
 
 extension EventEditViewController: DateAndTimeSelectionCellDelegate {
     
-    func checkHidden() {
-        bothPickersInRowTwoAreHidden = startDateAndTimePickerCell.datePicker.isHidden
-            && startDateAndTimePickerCell.timePicker.isHidden
-        bothPickersInRowFourAreHidden = endDateAndTimePickerCell.datePicker.isHidden
-            && endDateAndTimePickerCell.timePicker.isHidden
-    }
-    
     // MARK: - DateAndTimeSelectionCell Delegate
     
     func displayOrHideDatePicker(inRow row: Int) {
@@ -547,7 +564,6 @@ extension EventEditViewController: DateAndTimeSelectionCellDelegate {
         theOtherPickerCell.datePicker.isHidden = true
         theOtherPickerCell.timePicker.isHidden = true
         
-        checkHidden()
         tableView.beginUpdates()
         tableView.endUpdates()
     }
@@ -562,13 +578,12 @@ extension EventEditViewController: DateAndTimeSelectionCellDelegate {
         theOtherPickerCell.datePicker.isHidden = true
         theOtherPickerCell.timePicker.isHidden = true
         
-        checkHidden()
         tableView.beginUpdates()
         tableView.endUpdates()
     }
 }
 
-protocol TaskViewControllerDelegate {
+protocol EventEditViewControllerDelegate {
     func add(_ task: Task)
     func replace(_ oldTask: Task, with newTask: Task)
 }
@@ -581,7 +596,7 @@ extension EventEditViewController {
         Date()
     }
     static var defaultEndDate: Date {
-        Date(timeInterval: 40 * TimeInterval.secsOfOneMin, since: EventEditViewController.defaultStartDate)
+        Date(timeInterval: 40 * TimeInterval.secsOfOneMinute, since: EventEditViewController.defaultStartDate)
     }
     
     static let eventCellReusableIdentifier = "EventCell"

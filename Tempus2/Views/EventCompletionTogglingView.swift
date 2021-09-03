@@ -1,5 +1,5 @@
 //
-//  EventCompletionSwitchingBottomView.swift
+//  EventCompletionTogglingView.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/9/2.
@@ -10,16 +10,31 @@ import UIKit
 
 class EventCompletionTogglingView: UIView {
 
+    internal var isCompleted: Bool! {
+        didSet {
+            var buttonTitle: String
+            if !isCompleted {
+                buttonTitle = "Mark completed"
+            } else {
+                buttonTitle = "Mark uncompleted"
+            }
+            completionTogglingButton.setTitle(
+                buttonTitle,
+                for: .normal
+            )
+        }
+    }
+    
     // MARK: - Controllers
     
-    var delegate: EventDisplayViewController!
+    private var delegate: EventDisplayViewController!
     
-    let horizontalSeparator: SeparationLine = {
-        let line = SeparationLine()
+    private let horizontalSeparator: Separator = {
+        let line = Separator()
         return line
     }()
     
-    let button: UIButton = {
+    private let completionTogglingButton: UIButton = {
         let button = UIButton()
         button.titleLabel?.font = Theme.footNoteFont
         button.setTitleColor(Theme.highlightedTextColor, for: .normal)
@@ -40,29 +55,35 @@ class EventCompletionTogglingView: UIView {
         super.init(coder: coder)
     }
     
-    func updateViews() {
+    private func updateViews() {
         backgroundColor = .white
         
         addSubview(horizontalSeparator)
-        addSubview(button)
-        button.addTarget(self, action: #selector(toggleCompletion), for: .touchUpInside)
+        
+        addSubview(completionTogglingButton)
+        completionTogglingButton.addTarget(
+            self,
+            action: #selector(toggleCompletion),
+            for: .touchUpInside
+        )
     }
 
-    func updateLayouts() {
+    private func updateLayouts() {
         horizontalSeparator.snp.makeConstraints { (make) in
             make.top.leading.trailing.equalToSuperview()
             make.height.equalTo(1)
         }
         
-        button.snp.makeConstraints { (make) in
+        completionTogglingButton.snp.makeConstraints { (make) in
             make.top.equalToSuperview().inset(10)
-            make.trailing.equalToSuperview()
+            make.trailing.equalToSuperview().inset(10)
             make.width.equalTo(130)
         }
     }
     
-    func updateValues(delegate: EventDisplayViewController) {
+    func updateValues(isCompleted: Bool = false, delegate: EventDisplayViewController) {
         self.delegate = delegate
+        self.isCompleted = isCompleted
     }
 }
 

@@ -81,11 +81,11 @@ class DateAndTimeSelectionCell: EventCell {
     }
     
     func updateDateAndTime(with dateAndTime: Date, font: UIFont = Theme.bodyFont) {  // TODO: wrap here
-        let dateRepr = NSMutableAttributedString(string: dateAndTime.localDateRepr)
-        dateRepr.setFont(font: font)
+        let dateRepr = NSMutableAttributedString(string: dateAndTime.dateRepr)
+        dateRepr.set(font: font)
         textView.attributedText = dateRepr
         
-        button.setTitle(dateAndTime.localTimeRepr, for: .normal)
+        button.setTitle(dateAndTime.timeRepr, for: .normal)
     }
 }
 

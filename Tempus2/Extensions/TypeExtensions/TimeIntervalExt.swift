@@ -9,11 +9,11 @@
 import Foundation
 
 extension TimeInterval {
-    static var secsOfOneMin: Double {
+    static var secsOfOneMinute: TimeInterval {
         return 60
     }
     
-    static var secsOfOneHour: Double {
-        return 60 * secsOfOneMin
+    static var secsOfOneHour: TimeInterval {
+        return 60 * secsOfOneMinute
     }
 }

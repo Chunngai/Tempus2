@@ -99,7 +99,7 @@ class EventDisplayViewController: UITableViewController {
         self.task = task
         self.delegate = delegate
         
-        setCompletionButtonTitle()
+        eventCompletionTogglingBottomView.isCompleted = task.isCompleted
     }
 }
 
@@ -121,9 +121,9 @@ extension EventDisplayViewController {
         switch row {
         case 0:
             let title = task.title
-            let time = task.dateInterval.start.localDateRepr
+            let time = task.dateInterval.start.dateRepr
                 + " · "
-                + task.dateInterval.start.localTimeRepr + "-" +  task.dateInterval.end.localTimeRepr
+                + task.dateInterval.start.timeRepr + "-" +  task.dateInterval.end.timeRepr
             let attributedText = NSMutableAttributedString(string: title  + "\n" + time)
             
             // TODO: wrap the code here.
@@ -185,45 +185,31 @@ extension EventDisplayViewController {
     // MARK: - Actions
     
     @objc func editButtonTapped() {
-        delegate.editTask(task)
+        delegate.edit(task)
     }
     
     @objc func deleteButtonTapped() {
-        delegate.deleteTask(task)
+        delegate.delete(task)
         navigationController?.popViewController(animated: true)
-    }
-}
-
-extension EventDisplayViewController {
-    func setCompletionButtonTitle() {
-        var completionTitle = ""
-        if !task.isCompleted {
-            completionTitle = "Mark completed"
-        } else {
-            completionTitle = "Mark uncompleted"
-        }
-        eventCompletionTogglingBottomView.button.setTitle(completionTitle, for: .normal)
     }
 }
 
 extension EventDisplayViewController: EventCompletionTogglingViewDelegate {
     func toggleCompletion() {
         self.task.isCompleted.toggle()
-        setCompletionButtonTitle()
+        eventCompletionTogglingBottomView.isCompleted = task.isCompleted
         
         self.delegate.toggleCompletion(of: task)
     }
 }
 
-extension EventDisplayViewController {
-//    static let cellHeight: CGFloat = EventEditViewController.cellHeight
-    
+extension EventDisplayViewController {    
     static let eventDisplayCellReusableIdentifier = "EventDisplayCell"
 }
 
 protocol EventDisplayViewControllerDelegate {
-    func editTask(_ task: Task)
-    func deleteTask(_ task: Task)
+    func edit(_ task: Task)
+    func delete(_ task: Task)
     
     func toggleCompletion(of task: Task)
 }

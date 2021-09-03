@@ -78,7 +78,7 @@ class EventCell: UITableViewCell {
         delegate: UITableViewController, row: Int  // Dynamic height stuff.
     ) {
         iconImageView.image = UIImage(imageLiteralResourceName: icon)
-            .setColor(color: Theme.weakTextColor)
+            .set(color: Theme.weakTextColor)
         
         if let placeHolder = placeHolder {
             textView.attributedText = placeHolder

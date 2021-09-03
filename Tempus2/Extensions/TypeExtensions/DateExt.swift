@@ -15,37 +15,47 @@ extension Date {
             .current
             .component(component, from: self)
     }
+}
+ 
+extension Date {
     
-    var localDateFormat: String {
+    private var dateFormat: String {
         "EEEE, MMM d"
     }
     
-    var localDateRepr: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = localDateFormat
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: TimeZone.current.secondsFromGMT())
-        return dateFormatter.string(from: self)
-    }
-    
-    var localTimeFormat: String {
+    private var timeFormat: String {
         return "HH:mm"
     }
     
-    var localTimeRepr: String {
+    private func makeRepr(with format: String) -> String {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = localTimeFormat
+        dateFormatter.dateFormat = format
         dateFormatter.timeZone = TimeZone(secondsFromGMT: TimeZone.current.secondsFromGMT())
         return dateFormatter.string(from: self)
+    }
+    
+    var dateRepr: String {
+        makeRepr(with: dateFormat)
+    }
+    
+    var timeRepr: String {
+        makeRepr(with: timeFormat)
     }
 }
 
 extension Date {
     // https://stackoverflow.com/questions/5979462/problem-combining-a-date-and-a-time-into-a-single-nsdate
     static func combine(date: Date, with time: Date) -> Date {
-        let calendar = NSCalendar.current
+        let calendar = Calendar.current
 
-        let dateComponents = calendar.dateComponents([.year, .month, .day], from: date)
-        let timeComponents = calendar.dateComponents([.hour, .minute, .second], from: time)
+        let dateComponents = calendar.dateComponents(
+            [.year, .month, .day],
+            from: date
+        )
+        let timeComponents = calendar.dateComponents(
+            [.hour, .minute, .second],
+            from: time
+        )
 
         var components = DateComponents()
         components.year = dateComponents.year
@@ -54,7 +64,6 @@ extension Date {
         components.hour = timeComponents.hour
         components.minute = timeComponents.minute
         components.second = timeComponents.second
-
         return calendar.date(from: components)!
     }
 }

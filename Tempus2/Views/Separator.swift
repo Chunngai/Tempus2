@@ -1,5 +1,5 @@
 //
-//  SeparationLine.swift
+//  Separator.swift
 //  Tempus2
 //
 //  Created by Sola on 2021/8/30.
@@ -8,7 +8,9 @@
 
 import UIKit
 
-class SeparationLine: UIView {
+class Separator: UIView {
+    
+    private let color: UIColor = .lightGray
     
     // MARK: - Init
     
@@ -22,8 +24,8 @@ class SeparationLine: UIView {
         super.init(coder: coder)
     }
     
-    func updateViews() {
-        backgroundColor = .lightGray
+    private func updateViews() {
+        backgroundColor = color
     }
     
     // MARK: - Drawing
@@ -35,11 +37,17 @@ class SeparationLine: UIView {
         }
         
         let path = CGMutablePath()
-        path.move(to: CGPoint(x: 0, y: 0))
-        path.addLine(to: CGPoint(x: frame.maxX, y: frame.minY))
+        path.move(to: CGPoint(
+            x: 0,
+            y: 0
+        ))
+        path.addLine(to: CGPoint(
+            x: frame.maxX,
+            y: frame.minY
+        ))
         
         context.addPath(path)
-        context.setStrokeColor(UIColor.lightText.cgColor)
+        context.setStrokeColor(color.cgColor)
         context.strokePath()
     }
 }
