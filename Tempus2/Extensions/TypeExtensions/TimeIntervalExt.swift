@@ -16,6 +16,10 @@ extension TimeInterval {
     static var secsOfOneHour: TimeInterval {
         return 60 * secsOfOneMinute
     }
+    
+    static var secsOfOneDay: TimeInterval {
+        return 24 * secsOfOneHour
+    }
 }
 
 extension TimeInterval {

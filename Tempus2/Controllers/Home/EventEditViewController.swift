@@ -47,10 +47,10 @@ class EventEditViewController: UITableViewController {
     private var oldDescription: String!
     private var isContentChanged: Bool {
         return oldTitle != titleCell.textView.content
-            || oldStartDateAndTime.dateRepr != startDateAndTimePickerCell.dateAndTime.dateRepr
-            || oldStartDateAndTime.timeRepr != startDateAndTimePickerCell.dateAndTime.timeRepr
-            || oldEndDateAndTime.dateRepr != endDateAndTimePickerCell.dateAndTime.dateRepr
-            || oldEndDateAndTime.timeRepr != endDateAndTimePickerCell.dateAndTime.timeRepr
+            || oldStartDateAndTime.dateRepr() != startDateAndTimePickerCell.dateAndTime.dateRepr()
+            || oldStartDateAndTime.timeRepr() != startDateAndTimePickerCell.dateAndTime.timeRepr()
+            || oldEndDateAndTime.dateRepr() != endDateAndTimePickerCell.dateAndTime.dateRepr()
+            || oldEndDateAndTime.timeRepr() != endDateAndTimePickerCell.dateAndTime.timeRepr()
             || oldDescription != descriptionCell.textView.content
     }
     

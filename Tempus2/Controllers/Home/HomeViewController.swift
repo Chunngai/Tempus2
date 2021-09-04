@@ -11,8 +11,19 @@ import UIKit
 class HomeViewController: UIViewController {
     
     private var horizontalSeparatorYOffset: CGFloat! {
-        (tableView.visibleCells.first as? TimeSliceCell)?
+        (tableView1.visibleCells.first as? TimeSliceCell)?
             .horizontalSeparatorYOffset
+    }
+    
+    private var width: CGFloat!
+    private var height: CGFloat!
+    private var currentDate: Date = Date() {
+        didSet {
+            // Update tasks of the specified date.
+            navigationItem.title = currentDate.dateRepr()
+            
+            loopScrollView.contentOffset = CGPoint(x: width, y: 0)
+        }
     }
     
     // MARK: - Models
@@ -24,7 +35,7 @@ class HomeViewController: UIViewController {
             }
             Task.save(tasks)
             
-            if tableView.frame != .zero {
+            if tableView1.frame != .zero {
                 drawTasks()
             }
         }
@@ -32,11 +43,42 @@ class HomeViewController: UIViewController {
     
     // MARK: - Views
     
-    private let tableView: UITableView = {
+    private var tableView0: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .white
         tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
+        tableView.tag = 1
         return tableView
+    }()
+    
+    private var tableView1: UITableView = {
+        let tableView = UITableView()
+        tableView.backgroundColor = .white
+        tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
+        tableView.tag = 2
+        return tableView
+    }()
+    
+    private var tableView2: UITableView = {
+        let tableView = UITableView()
+        tableView.backgroundColor = .white
+        tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
+        tableView.tag = 3
+        return tableView
+    }()
+    
+    private var loopScrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.showsVerticalScrollIndicator = false
+        scrollView.showsHorizontalScrollIndicator = false
+        scrollView.bounces = false
+        scrollView.isPagingEnabled = true
+        // https://stackoverflow.com/questions/11001938/uiscrollview-scrolling-in-only-one-direction-at-a-time/11002001
+        scrollView.isDirectionalLockEnabled = true
+        return scrollView
     }()
     
     private let newEventButtonShadowView: UIView = {
@@ -68,10 +110,23 @@ class HomeViewController: UIViewController {
         // Loads tasks.
         tasks = Task.load()
         
-        // Table view configs.
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(
+        loopScrollView.delegate = self
+        
+        tableView0.dataSource = self
+        tableView0.delegate = self
+        tableView0.register(
+            TimeSliceCell.classForCoder(),
+            forCellReuseIdentifier: HomeViewController.timeSliceCellReuseIdentifier
+        )
+        tableView1.dataSource = self
+        tableView1.delegate = self
+        tableView1.register(
+            TimeSliceCell.classForCoder(),
+            forCellReuseIdentifier: HomeViewController.timeSliceCellReuseIdentifier
+        )
+        tableView2.dataSource = self
+        tableView2.delegate = self
+        tableView2.register(
             TimeSliceCell.classForCoder(),
             forCellReuseIdentifier: HomeViewController.timeSliceCellReuseIdentifier
         )
@@ -81,29 +136,64 @@ class HomeViewController: UIViewController {
             action: #selector(newEventButtonTapped),
             for: .touchUpInside
         )
-        
-        updateViews()
-        updateLayouts()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         drawTasks()
     }
     
-    func updateViews() {
-        navigationItem.title = Date().dateRepr
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
         
-        view.addSubview(tableView)
+        width = view.frame.size.width
+        height = view.safeAreaLayoutGuide.layoutFrame.height
+        
+        self.updateViews()
+        self.updateLayouts()
+        
+        loopScrollView.contentSize = CGSize(width: width * 3.0, height: height)
+        loopScrollView.contentOffset = CGPoint(x: width, y: 0)
+    }
+    
+    func updateViews() {
+        navigationItem.title = Date().dateRepr()
+        
+        view.addSubview(loopScrollView)
+        loopScrollView.addSubview(tableView0)
+        loopScrollView.addSubview(tableView1)
+        loopScrollView.addSubview(tableView2)
         
         view.addSubview(newEventButtonShadowView)
         newEventButtonShadowView.addSubview(newEventButton)
     }
     
     func updateLayouts() {
-        tableView.snp.makeConstraints { (make) in
-            make.top.equalTo(view.safeAreaLayoutGuide)
-            make.bottom.equalTo(view.safeAreaLayoutGuide)
+        tableView0.snp.makeConstraints { (make) in
+            make.leading.equalToSuperview()
+            make.top.equalToSuperview()
             make.width.equalToSuperview()
+            make.height.equalToSuperview()
+        }
+        
+        tableView1.snp.makeConstraints { (make) in
+            make.leading.equalTo(width)
+            make.top.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalToSuperview()
+        }
+        
+        tableView2.snp.makeConstraints { (make) in
+            make.leading.equalTo(width * 2)
+            make.top.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalToSuperview()
+        }
+        
+        loopScrollView.snp.makeConstraints { (make) in
+            make.leading.equalTo(0)
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.width.equalToSuperview()
+            make.bottom.equalTo(view.safeAreaLayoutGuide)
         }
         
         newEventButtonShadowView.snp.makeConstraints { (make) in
@@ -115,6 +205,47 @@ class HomeViewController: UIViewController {
             make.edges.equalToSuperview()
             make.width.equalTo(HomeViewController.newEventButtonDiameter)
             make.height.equalTo(HomeViewController.newEventButtonDiameter)
+        }
+    }
+}
+
+extension HomeViewController: UIScrollViewDelegate {
+        
+    private func changeLoopViewVisibleContent(horizontalContentOffset: CGFloat) {
+        let ratio = horizontalContentOffset / width
+        if ratio <= HomeViewController.leftRatioThreshold {
+            // Switches to the previous day.
+            currentDate = currentDate.yesterday
+        }
+        if ratio >= HomeViewController.rightRatioThreshold {
+            // Switches to the following day.
+            currentDate = currentDate.tomorrow
+        }
+    }
+    
+    private func alignTableViewVerticalContentOffset() {
+        tableView0.contentOffset = tableView1.contentOffset
+        tableView2.contentOffset = tableView1.contentOffset
+    }
+    
+    // MARK: - UIScrollView Delegate
+    
+    internal func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        // Note that the scroll view delegate
+        // will affect both the loop view and
+        // the table views. And they should be
+        // processed separately.
+        
+        if scrollView.tag != 0 {
+            alignTableViewVerticalContentOffset()
+        } else {
+            changeLoopViewVisibleContent(horizontalContentOffset: scrollView.contentOffset.x)
+        }
+    }
+    
+    internal func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+            scrollViewDidEndDecelerating(scrollView)
         }
     }
 }
@@ -140,7 +271,7 @@ extension HomeViewController {
     
     private func drawTasks() {
         // Clears current event cells.
-        for subView in tableView.subviews {
+        for subView in tableView1.subviews {
             if let homeEventCell = subView as? HomeEventCell {
                 homeEventCell.removeFromSuperview()
             }
@@ -171,7 +302,7 @@ extension HomeViewController {
         }
                 
         let eventCell = HomeEventCell()
-        tableView.addSubview(eventCell)
+        tableView1.addSubview(eventCell)
         eventCell.updateValues(task: task, delegate: self)
         eventCell.snp.makeConstraints { (make) in
             make.leading.equalTo(HomeViewController.homeEventCellLeading)
@@ -299,6 +430,9 @@ extension HomeViewController {
     }
  
     static let newEventButtonDiameter = 65
+    
+    static let leftRatioThreshold: CGFloat = 0.7
+    static let rightRatioThreshold: CGFloat = 1.3
 }
 
 protocol HomeViewControllerYOffsetDelegate {

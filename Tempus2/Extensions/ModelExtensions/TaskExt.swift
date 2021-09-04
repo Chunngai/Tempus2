@@ -33,7 +33,7 @@ extension Task {
     }
     
     var timeReprText: String {
-        return dateInterval.start.timeRepr + "-" + dateInterval.end.timeRepr
+        return dateInterval.start.timeRepr() + "-" + dateInterval.end.timeRepr()
     }
     
     var timeAndDurationReprText: String {
@@ -42,7 +42,7 @@ extension Task {
     }
     
     var dateAndTimeAndDurationReprText: String {
-        return dateInterval.start.dateRepr
+        return dateInterval.start.dateRepr()
             + " · "
             + timeAndDurationReprText
     }

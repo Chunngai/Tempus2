@@ -19,11 +19,11 @@ extension Date {
  
 extension Date {
     
-    private var dateFormat: String {
+    private var defaultDateFormat: String {
         "EEEE, MMM d"
     }
     
-    private var timeFormat: String {
+    private var defaultTimeFormat: String {
         return "HH:mm"
     }
     
@@ -34,12 +34,14 @@ extension Date {
         return dateFormatter.string(from: self)
     }
     
-    var dateRepr: String {
-        makeRepr(with: dateFormat)
+    func dateRepr(ofFormat format: String = "") -> String {
+        let dateFormat = format.isEmpty ? defaultDateFormat : format
+        return makeRepr(with: dateFormat)
     }
     
-    var timeRepr: String {
-        makeRepr(with: timeFormat)
+    func timeRepr(ofFormat format: String = "") -> String {
+        let timeFormat = format.isEmpty ? defaultTimeFormat : format
+        return makeRepr(with: timeFormat)
     }
 }
 
@@ -65,5 +67,15 @@ extension Date {
         components.minute = timeComponents.minute
         components.second = timeComponents.second
         return calendar.date(from: components)!
+    }
+}
+
+extension Date {
+    var yesterday: Date {
+        Date(timeInterval: -TimeInterval.secsOfOneDay, since: self)
+    }
+    
+    var tomorrow: Date {
+        Date(timeInterval: TimeInterval.secsOfOneDay, since: self)
     }
 }
