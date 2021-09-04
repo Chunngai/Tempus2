@@ -19,6 +19,7 @@ class HomeViewController: UIViewController {
     private var height: CGFloat!
     private var currentDate: Date = Date() {
         didSet {
+            // For loop view.
             drawTasks()
             loopScrollView.contentOffset = CGPoint(x: width, y: 0)
         }
@@ -34,9 +35,14 @@ class HomeViewController: UIViewController {
             Task.save(tasks)
             
             if tableView1.frame != .zero {
+                // For event adding, deleting and editing.
                 drawTasks()
             }
         }
+    }
+    
+    private var tasksOfToday: [Task] {
+        return tasks.tasksOf(Date())
     }
     
     private var tasksOfLastDate: [Task] {
@@ -245,8 +251,6 @@ extension HomeViewController: UIScrollViewDelegate {
     
     internal func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         // When the Today button is tapped.
-//        loopScrollView.contentOffset = CGPoint(x: width, y: 0)
-        
         currentDate = Date()
     }
     
@@ -279,12 +283,20 @@ extension HomeViewController {
         }
         
         if currentDate < Date() {
+            // The following two lines of code
+            // make the transition more natural.
+            clearEventCells(in: tableView2)
+            draw(tasksOfToday, in: tableView2)
+            
             // https://stackoverflow.com/questions/2234875/programmatically-scroll-a-uiscrollview
             loopScrollView.setContentOffset(
                 CGPoint(x: 2 * width, y: 0),
                 animated: true
             )
         } else {
+            clearEventCells(in: tableView0)
+            draw(tasksOfToday, in: tableView0)
+            
             loopScrollView.setContentOffset(
                 CGPoint(x: 0, y: 0),
                 animated: true
@@ -307,6 +319,15 @@ extension HomeViewController {
     
     // MARK: - Utils
     
+    private func clearEventCells(in tableView: UITableView) {
+        // Clears current event cells.
+        for subView in tableView.subviews {
+            if let homeEventCell = subView as? HomeEventCell {
+                homeEventCell.removeFromSuperview()
+            }
+        }
+    }
+    
     private func drawTasks() {
         navigationItem.title = currentDate.dateRepr()
         
@@ -316,12 +337,7 @@ extension HomeViewController {
     }
     
     private func draw(_ tasksToDraw: [Task], in tableViewOfTasksToDraw: UITableView) {
-        // Clears current event cells.
-        for subView in tableViewOfTasksToDraw.subviews {
-            if let homeEventCell = subView as? HomeEventCell {
-                homeEventCell.removeFromSuperview()
-            }
-        }
+        clearEventCells(in: tableViewOfTasksToDraw)
         for task in tasksToDraw {
             draw(task, in: tableViewOfTasksToDraw)
         }
