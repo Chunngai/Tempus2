@@ -19,9 +19,7 @@ class HomeViewController: UIViewController {
     private var height: CGFloat!
     private var currentDate: Date = Date() {
         didSet {
-            // Update tasks of the specified date.
-            navigationItem.title = currentDate.dateRepr()
-            
+            drawTasks()
             loopScrollView.contentOffset = CGPoint(x: width, y: 0)
         }
     }
@@ -39,6 +37,18 @@ class HomeViewController: UIViewController {
                 drawTasks()
             }
         }
+    }
+    
+    private var tasksOfLastDate: [Task] {
+        return tasks.tasksOf(currentDate.yesterday)
+    }
+    
+    private var tasksOfCurrentDate: [Task] {
+        return tasks.tasksOf(currentDate)
+    }
+    
+    private var tasksOfNextDate: [Task] {
+        return tasks.tasksOf(currentDate.tomorrow)
     }
     
     // MARK: - Views
@@ -110,6 +120,13 @@ class HomeViewController: UIViewController {
         // Loads tasks.
         tasks = Task.load()
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "Today",
+            style: .plain,
+            target: self,
+            action: #selector(todayButtonTapped)
+        )
+        
         loopScrollView.delegate = self
         
         tableView0.dataSource = self
@@ -156,8 +173,6 @@ class HomeViewController: UIViewController {
     }
     
     func updateViews() {
-        navigationItem.title = Date().dateRepr()
-        
         view.addSubview(loopScrollView)
         loopScrollView.addSubview(tableView0)
         loopScrollView.addSubview(tableView1)
@@ -214,11 +229,9 @@ extension HomeViewController: UIScrollViewDelegate {
     private func changeLoopViewVisibleContent(horizontalContentOffset: CGFloat) {
         let ratio = horizontalContentOffset / width
         if ratio <= HomeViewController.leftRatioThreshold {
-            // Switches to the previous day.
             currentDate = currentDate.yesterday
         }
         if ratio >= HomeViewController.rightRatioThreshold {
-            // Switches to the following day.
             currentDate = currentDate.tomorrow
         }
     }
@@ -230,12 +243,17 @@ extension HomeViewController: UIScrollViewDelegate {
     
     // MARK: - UIScrollView Delegate
     
-    internal func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        // Note that the scroll view delegate
-        // will affect both the loop view and
-        // the table views. And they should be
-        // processed separately.
+    internal func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        // When the Today button is tapped.
+//        loopScrollView.contentOffset = CGPoint(x: width, y: 0)
         
+        currentDate = Date()
+    }
+    
+    internal func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        // Note that the scroll view delegate will affect both the loop view and
+        // the table views. And they should be processed separately.
+                
         if scrollView.tag != 0 {
             alignTableViewVerticalContentOffset()
         } else {
@@ -244,6 +262,7 @@ extension HomeViewController: UIScrollViewDelegate {
     }
     
     internal func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+                
         if !decelerate {
             scrollViewDidEndDecelerating(scrollView)
         }
@@ -253,6 +272,25 @@ extension HomeViewController: UIScrollViewDelegate {
 extension HomeViewController {
     
     // MARK: - Actions
+    
+    @objc private func todayButtonTapped() {
+        if Calendar.current.isDateInToday(currentDate) {
+            return
+        }
+        
+        if currentDate < Date() {
+            // https://stackoverflow.com/questions/2234875/programmatically-scroll-a-uiscrollview
+            loopScrollView.setContentOffset(
+                CGPoint(x: 2 * width, y: 0),
+                animated: true
+            )
+        } else {
+            loopScrollView.setContentOffset(
+                CGPoint(x: 0, y: 0),
+                animated: true
+            )
+        }
+    }
     
     @objc private func newEventButtonTapped() {
         let taskViewController = EventEditViewController()
@@ -270,19 +308,26 @@ extension HomeViewController {
     // MARK: - Utils
     
     private func drawTasks() {
+        navigationItem.title = currentDate.dateRepr()
+        
+        draw(tasksOfLastDate, in: tableView0)
+        draw(tasksOfCurrentDate, in: tableView1)
+        draw(tasksOfNextDate, in: tableView2)
+    }
+    
+    private func draw(_ tasksToDraw: [Task], in tableViewOfTasksToDraw: UITableView) {
         // Clears current event cells.
-        for subView in tableView1.subviews {
+        for subView in tableViewOfTasksToDraw.subviews {
             if let homeEventCell = subView as? HomeEventCell {
                 homeEventCell.removeFromSuperview()
             }
         }
-        
-        for task in tasks {
-            draw(task)
+        for task in tasksToDraw {
+            draw(task, in: tableViewOfTasksToDraw)
         }
     }
     
-    private func draw(_ task: Task) {
+    private func draw(_ task: Task, in tableViewOfTasksToDraw: UITableView) {
         let startH = task.dateInterval.start.getComponent(.hour)
         let endH = task.dateInterval.end.getComponent(.hour)
         let hs = endH - startH
@@ -302,7 +347,7 @@ extension HomeViewController {
         }
                 
         let eventCell = HomeEventCell()
-        tableView1.addSubview(eventCell)
+        tableViewOfTasksToDraw.addSubview(eventCell)
         eventCell.updateValues(task: task, delegate: self)
         eventCell.snp.makeConstraints { (make) in
             make.leading.equalTo(HomeViewController.homeEventCellLeading)
@@ -331,6 +376,14 @@ extension HomeViewController: UITableViewDataSource {
         
         let hour = indexPath.row
         cell.updateValues(hour: hour)
+        
+//        if tableView.tag == 1 {
+//            cell.backgroundColor = .red
+//        } else if tableView.tag == 2 {
+//            cell.backgroundColor = .yellow
+//        } else {
+//            cell.backgroundColor = .green
+//        }
         
         return cell
     }
@@ -362,7 +415,7 @@ extension HomeViewController: EventEditViewControllerDelegate {
         }
     }
     
-    internal func findTaskConflicted(with newTask: Task) -> Task? {
+    internal func taskConflicted(with newTask: Task) -> Task? {
         for task in tasks {
             if task.dateInterval.intersects(newTask.dateInterval) {
                 return task

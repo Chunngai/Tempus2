@@ -10,6 +10,21 @@ import Foundation
 import UIKit
 
 extension Array where Element == Task {
+    func tasksOf(_ date: Date) -> [Task] {
+        return self.compactMap { (task) -> Task? in
+            if Calendar.current.isDate(
+                task.dateInterval.start,
+                inSameDayAs: date
+                ) {
+                return task
+            } else {
+                return nil
+            }
+        }
+    }
+}
+
+extension Array where Element == Task {
     mutating func replace(_ oldTask: Task, with newTask: Task) {
         guard let oldTaskIndex = self.firstIndex(of: oldTask) else {
             return
@@ -33,12 +48,15 @@ extension Task {
     }
     
     var timeReprText: String {
-        return dateInterval.start.timeRepr() + "-" + dateInterval.end.timeRepr()
+        return dateInterval.start.timeRepr()
+            + "-"
+            + dateInterval.end.timeRepr()
     }
     
     var timeAndDurationReprText: String {
         return timeReprText
-            + " (\(dateInterval.duration.durationRepr))"
+            + " "
+            + "(\(dateInterval.duration.durationRepr))"
     }
     
     var dateAndTimeAndDurationReprText: String {
@@ -49,7 +67,9 @@ extension Task {
     
     var homeEventLabelText: NSAttributedString {
         let attributedTitle = NSMutableAttributedString(
-            string: titleReprText + "\n" + timeAndDurationReprText
+            string: titleReprText
+                + "\n"
+                + timeAndDurationReprText
         )
         if isCompleted {
             attributedTitle.setDeleteLine()

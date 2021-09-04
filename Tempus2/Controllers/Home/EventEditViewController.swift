@@ -248,7 +248,7 @@ extension EventEditViewController {
         if let task = task {
             delegate.replace(task, with: newTask)
         } else {
-            if let conflictedTask = delegate.findTaskConflicted(with: newTask) {
+            if let conflictedTask = delegate.taskConflicted(with: newTask) {
                 displayDateIntervalConflictWarning(conflictedTask: conflictedTask)
                 return
             } else {
@@ -551,7 +551,7 @@ protocol EventEditViewControllerDelegate {
         
     func add(_ task: Task)
     func replace(_ oldTask: Task, with newTask: Task)
-    func findTaskConflicted(with newTask: Task) -> Task?
+    func taskConflicted(with newTask: Task) -> Task?
 }
 
 extension EventEditViewController {
