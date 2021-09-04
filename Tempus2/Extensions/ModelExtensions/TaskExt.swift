@@ -65,16 +65,24 @@ extension Task {
             + timeAndDurationReprText
     }
     
-    var homeEventLabelText: NSAttributedString {
+    private func homeEventLabelText(with separator: String) -> NSAttributedString {
         let attributedTitle = NSMutableAttributedString(
             string: titleReprText
-                + "\n"
+                + separator
                 + timeAndDurationReprText
         )
         if isCompleted {
             attributedTitle.setDeleteLine()
         }
         return attributedTitle
+    }
+    
+    var homeEventMultilineLabelText: NSAttributedString {
+        return homeEventLabelText(with: "\n")
+    }
+    
+    var homeEventOneLineLabelText: NSAttributedString {
+        return homeEventLabelText(with: " ")
     }
     
     private var uncompletedTaskTitleAttrs: [NSAttributedString.Key: Any] {

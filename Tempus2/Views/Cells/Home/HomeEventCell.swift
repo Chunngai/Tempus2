@@ -67,15 +67,17 @@ class HomeEventCell: UIView {
         
         label.snp.makeConstraints { (make) in
             make.leading.trailing.equalToSuperview().inset(10)
-            make.top.equalToSuperview().inset(5)
+            make.centerY.equalToSuperview()
         }
     }
     
-    func updateValues(task: Task, delegate: HomeViewController) {
+    func updateValues(task: Task, delegate: HomeViewController, inOneLine: Bool) {
         self.task = task
         self.delegate = delegate
         
-        label.attributedText = task.homeEventLabelText
+        label.attributedText = inOneLine
+            ? task.homeEventOneLineLabelText
+            : task.homeEventMultilineLabelText
     }
 }
 
