@@ -164,6 +164,7 @@ class HomeViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         drawTasks()
+        drawCurrentTimeIndicator()
     }
     
     override func viewDidLayoutSubviews() {
@@ -546,6 +547,34 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
             return
         }
         tasks[index].isCompleted.toggle()
+    }
+}
+
+extension HomeViewController {
+    
+    internal func drawCurrentTimeIndicator() {
+        guard horizontalSeparatorYOffset != nil else {
+            return
+        }
+        
+        for subView in tableView1.subviews {
+            if let currentTimeIndicator = subView as? CurrentTimeIndicator {
+                currentTimeIndicator.removeFromSuperview()
+            }
+        }
+        
+        let top = HomeViewController.timeSliceCellHeight
+            * (CGFloat(Date().getComponent(.hour)) + CGFloat(Date().getComponent(.minute)) / CGFloat(TimeInterval.secsOfOneMinute))
+            + horizontalSeparatorYOffset / 2
+        
+        let currentTimeIndicator = CurrentTimeIndicator()
+        tableView1.addSubview(currentTimeIndicator)
+        currentTimeIndicator.snp.makeConstraints { (make) in
+            make.leading.equalTo(HomeViewController.homeEventCellLeading - CurrentTimeIndicator.circleDiameter / 2)
+            make.width.equalTo(HomeViewController.homeEventCellWidth * 0.98)
+            make.top.equalTo(top)
+            make.height.equalTo(CurrentTimeIndicator.circleDiameter)
+        }
     }
 }
 

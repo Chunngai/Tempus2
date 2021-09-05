@@ -11,11 +11,12 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    let homeViewController = HomeViewController()
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
                 
         self.window = UIWindow(windowScene: scene as! UIWindowScene)
-        let homeViewController = HomeViewController()
         let homeNavController = HomeNavController(rootViewController: homeViewController)
         self.window?.rootViewController = homeNavController
         self.window?.makeKeyAndVisible()
@@ -43,6 +44,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
+        
+        homeViewController.drawCurrentTimeIndicator()
+        
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

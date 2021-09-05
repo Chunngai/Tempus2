@@ -48,6 +48,7 @@
 		FFCB837B26E1D5E9004A4F53 /* UINavigationBarExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB837A26E1D5E9004A4F53 /* UINavigationBarExt.swift */; };
 		FFCB837D26E1EC60004A4F53 /* EventBaseCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB837C26E1EC60004A4F53 /* EventBaseCell.swift */; };
 		FFEA451226E228FB00357126 /* UITableViewCellExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEA451126E228FB00357126 /* UITableViewCellExt.swift */; };
+		FFEA451E26E4954100357126 /* CurrentTimeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEA451D26E4954100357126 /* CurrentTimeIndicator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -148,6 +149,7 @@
 		FFCB837A26E1D5E9004A4F53 /* UINavigationBarExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBarExt.swift; sourceTree = "<group>"; };
 		FFCB837C26E1EC60004A4F53 /* EventBaseCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventBaseCell.swift; sourceTree = "<group>"; };
 		FFEA451126E228FB00357126 /* UITableViewCellExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITableViewCellExt.swift; sourceTree = "<group>"; };
+		FFEA451D26E4954100357126 /* CurrentTimeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentTimeIndicator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -343,6 +345,7 @@
 				FF4CAE7826DCE505009BB111 /* Separator.swift */,
 				FF50602426E0AB2200BF1F50 /* EventCompletionTogglingView.swift */,
 				FFCB837826E1D132004A4F53 /* TextViewWithPlaceHolder.swift */,
+				FFEA451D26E4954100357126 /* CurrentTimeIndicator.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -678,6 +681,7 @@
 			files = (
 				FF6A0A2D26DBEB4B00A6E09A /* HomeNavController.swift in Sources */,
 				FF6EED7626DD4787009483A2 /* HomeViewController.swift in Sources */,
+				FFEA451E26E4954100357126 /* CurrentTimeIndicator.swift in Sources */,
 				FF50602526E0AB2200BF1F50 /* EventCompletionTogglingView.swift in Sources */,
 				FF4CAE9F26DD2870009BB111 /* EventEditViewController.swift in Sources */,
 				FF50602126DFDA8200BF1F50 /* NSAttributedStringExt.swift in Sources */,

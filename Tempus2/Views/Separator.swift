@@ -10,22 +10,23 @@ import UIKit
 
 class Separator: UIView {
     
-    private let color: UIColor = .lightGray
+    private var color: UIColor!
     
     // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        updateViews()
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
     
-    func updateViews() {
-        backgroundColor = color
+    convenience init(color: UIColor = .lightGray) {
+        self.init(frame: .zero)
+        
+        self.color = color
+        backgroundColor = self.color
     }
     
     // MARK: - Drawing
