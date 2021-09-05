@@ -21,6 +21,7 @@ class HomeViewController: UIViewController {
         didSet {
             // For loop view.
             drawTasks()
+            drawCurrentTimeIndicator()
             loopScrollView.contentOffset = CGPoint(x: width, y: 0)
         }
     }
@@ -119,6 +120,8 @@ class HomeViewController: UIViewController {
         return button
     }()
     
+    private let currentTimeIndicator = CurrentTimeIndicator()
+
     // MARK: - Init
     
     override func viewDidLoad() {
@@ -578,22 +581,29 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
 extension HomeViewController {
     
     internal func drawCurrentTimeIndicator() {
+        currentTimeIndicator.removeFromSuperview()
+        
         guard horizontalSeparatorYOffset != nil else {
             return
-        }
-        
-        for subView in tableView1.subviews {
-            if let currentTimeIndicator = subView as? CurrentTimeIndicator {
-                currentTimeIndicator.removeFromSuperview()
-            }
         }
         
         let top = HomeViewController.timeSliceCellHeight
             * (CGFloat(Date().getComponent(.hour)) + CGFloat(Date().getComponent(.minute)) / CGFloat(TimeInterval.secsOfOneMinute))
             + horizontalSeparatorYOffset / 2
         
-        let currentTimeIndicator = CurrentTimeIndicator()
-        tableView1.addSubview(currentTimeIndicator)
+        // The following snippet of code makes the transition more natural.
+        var tableViewToDraw: UITableView
+        if Calendar.current.isDateInToday(currentDate.yesterday) {
+            tableViewToDraw = tableView0
+        } else if Calendar.current.isDateInToday(currentDate) {
+            tableViewToDraw = tableView1
+        } else if Calendar.current.isDateInToday(currentDate.tomorrow) {
+            tableViewToDraw = tableView2
+        } else {
+            return
+        }
+        
+        tableViewToDraw.addSubview(currentTimeIndicator)
         currentTimeIndicator.snp.makeConstraints { (make) in
             make.leading.equalTo(HomeViewController.homeEventCellLeading - CurrentTimeIndicator.circleDiameter / 2)
             make.width.equalTo(HomeViewController.homeEventCellWidth * 0.98)

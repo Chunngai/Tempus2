@@ -71,8 +71,7 @@ class CalendarViewController: UIViewController {
     
     func updateLayouts() {
         calendar.snp.makeConstraints { (make) in
-            make.top.leading.trailing.equalTo(view.safeAreaLayoutGuide)
-            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(1)
+            make.top.bottom.leading.trailing.equalTo(view.safeAreaLayoutGuide)
         }
     }
     
@@ -123,7 +122,8 @@ extension CalendarViewController: JTACMonthViewDelegate {
         cell.updateValues(
             date: date,
             cellState: cellState,
-            hasTasks: hasTasks
+            hasTasks: hasTasks,
+            shouldDrawBottomLine: indexPath.row >= 35 && indexPath.row <= 41
         )
     }
     

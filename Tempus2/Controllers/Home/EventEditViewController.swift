@@ -96,14 +96,6 @@ class EventEditViewController: UITableViewController {
         let _ = titleCell.textView.becomeFirstResponder()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.navigationBar.hideBarSeparator()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        navigationController?.navigationBar.showBarSeparator()
-    }
-    
     func updateViews() {
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             barButtonSystemItem: .cancel,

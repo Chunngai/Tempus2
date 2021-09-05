@@ -15,21 +15,25 @@ class CalendarCell: DateCell {
         let separator = Separator()
         return separator
     }()
+    private var topHorizontalSeparatorWidth: CGFloat = CalendarCell.lineWidth
     
     private var bottomHorizontalSeparator: Separator = {
         let separator = Separator()
         return separator
     }()
+    private var bottomHorizontalSeparatorWidth: CGFloat = CalendarCell.lineWidth
     
     private var leadingVerticalSeparator: Separator = {
         let separator = Separator()
         return separator
     }()
+    private var leadingVerticalSeparatorWidth: CGFloat = CalendarCell.lineWidth
     
     private var trailingVerticalSeparator: Separator = {
         let separator = Separator()
         return separator
     }()
+    private var trailingVerticalSeparatorWidth: CGFloat = CalendarCell.lineWidth
     
     private var havingTasksIndicator: UILabel = {
         let label = UILabel()
@@ -69,23 +73,25 @@ class CalendarCell: DateCell {
         }
         
         topHorizontalSeparator.snp.makeConstraints { (make) in
-            make.leading.trailing.top.equalToSuperview()
-            make.height.equalTo(0.3)
+            make.leading.trailing.equalToSuperview()
+            make.top.equalToSuperview().inset(topHorizontalSeparatorWidth)
+            make.height.equalTo(topHorizontalSeparatorWidth)
         }
         
         bottomHorizontalSeparator.snp.makeConstraints { (make) in
-            make.leading.trailing.bottom.equalToSuperview()
-            make.height.equalTo(0.3)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().inset(bottomHorizontalSeparatorWidth)
+            make.height.equalTo(bottomHorizontalSeparatorWidth)
         }
         
         leadingVerticalSeparator.snp.makeConstraints { (make) in
             make.leading.top.bottom.equalToSuperview()
-            make.width.equalTo(0.3)
+            make.width.equalTo(leadingVerticalSeparatorWidth)
         }
         
         trailingVerticalSeparator.snp.makeConstraints { (make) in
             make.trailing.top.bottom.equalToSuperview()
-            make.width.equalTo(0.3)
+            make.width.equalTo(trailingVerticalSeparatorWidth)
         }
         
         havingTasksIndicator.snp.makeConstraints { (make) in
@@ -96,7 +102,7 @@ class CalendarCell: DateCell {
         }
     }
     
-    func updateValues(date: Date, cellState: CellState, hasTasks: Bool) {
+    func updateValues(date: Date, cellState: CellState, hasTasks: Bool, shouldDrawBottomLine: Bool) {
         super.updateValues(date: date, cellState: cellState)
         
         dateLabel.text = cellState.text
@@ -109,9 +115,16 @@ class CalendarCell: DateCell {
         } else {
             havingTasksIndicator.backgroundColor = contentView.backgroundColor
         }
+        
+        if !shouldDrawBottomLine {
+            bottomHorizontalSeparator.isHidden = true
+        } else {
+            bottomHorizontalSeparator.isHidden = false
+        }
     }
 }
 
 extension CalendarCell {
     static let indicatorDiameter: CGFloat = 9
+    static let lineWidth: CGFloat = 0.1
 }
