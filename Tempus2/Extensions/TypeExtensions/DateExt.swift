@@ -27,6 +27,10 @@ extension Date {
         return "HH:mm"
     }
     
+    private var defaultMonthFormat: String {
+        return "MMMM"
+    }
+    
     private func makeRepr(with format: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format
@@ -42,6 +46,11 @@ extension Date {
     func timeRepr(ofFormat format: String = "") -> String {
         let timeFormat = format.isEmpty ? defaultTimeFormat : format
         return makeRepr(with: timeFormat)
+    }
+    
+    func monthRepr(ofFormat format: String = "") -> String {
+        let monthFormat = format.isEmpty ? defaultMonthFormat : format
+        return makeRepr(with: monthFormat)
     }
 }
 

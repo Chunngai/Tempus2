@@ -14,19 +14,15 @@ class Separator: UIView {
     
     // MARK: - Init
     
-    override init(frame: CGRect) {
+    init(frame: CGRect = .zero, color: UIColor = .lightGray) {
         super.init(frame: frame)
+        
+        self.color = color
+        backgroundColor = self.color
     }
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-    }
-    
-    convenience init(color: UIColor = .lightGray) {
-        self.init(frame: .zero)
-        
-        self.color = color
-        backgroundColor = self.color
     }
     
     // MARK: - Drawing

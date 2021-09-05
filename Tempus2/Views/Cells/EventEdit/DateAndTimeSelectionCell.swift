@@ -44,7 +44,7 @@ class DateAndTimeSelectionCell: EventBaseCell {
     private let timeButton: UIButton = {
         let button = UIButton()
         button.setTitleColor(Theme.textColor, for: .normal)
-        button.contentHorizontalAlignment = .center
+        button.contentHorizontalAlignment = .left
         button.titleLabel?.font = Theme.bodyFont
         button.sizeToFit()
         return button

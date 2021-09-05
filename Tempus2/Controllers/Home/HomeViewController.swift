@@ -127,6 +127,12 @@ class HomeViewController: UIViewController {
         // Loads tasks.
         tasks = Task.load()
         
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: HomeViewController.calendarIconName),
+            style: .plain,
+            target: self,
+            action: #selector(calendarButtonTapped)
+        )
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             title: "Today",
             style: .plain,
@@ -160,6 +166,14 @@ class HomeViewController: UIViewController {
             action: #selector(newEventButtonTapped),
             for: .touchUpInside
         )
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.hideBarSeparator()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        navigationController?.navigationBar.showBarSeparator()
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -278,6 +292,17 @@ extension HomeViewController: UIScrollViewDelegate {
 extension HomeViewController {
     
     // MARK: - Actions
+    
+    @objc private func calendarButtonTapped() {
+        navigationItem.hideBackBarButtonItem()
+        
+        let calendarViewController = CalendarViewController()
+        calendarViewController.updateValues(date: currentDate, delegate: self)
+        navigationController?.pushViewController(
+            calendarViewController,
+            animated: true
+        )
+    }
     
     @objc private func todayButtonTapped() {
         if Calendar.current.isDateInToday(currentDate) {
@@ -578,6 +603,19 @@ extension HomeViewController {
     }
 }
 
+extension HomeViewController: CalendarViewControllerDelegate {
+    
+    // CalendarViewController Delegate
+    
+    internal func updateCurrentDate(to date: Date) {
+        currentDate = date
+    }
+    
+    internal func containsTasksOf(date: Date) -> Bool {
+        return !tasks.tasksOf(date).isEmpty
+    }
+}
+
 extension HomeViewController {
     static let timeSliceCellHeight: CGFloat = 60
     static let timeSliceCellReuseIdentifier: String = "TimeSliceCell"
@@ -597,6 +635,8 @@ extension HomeViewController {
     
     static let leftRatioThreshold: CGFloat = 0.7
     static let rightRatioThreshold: CGFloat = 1.3
+    
+    static let calendarIconName = "calendar.circle"
 }
 
 protocol HomeViewControllerYOffsetDelegate {

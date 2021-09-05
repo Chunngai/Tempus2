@@ -13,7 +13,7 @@ class DateCell: JTACDayCell {
     
     // MARK: - Views
     
-    private let dateLabel: UILabel = {
+    let dateLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = Theme.footNoteFont
@@ -26,7 +26,9 @@ class DateCell: JTACDayCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         updateViews()
+        updateLayouts()
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -35,7 +37,9 @@ class DateCell: JTACDayCell {
     
     func updateViews() {
         contentView.addSubview(dateLabel)
-        
+    }
+    
+    func updateLayouts() {
         dateLabel.snp.makeConstraints { (make) in
             make.centerX.centerY.equalToSuperview()
             make.width.height.equalTo(DateCell.diameter)

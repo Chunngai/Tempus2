@@ -23,12 +23,12 @@ class TimeSliceCell: UITableViewCell {
     }()
     
     private var horizontalSeparator: Separator = {
-        let separator = Separator(color: .lightGray)
+        let separator = Separator()
         return separator
     }()
     
     private var verticalSeparator: Separator = {
-        let separator = Separator(color: .lightGray)
+        let separator = Separator()
         return separator
     }()
     
