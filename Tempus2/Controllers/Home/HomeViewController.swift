@@ -33,6 +33,7 @@ class HomeViewController: UIViewController {
                 $0.dateInterval.start < $1.dateInterval.start
             }
             Task.save(tasks)
+            prepareForNotifications()
             
             if tableView1.frame != .zero {
                 // For event adding, deleting and editing.
@@ -318,6 +319,62 @@ extension HomeViewController {
 extension HomeViewController {
     
     // MARK: - Utils
+    
+    // https://stackoverflow.com/questions/52009454/how-do-i-send-local-notifications-at-a-specific-time-in-swift
+    private func prepareForNotifications() {
+        // Removes old notifications.
+        // https://stackoverflow.com/questions/40562912/how-to-cancel-usernotifications
+        UNUserNotificationCenter
+            .current()
+            .removeAllPendingNotificationRequests()
+        
+        let center = UNUserNotificationCenter.current()
+
+        for task in tasksOfToday {
+            let content = UNMutableNotificationContent()
+            content.title = task.titleReprText
+            content.body = task.timeAndDurationReprText
+            content.sound = UNNotificationSound.default
+            content.categoryIdentifier = "eventNotification"
+
+            let startDate = Date(
+                timeInterval: -10 * TimeInterval.secsOfOneMinute,
+                since: task.dateInterval.start
+            )
+            // Sets up trigger time.
+            var calendar = Calendar.current
+            calendar.timeZone = TimeZone.current
+            var triggerDateComponents = DateComponents()
+            triggerDateComponents.year = startDate.getComponent(.year)
+            triggerDateComponents.month = startDate.getComponent(.month)
+            triggerDateComponents.day = startDate.getComponent(.day)
+            triggerDateComponents.hour = startDate.getComponent(.hour)
+            triggerDateComponents.minute = startDate.getComponent(.minute)
+            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+
+            // Creates request.
+            let uniqueID = UUID().uuidString
+            let request = UNNotificationRequest(
+                identifier: uniqueID,
+                content: content,
+                trigger: trigger
+            )
+            
+            center.add(request)
+        }
+        
+        // https://stackoverflow.com/questions/40270598/ios-10-how-to-view-a-list-of-pending-notifications-using-unusernotificationcente
+        center.getPendingNotificationRequests(completionHandler: { requests in
+            for request in requests {
+                print(
+                    "request title: \(request.content.title)"
+                        + ", "
+                        + "request body: \(request.content.body)"
+                )
+            }
+        })
+        
+    }
     
     private func clearEventCells(in tableView: UITableView) {
         // Clears current event cells.
