@@ -306,8 +306,14 @@ extension HomeViewController {
     }
     
     @objc private func newEventButtonTapped() {
+        let defaultStartDate = currentDate
+        let defaultEndDate = Date(
+            timeInterval: 40 * TimeInterval.secsOfOneMinute,
+            since: defaultStartDate
+        )
+        
         let taskViewController = EventEditViewController()
-        taskViewController.updateValues(delegate: self)
+        taskViewController.updateValues(delegate: self, defaultStartDate: defaultStartDate, defaultEndDate: defaultEndDate)
         navigationController?.present(
             EventEditNavController(rootViewController: taskViewController),
             animated: true,
@@ -337,7 +343,7 @@ extension HomeViewController {
             content.sound = UNNotificationSound.default
             content.categoryIdentifier = "eventNotification"
 
-            let startDate = Date(
+            let triggerDate = Date(
                 timeInterval: -10 * TimeInterval.secsOfOneMinute,
                 since: task.dateInterval.start
             )
@@ -345,11 +351,11 @@ extension HomeViewController {
             var calendar = Calendar.current
             calendar.timeZone = TimeZone.current
             var triggerDateComponents = DateComponents()
-            triggerDateComponents.year = startDate.getComponent(.year)
-            triggerDateComponents.month = startDate.getComponent(.month)
-            triggerDateComponents.day = startDate.getComponent(.day)
-            triggerDateComponents.hour = startDate.getComponent(.hour)
-            triggerDateComponents.minute = startDate.getComponent(.minute)
+            triggerDateComponents.year = triggerDate.getComponent(.year)
+            triggerDateComponents.month = triggerDate.getComponent(.month)
+            triggerDateComponents.day = triggerDate.getComponent(.day)
+            triggerDateComponents.hour = triggerDate.getComponent(.hour)
+            triggerDateComponents.minute = triggerDate.getComponent(.minute)
             let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
 
             // Creates request.

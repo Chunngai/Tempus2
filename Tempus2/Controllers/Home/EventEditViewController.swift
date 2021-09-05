@@ -54,6 +54,9 @@ class EventEditViewController: UITableViewController {
             || oldDescription != descriptionCell.textView.content
     }
     
+    private var defaultStartDate: Date = EventEditViewController.defaultStartDate
+    private var defaultEndDate: Date = EventEditViewController.defaultEndDate
+    
     // MARK: - Models
     
     private var task: Task?
@@ -120,9 +123,16 @@ class EventEditViewController: UITableViewController {
     func updateLayouts() {
     }
     
-    func updateValues(task: Task? = nil, delegate: HomeViewController) {
+    func updateValues(
+        task: Task? = nil,
+        delegate: HomeViewController,
+        defaultStartDate: Date? = nil, defaultEndDate: Date? = nil
+    ) {
         self.task = task
         self.delegate = delegate
+        
+        self.defaultStartDate = defaultStartDate ?? self.defaultStartDate
+        self.defaultEndDate = defaultEndDate ?? self.defaultEndDate
     }
 }
 
@@ -314,12 +324,12 @@ extension EventEditViewController {
                 delegate: self,
                 targetPickerRow: row + 1
             )
-            let dateAndTime = task?.dateInterval.start ?? EventEditViewController.defaultStartDate
+            let dateAndTime = task?.dateInterval.start ?? defaultStartDate
             startDateAndTimeSelectionCell.updateDateAndTimeRepr(with: dateAndTime)
             startDateAndTimeSelectionCell.removeSeparator()
             return startDateAndTimeSelectionCell
         case 2:
-            oldStartDateAndTime = task?.dateInterval.start ?? EventEditViewController.defaultStartDate
+            oldStartDateAndTime = task?.dateInterval.start ?? defaultStartDate
             
             startDateAndTimePickerCell = DateAndTimePickerCell()
             startDateAndTimePickerCell.updateValues(
@@ -336,11 +346,11 @@ extension EventEditViewController {
                 delegate: self,
                 targetPickerRow: row + 1
             )
-            let dateAndTime = task?.dateInterval.end ?? EventEditViewController.defaultEndDate
+            let dateAndTime = task?.dateInterval.end ?? defaultEndDate
             endDateAndTimeSelectionCell.updateDateAndTimeRepr(with: dateAndTime)
             return endDateAndTimeSelectionCell
         case 4:
-            oldEndDateAndTime = task?.dateInterval.end ?? EventEditViewController.defaultEndDate
+            oldEndDateAndTime = task?.dateInterval.end ?? defaultEndDate
             
             endDateAndTimePickerCell = DateAndTimePickerCell()
             endDateAndTimePickerCell.updateValues(
