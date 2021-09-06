@@ -37,6 +37,7 @@ class DateAndTimeSelectionCell: EventBaseCell {
         textView.textColor = Theme.textColor
         textView.textAlignment = .left
         textView.font = Theme.bodyFont
+        textView.isEditable = false
         textView.sizeToFit()
         return textView
     }()

@@ -46,7 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to undo the changes made on entering the background.
         
         homeViewController.drawCurrentTimeIndicator()
-        
+        homeViewController.scrollToCurrentTime()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

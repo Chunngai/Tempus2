@@ -36,9 +36,9 @@ class EventCompletionTogglingView: UIView {
     
     private let completionTogglingButton: UIButton = {
         let button = UIButton()
-        button.titleLabel?.font = Theme.footNoteFont
+        button.titleLabel?.font = Theme.bodyFont
         button.setTitleColor(Theme.highlightedTextColor, for: .normal)
-        button.titleLabel?.textAlignment = .right
+        button.titleLabel?.textAlignment = .center
         return button
     }()
     
@@ -71,13 +71,14 @@ class EventCompletionTogglingView: UIView {
     func updateLayouts() {
         horizontalSeparator.snp.makeConstraints { (make) in
             make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(1)
+            make.height.equalTo(0.3)
         }
         
         completionTogglingButton.snp.makeConstraints { (make) in
-            make.top.equalToSuperview().inset(10)
-            make.trailing.equalToSuperview().inset(10)
-            make.width.equalTo(130)
+//            make.top.equalToSuperview().inset(10)
+//            make.trailing.equalToSuperview().inset(10)
+//            make.width.equalTo(130)
+            make.edges.equalToSuperview()
         }
     }
     

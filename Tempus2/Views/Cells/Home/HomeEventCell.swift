@@ -22,8 +22,6 @@ class HomeEventCell: UIView {
     
     private let mainView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 8
-        view.layer.masksToBounds = true
         view.backgroundColor = Theme.homeEventCellColor
         return view
     }()

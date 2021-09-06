@@ -24,6 +24,10 @@ extension TimeInterval {
 
 extension TimeInterval {
     var durationRepr: String {
+        if self == 0 {
+            return "0m"
+        }
+        
         let hours = Int(self) / Int(TimeInterval.secsOfOneHour)
         let minutes = Int(self) % Int(TimeInterval.secsOfOneHour) / Int(TimeInterval.secsOfOneMinute)
         
@@ -34,6 +38,7 @@ extension TimeInterval {
         if minutes != 0 {
             repr += " \(minutes)m"
         }
+        
         return repr.trimmingWhitespacesAndNewlines()
     }
 }

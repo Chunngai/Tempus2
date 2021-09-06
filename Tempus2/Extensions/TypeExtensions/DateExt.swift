@@ -15,6 +15,12 @@ extension Date {
             .current
             .component(component, from: self)
     }
+    
+    func getComponents(_ components: [Calendar.Component]) -> [Int] {
+        return components.compactMap { (component) -> Int in
+            getComponent(component)
+        }
+    }
 }
  
 extension Date {

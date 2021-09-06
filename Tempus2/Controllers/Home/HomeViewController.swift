@@ -182,6 +182,7 @@ class HomeViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         drawTasks()
         drawCurrentTimeIndicator()
+        scrollToCurrentTime()
     }
     
     override func viewDidLayoutSubviews() {
@@ -335,7 +336,21 @@ extension HomeViewController {
     }
     
     @objc private func newEventButtonTapped() {
-        let defaultStartDate = currentDate
+        var defaultStartDate: Date
+        if let dateOfLatestTask = tasksOfCurrentDate.last {
+            // Convenient for creating multiple events.
+            defaultStartDate = Date(
+                timeInterval: 10 * TimeInterval.secsOfOneMinute,
+                since: dateOfLatestTask.dateInterval.end
+            )
+            
+            // Event of today cannot start at before the current.
+            if Calendar.current.isDateInToday(currentDate) && defaultStartDate < Date() {
+                defaultStartDate = Date()
+            }
+        } else {
+            defaultStartDate = currentDate
+        }
         let defaultEndDate = Date(
             timeInterval: 40 * TimeInterval.secsOfOneMinute,
             since: defaultStartDate
@@ -355,6 +370,35 @@ extension HomeViewController {
     
     // MARK: - Utils
     
+    private func makeNotificationRequest(title: String, body: String, triggerDate: Date) -> UNNotificationRequest {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = UNNotificationSound.default
+        content.categoryIdentifier = "eventNotification"
+
+        let triggerDate = triggerDate
+        // Sets up trigger time.
+        var calendar = Calendar.current
+        calendar.timeZone = TimeZone.current
+        var triggerDateComponents = DateComponents()
+        triggerDateComponents.year = triggerDate.getComponent(.year)
+        triggerDateComponents.month = triggerDate.getComponent(.month)
+        triggerDateComponents.day = triggerDate.getComponent(.day)
+        triggerDateComponents.hour = triggerDate.getComponent(.hour)
+        triggerDateComponents.minute = triggerDate.getComponent(.minute)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
+
+        // Creates request.
+        let uniqueID = UUID().uuidString
+        let request = UNNotificationRequest(
+            identifier: uniqueID,
+            content: content,
+            trigger: trigger
+        )
+        return request
+    }
+    
     // https://stackoverflow.com/questions/52009454/how-do-i-send-local-notifications-at-a-specific-time-in-swift
     private func prepareForNotifications() {
         // Removes old notifications.
@@ -366,36 +410,20 @@ extension HomeViewController {
         let center = UNUserNotificationCenter.current()
 
         for task in tasksOfToday {
-            let content = UNMutableNotificationContent()
-            content.title = task.titleReprText
-            content.body = task.timeAndDurationReprText
-            content.sound = UNNotificationSound.default
-            content.categoryIdentifier = "eventNotification"
-
-            let triggerDate = Date(
-                timeInterval: -10 * TimeInterval.secsOfOneMinute,
-                since: task.dateInterval.start
-            )
-            // Sets up trigger time.
-            var calendar = Calendar.current
-            calendar.timeZone = TimeZone.current
-            var triggerDateComponents = DateComponents()
-            triggerDateComponents.year = triggerDate.getComponent(.year)
-            triggerDateComponents.month = triggerDate.getComponent(.month)
-            triggerDateComponents.day = triggerDate.getComponent(.day)
-            triggerDateComponents.hour = triggerDate.getComponent(.hour)
-            triggerDateComponents.minute = triggerDate.getComponent(.minute)
-            let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
-
-            // Creates request.
-            let uniqueID = UUID().uuidString
-            let request = UNNotificationRequest(
-                identifier: uniqueID,
-                content: content,
-                trigger: trigger
-            )
-            
-            center.add(request)
+            center.add(makeNotificationRequest(
+                title: task.titleReprText + "will start at" + task.dateInterval.start.timeRepr(),
+                body: task.timeAndDurationReprText,
+                triggerDate: Date(
+                    timeInterval: -10 * TimeInterval.secsOfOneMinute,
+                    since: task.dateInterval.start
+            )))
+            center.add(makeNotificationRequest(
+                title: task.titleReprText + "will finish at" + task.dateInterval.end.timeRepr(),
+                body: task.timeAndDurationReprText,
+                triggerDate: Date(
+                    timeInterval: -10 * TimeInterval.secsOfOneMinute,
+                    since: task.dateInterval.end
+            )))
         }
         
         // https://stackoverflow.com/questions/40270598/ios-10-how-to-view-a-list-of-pending-notifications-using-unusernotificationcente
@@ -528,7 +556,13 @@ extension HomeViewController: EventEditViewControllerDelegate {
     
     internal func taskConflicted(with newTask: Task) -> Task? {
         for task in tasks {
-            if task.dateInterval.intersects(newTask.dateInterval) {
+            if let intersectionInterval = task.dateInterval.intersection(with: newTask.dateInterval) {
+                let componentsToCompare: [Calendar.Component] = [.year, .month, .day, .hour, .minute]
+                if intersectionInterval.start.getComponents(componentsToCompare) == intersectionInterval.end.getComponents(componentsToCompare) {
+                    // 8:00-8:30, 8:30-9:30. Has intersection but is allowed.
+                    return nil
+                }
+                
                 return task
             }
         }
@@ -580,15 +614,33 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
 
 extension HomeViewController {
     
+    internal func scrollToCurrentTime() {
+        // When the app is launched
+        // and the func is invoked by SceneDelegate,
+        // the frame of the table is .zero.
+        guard tableView1.frame != .zero else {
+            return
+        }
+        
+        for tableView in [tableView0, tableView1, tableView2] {
+            tableView.scrollToRow(at: IndexPath(row: Date().getComponent(.hour), section: 0), at: .middle, animated: false)
+        }
+    }
+    
     internal func drawCurrentTimeIndicator() {
         currentTimeIndicator.removeFromSuperview()
         
+        // When the app is launched
+        // and the func is invoked by SceneDelegate,
+        // horizontalSeparatorYOffset is nil.
         guard horizontalSeparatorYOffset != nil else {
             return
         }
         
+        let h = Date().getComponent(.hour)
+        let m = Date().getComponent(.minute)
         let top = HomeViewController.timeSliceCellHeight
-            * (CGFloat(Date().getComponent(.hour)) + CGFloat(Date().getComponent(.minute)) / CGFloat(TimeInterval.secsOfOneMinute))
+            * (CGFloat(h) + CGFloat(m) / CGFloat(TimeInterval.secsOfOneMinute))
             + horizontalSeparatorYOffset / 2
         
         // The following snippet of code makes the transition more natural.

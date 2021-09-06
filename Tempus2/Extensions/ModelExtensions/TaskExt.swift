@@ -49,7 +49,7 @@ extension Task {
     
     var timeReprText: String {
         return dateInterval.start.timeRepr()
-            + "-"
+            + " - "
             + dateInterval.end.timeRepr()
     }
     

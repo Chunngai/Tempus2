@@ -247,15 +247,16 @@ extension EventEditViewController {
             isCompleted: task?.isCompleted ?? false
         )
         
+        if let conflictedTask = delegate.taskConflicted(with: newTask),
+            conflictedTask != task {
+            displayDateIntervalConflictWarning(conflictedTask: conflictedTask)
+            return
+        }
+        
         if let task = task {
             delegate.replace(task, with: newTask)
         } else {
-            if let conflictedTask = delegate.taskConflicted(with: newTask) {
-                displayDateIntervalConflictWarning(conflictedTask: conflictedTask)
-                return
-            } else {
-                delegate.add(newTask)
-            }
+            delegate.add(newTask)
         }
         delegate.dismiss(animated: true, completion: nil)
     }
@@ -520,6 +521,12 @@ extension EventEditViewController: DateAndTimeSelectionCellDelegate {
     }
     
     private func togglePickersVisibility(in row: Int, shouldToggleDatePicker: Bool, shouldToggleTimePicker: Bool) {
+        // Without the two lines of code below,
+        // the keyboard will be displayed when
+        // one of the pickers are tapped.
+        titleCell.textView.resignFirstResponder()
+        descriptionCell.textView.resignFirstResponder()
+        
         let currentPickerCell = currentPickerCellOf(row)
         let theOtherPickerCell = theOtherPickerCellOf(row)
         
