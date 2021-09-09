@@ -13,7 +13,7 @@ class TimeSliceCell: UITableViewCell {
     
     // MARK: - Views
     
-    private var timeSliceLabel: UILabel = {
+    var timeSliceLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
         label.font = Theme.footNoteFont
@@ -47,6 +47,7 @@ class TimeSliceCell: UITableViewCell {
     
     func updateViews() {
         selectionStyle = .none
+        contentView.backgroundColor = .white
         
         contentView.addSubview(timeSliceLabel)
         contentView.addSubview(horizontalSeparator)
@@ -74,8 +75,11 @@ class TimeSliceCell: UITableViewCell {
         }
     }
     
-    func updateValues(hour: Int) {
+    func updateValues(hour: Int, displayText: Bool = true) {
         timeSliceLabel.text = String(format: "%02d:00", hour)
+        timeSliceLabel.textColor = displayText
+            ? Theme.textColor
+            : contentView.backgroundColor
     }
 }
 

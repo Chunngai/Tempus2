@@ -16,6 +16,7 @@ class TextViewWithPlaceHolder: UITextView {
             return false
         }
         return text == placeHolder
+            && textColor == Theme.placeHolderColor
     }
     
     var content: String {

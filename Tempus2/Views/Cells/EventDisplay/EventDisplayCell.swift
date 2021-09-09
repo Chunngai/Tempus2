@@ -48,7 +48,7 @@ class EventDisplayCell: EventBaseCell {
         }
     }
     
-    func updateValues(iconName: String, attributedText: NSAttributedString) {
+    func updateValues(iconName: String?, attributedText: NSAttributedString) {
         super.updateValues(iconName: iconName)
         
         label.attributedText = attributedText

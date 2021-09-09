@@ -97,7 +97,7 @@ extension EventDisplayViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        3
+        2
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -111,20 +111,17 @@ extension EventDisplayViewController {
             )
             return titleCell
         case 1:
-            if task.description.isEmpty {
-                break
-            }
-            
             descriptionCell = EventDisplayCell()
             descriptionCell.updateValues(
-                iconName: "description",
+                iconName: task.description.isEmpty
+                    ? nil
+                    : "description",
                 attributedText: task.descriptionRepr
             )
             return descriptionCell
         default:
-            break
+            return EventDisplayCell()
         }
-        return UITableViewCell()
     }
 }
 
@@ -149,6 +146,10 @@ extension EventDisplayViewController: EventCompletionTogglingViewDelegate {
     internal func toggleCompletion() {
         self.task.isCompleted.toggle()
         self.delegate.toggleCompletion(of: task)
+        // If the task is completed, pops the view controller.
+        if self.task.isCompleted {
+            navigationController?.popViewController(animated: true)
+        }
     }
 }
 

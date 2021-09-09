@@ -95,7 +95,7 @@ class CalendarCell: DateCell {
         }
         
         havingTasksIndicator.snp.makeConstraints { (make) in
-            make.top.equalTo(dateLabel.snp.bottom).offset(3)
+            make.top.equalToSuperview().offset(DateCell.diameter)
             make.centerX.equalToSuperview()
             make.width.equalTo(CalendarCell.indicatorDiameter)
             make.height.equalTo(CalendarCell.indicatorDiameter)

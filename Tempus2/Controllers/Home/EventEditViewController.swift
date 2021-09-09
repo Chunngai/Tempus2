@@ -57,6 +57,8 @@ class EventEditViewController: UITableViewController {
     private var defaultStartDate: Date = EventEditViewController.defaultStartDate
     private var defaultEndDate: Date = EventEditViewController.defaultEndDate
     
+    private var shouldBeInTheSameDay: Bool!
+    
     // MARK: - Models
     
     private var task: Task?
@@ -118,13 +120,16 @@ class EventEditViewController: UITableViewController {
     func updateValues(
         task: Task? = nil,
         delegate: HomeViewController,
-        defaultStartDate: Date? = nil, defaultEndDate: Date? = nil
+        defaultStartDate: Date? = nil, defaultEndDate: Date? = nil,
+        shouldBeInTheSameDay: Bool = false
     ) {
         self.task = task
         self.delegate = delegate
         
         self.defaultStartDate = defaultStartDate ?? self.defaultStartDate
         self.defaultEndDate = defaultEndDate ?? self.defaultEndDate
+        
+        self.shouldBeInTheSameDay = shouldBeInTheSameDay    
     }
 }
 
@@ -202,8 +207,36 @@ extension EventEditViewController {
         
         self.present(dateIntervalConflictAlert, animated: true, completion: nil)
     }
+    
+    func displayNotInSameDayWarning(startDateAndTime: Date, endDateAndTime: Date) {
+        let notInSameDayWarning = UIAlertController(
+            title: "Not in the same day",
+            message: "The event start date (\(startDateAndTime.dateRepr())) and the event end date (\(endDateAndTime.dateRepr())) is not in the same day.",
+            preferredStyle: .alert
+        )
+        
+        let okButton = UIAlertAction(
+            title: "OK",
+            style: .default,
+            handler: { (action) -> Void in
+                return
+        })
+        
+        notInSameDayWarning.addAction(okButton)
+        
+        self.present(notInSameDayWarning, animated: true, completion: nil)
+    }
+    
+    private func hideAllPickers() {
+        startDateAndTimePickerCell.datePicker.isHidden = true
+        startDateAndTimePickerCell.timePicker.isHidden = true
+        endDateAndTimePickerCell.datePicker.isHidden = true
+        endDateAndTimePickerCell.timePicker.isHidden = true
+        
+        tableView.beginUpdates()
+        tableView.endUpdates()
+    }
 }
-
 
 extension EventEditViewController {
     
@@ -235,6 +268,14 @@ extension EventEditViewController {
             displayInvalidDateIntervalWarning()
             return
         }
+        
+        let componentsToCompare: [Calendar.Component] = [.year, .month, .day]
+        if shouldBeInTheSameDay
+            && startDateAndTime.getComponents(componentsToCompare) != endDateAndTime.getComponents(componentsToCompare) {
+            displayNotInSameDayWarning(startDateAndTime: startDateAndTime, endDateAndTime: endDateAndTime)
+            return
+        }
+        
         let dateInterval = DateInterval(
             start: startDateAndTime,
             end: endDateAndTime
@@ -468,18 +509,28 @@ extension EventEditViewController: UITextViewDelegate {
             return true
         }
         
-        let currentText: String = textView.text
-        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+//        let currentText: String = textView.text
+//        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
+//
+//        if updatedText.isEmpty {
+//            textView.content = ""
+//        } else if textView.isShowingPlaceHolder {
+//            textView.text = ""
+//        }
+//        return true
         
-        if updatedText.isEmpty {
-            textView.content = ""
-            return false
+        // The above code makes the first two characters capitalized.
+        // https://stackoverflow.com/questions/58583806/textview-capitalizes-first-two-characters-instead-of-one
+        if text.isEmpty {
+            let updatedText = (textView.text as NSString).replacingCharacters(in: range, with: text)
+            if updatedText.isEmpty {
+                textView.content = ""
+            }
         } else if textView.isShowingPlaceHolder {
-            textView.content = text
-            return false
-        } else {
-            return true
+            textView.text = ""
+            textView.textColor = Theme.textColor
         }
+        return true
     }
     
     // Ensures that always the left of the placeholders are selected.
@@ -495,6 +546,8 @@ extension EventEditViewController: UITextViewDelegate {
     
     // Ensures that always the left of the placeholders are selected.
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        hideAllPickers()
+        
         guard let textView = textView as? TextViewWithPlaceHolder else {
             return true
         }

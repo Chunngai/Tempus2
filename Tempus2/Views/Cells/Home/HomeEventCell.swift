@@ -73,9 +73,13 @@ class HomeEventCell: UIView {
         self.task = task
         self.delegate = delegate
         
-        label.attributedText = inOneLine
-            ? task.homeEventOneLineLabelText
-            : task.homeEventMultilineLabelText
+        if inOneLine {
+            label.attributedText = task.homeEventOneLineLabelText
+            label.numberOfLines = 1
+        } else {
+            label.attributedText = task.homeEventMultilineLabelText
+            label.numberOfLines = 0
+        }
     }
 }
 

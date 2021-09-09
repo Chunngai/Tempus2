@@ -72,7 +72,7 @@ extension Task {
                 + timeAndDurationReprText
         )
         if isCompleted {
-            attributedTitle.setDeleteLine()
+            attributedTitle.setDeleteLine(for: titleReprText)
         }
         return attributedTitle
     }

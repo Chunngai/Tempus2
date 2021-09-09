@@ -182,7 +182,10 @@ class HomeViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         drawTasks()
         drawCurrentTimeIndicator()
-        scrollToCurrentTime()
+        
+        // Editing or removing a task will invoke the func,
+        // but should not scroll at that time.
+//        scrollToCurrentTime()
     }
     
     override func viewDidLayoutSubviews() {
@@ -269,11 +272,6 @@ extension HomeViewController: UIScrollViewDelegate {
     
     // MARK: - UIScrollView Delegate
     
-    internal func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        // When the Today button is tapped.
-        currentDate = Date()
-    }
-    
     internal func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         // Note that the scroll view delegate will affect both the loop view and
         // the table views. And they should be processed separately.
@@ -313,25 +311,27 @@ extension HomeViewController {
             return
         }
         
+        var newContentOffset: CGPoint
         if currentDate < Date() {
             // The following two lines of code
             // make the transition more natural.
             clearEventCells(in: tableView2)
             draw(tasksOfToday, in: tableView2)
             
-            // https://stackoverflow.com/questions/2234875/programmatically-scroll-a-uiscrollview
-            loopScrollView.setContentOffset(
-                CGPoint(x: 2 * width, y: 0),
-                animated: true
-            )
+            newContentOffset = CGPoint(x: 2 * self.width, y: 0)
         } else {
             clearEventCells(in: tableView0)
             draw(tasksOfToday, in: tableView0)
             
-            loopScrollView.setContentOffset(
-                CGPoint(x: 0, y: 0),
-                animated: true
-            )
+            newContentOffset = CGPoint(x: 0, y: 0)
+        }
+        
+        UIView.animate(withDuration: 0.3, animations: {
+            self.loopScrollView.contentOffset = newContentOffset
+        }) { _ in
+            // When the Today button is tapped.
+            self.currentDate = Date()
+            self.scrollToCurrentTime(animated: true)
         }
     }
     
@@ -343,21 +343,26 @@ extension HomeViewController {
                 timeInterval: 10 * TimeInterval.secsOfOneMinute,
                 since: dateOfLatestTask.dateInterval.end
             )
-            
-            // Event of today cannot start at before the current.
-            if Calendar.current.isDateInToday(currentDate) && defaultStartDate < Date() {
-                defaultStartDate = Date()
-            }
         } else {
             defaultStartDate = currentDate
         }
+        // Event of today cannot start at before the current.
+        if Calendar.current.isDateInToday(currentDate) && defaultStartDate < Date() {
+            defaultStartDate = Date()
+        }
+        // min % 5 == 0.
+        defaultStartDate = Date(
+            timeInterval: TimeInterval(5 - defaultStartDate.getComponent(.minute) % 5) * TimeInterval.secsOfOneMinute,
+            since: defaultStartDate
+        )
+        
         let defaultEndDate = Date(
             timeInterval: 40 * TimeInterval.secsOfOneMinute,
             since: defaultStartDate
         )
         
         let taskViewController = EventEditViewController()
-        taskViewController.updateValues(delegate: self, defaultStartDate: defaultStartDate, defaultEndDate: defaultEndDate)
+        taskViewController.updateValues(delegate: self, defaultStartDate: defaultStartDate, defaultEndDate: defaultEndDate, shouldBeInTheSameDay: true)
         navigationController?.present(
             EventEditNavController(rootViewController: taskViewController),
             animated: true,
@@ -411,14 +416,14 @@ extension HomeViewController {
 
         for task in tasksOfToday {
             center.add(makeNotificationRequest(
-                title: task.titleReprText + "will start at" + task.dateInterval.start.timeRepr(),
+                title: task.titleReprText + " will start at " + task.dateInterval.start.timeRepr(),
                 body: task.timeAndDurationReprText,
                 triggerDate: Date(
                     timeInterval: -10 * TimeInterval.secsOfOneMinute,
                     since: task.dateInterval.start
             )))
             center.add(makeNotificationRequest(
-                title: task.titleReprText + "will finish at" + task.dateInterval.end.timeRepr(),
+                title: task.titleReprText + " will finish at " + task.dateInterval.end.timeRepr(),
                 body: task.timeAndDurationReprText,
                 triggerDate: Date(
                     timeInterval: -10 * TimeInterval.secsOfOneMinute,
@@ -506,7 +511,7 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        24
+        24 + 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -514,7 +519,13 @@ extension HomeViewController: UITableViewDataSource {
             as! TimeSliceCell
         
         let hour = indexPath.row
-        cell.updateValues(hour: hour)
+        
+        if indexPath.row < 24 {
+            cell.updateValues(hour: hour)
+        } else {
+            // Prevents the home event cell from being drown oob.
+            cell.updateValues(hour: hour, displayText: false)
+        }
         
 //        if tableView.tag == 1 {
 //            cell.backgroundColor = .red
@@ -528,7 +539,12 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return HomeViewController.timeSliceCellHeight
+        var height = HomeViewController.timeSliceCellHeight
+        if indexPath.row == 24 {
+            // Prevents the home event cell from being drown oob.
+            height /= 2
+        }
+        return height
     }
 }
 
@@ -592,7 +608,7 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
     
     internal func edit(_ task: Task) {
         let eventEditViewController = EventEditViewController()
-        eventEditViewController.updateValues(task: task, delegate: self)
+        eventEditViewController.updateValues(task: task, delegate: self, shouldBeInTheSameDay: true)
         navigationController?.present(
             EventEditNavController(rootViewController: eventEditViewController),
             animated: true,
@@ -614,7 +630,7 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
 
 extension HomeViewController {
     
-    internal func scrollToCurrentTime() {
+    internal func scrollToCurrentTime(animated: Bool = false) {
         // When the app is launched
         // and the func is invoked by SceneDelegate,
         // the frame of the table is .zero.
@@ -623,7 +639,14 @@ extension HomeViewController {
         }
         
         for tableView in [tableView0, tableView1, tableView2] {
-            tableView.scrollToRow(at: IndexPath(row: Date().getComponent(.hour), section: 0), at: .middle, animated: false)
+            tableView.scrollToRow(
+                at: IndexPath(
+                    row: Date().getComponent(.hour),
+                    section: 0
+                ),
+                at: .middle,
+                animated: animated
+            )
         }
     }
     
