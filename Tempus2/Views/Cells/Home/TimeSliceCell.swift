@@ -78,7 +78,7 @@ class TimeSliceCell: UITableViewCell {
     func updateValues(hour: Int, displayText: Bool = true) {
         timeSliceLabel.text = String(format: "%02d:00", hour)
         timeSliceLabel.textColor = displayText
-            ? Theme.textColor
+            ? Theme.weakTextColor
             : contentView.backgroundColor
     }
 }

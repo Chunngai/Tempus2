@@ -482,7 +482,7 @@ extension HomeViewController {
         eventCell.updateValues(task: task, delegate: self, inOneLine: inOneLine)
         eventCell.snp.makeConstraints { (make) in
             make.leading.equalTo(HomeViewController.homeEventCellLeading)
-            make.width.equalTo(HomeViewController.homeEventCellWidth * 0.98)
+            make.width.equalTo(HomeViewController.homeEventCellWidth * 0.95)
             make.top.equalTo(top)
             make.height.equalTo(height)
         }
