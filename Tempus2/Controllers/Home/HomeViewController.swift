@@ -273,8 +273,10 @@ extension HomeViewController: UIScrollViewDelegate {
     // MARK: - UIScrollView Delegate
     
     internal func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-        self.currentDate = Date()
-        self.scrollToCurrentTime(animated: true)
+        if scrollView == loopScrollView {
+            self.currentDate = Date()
+            self.scrollToCurrentTime(animated: true)
+        }
     }
     
     internal func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -476,12 +478,12 @@ extension HomeViewController {
         let eventCell = HomeEventCell()
         tableViewOfTasksToDraw.addSubview(eventCell)
         eventCell.updateValues(task: task, delegate: self, inOneLine: inOneLine)
-        eventCell.snp.makeConstraints { (make) in
-            make.leading.equalTo(HomeViewController.homeEventCellLeading)
-            make.width.equalTo(HomeViewController.homeEventCellWidth * 0.95)
-            make.top.equalTo(top)
-            make.height.equalTo(height)
-        }
+        eventCell.frame = CGRect(
+            x: HomeViewController.homeEventCellLeading,
+            y: top,
+            width: HomeViewController.homeEventCellWidth * 0.95,
+            height: height
+        )
     }
 }
 
@@ -698,6 +700,7 @@ extension HomeViewController {
     static var homeEventCellWidth: CGFloat {
         CGFloat(UIScreen.main.bounds.width - HomeViewController.homeEventCellLeading)
     }
+    static var spaceBetweenOverlappedCells: CGFloat = 1
  
     static let newEventButtonDiameter = 65
     
