@@ -272,6 +272,11 @@ extension HomeViewController: UIScrollViewDelegate {
     
     // MARK: - UIScrollView Delegate
     
+    internal func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        self.currentDate = Date()
+        self.scrollToCurrentTime(animated: true)
+    }
+    
     internal func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         // Note that the scroll view delegate will affect both the loop view and
         // the table views. And they should be processed separately.
@@ -311,27 +316,18 @@ extension HomeViewController {
             return
         }
         
-        var newContentOffset: CGPoint
         if currentDate < Date() {
             // The following two lines of code
             // make the transition more natural.
             clearEventCells(in: tableView2)
             draw(tasksOfToday, in: tableView2)
             
-            newContentOffset = CGPoint(x: 2 * self.width, y: 0)
+            loopScrollView.setContentOffset(CGPoint(x: 2 * self.width, y: 0), animated: true)
         } else {
             clearEventCells(in: tableView0)
             draw(tasksOfToday, in: tableView0)
             
-            newContentOffset = CGPoint(x: 0, y: 0)
-        }
-        
-        UIView.animate(withDuration: 0.3, animations: {
-            self.loopScrollView.contentOffset = newContentOffset
-        }) { _ in
-            // When the Today button is tapped.
-            self.currentDate = Date()
-            self.scrollToCurrentTime(animated: true)
+            loopScrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         }
     }
     
