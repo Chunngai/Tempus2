@@ -39,6 +39,9 @@ class HomeViewController: UIViewController {
             if tableView1.frame != .zero {
                 // For event adding, deleting and editing.
                 drawTasks()
+                // Redraws the indicator so that it
+                // will not be covered by the cells.
+                drawCurrentTimeIndicator()
             }
         }
     }
