@@ -57,7 +57,7 @@ class EventEditViewController: UITableViewController {
     private var defaultStartDate: Date = EventEditViewController.defaultStartDate
     private var defaultEndDate: Date = EventEditViewController.defaultEndDate
     
-    private var shouldBeInTheSameDay: Bool!
+    private var isDateSelectable: Bool!
     
     // MARK: - Models
     
@@ -121,7 +121,7 @@ class EventEditViewController: UITableViewController {
         task: Task? = nil,
         delegate: HomeViewController,
         defaultStartDate: Date? = nil, defaultEndDate: Date? = nil,
-        shouldBeInTheSameDay: Bool = false
+        isDateSelectable: Bool = true
     ) {
         self.task = task
         self.delegate = delegate
@@ -129,7 +129,7 @@ class EventEditViewController: UITableViewController {
         self.defaultStartDate = defaultStartDate ?? self.defaultStartDate
         self.defaultEndDate = defaultEndDate ?? self.defaultEndDate
         
-        self.shouldBeInTheSameDay = shouldBeInTheSameDay    
+        self.isDateSelectable = isDateSelectable
     }
 }
 
@@ -208,25 +208,6 @@ extension EventEditViewController {
         self.present(dateIntervalConflictAlert, animated: true, completion: nil)
     }
     
-    func displayNotInSameDayWarning(startDateAndTime: Date, endDateAndTime: Date) {
-        let notInSameDayWarning = UIAlertController(
-            title: "Not in the same day",
-            message: "The event start date (\(startDateAndTime.dateRepr())) and the event end date (\(endDateAndTime.dateRepr())) is not in the same day.",
-            preferredStyle: .alert
-        )
-        
-        let okButton = UIAlertAction(
-            title: "OK",
-            style: .default,
-            handler: { (action) -> Void in
-                return
-        })
-        
-        notInSameDayWarning.addAction(okButton)
-        
-        self.present(notInSameDayWarning, animated: true, completion: nil)
-    }
-    
     private func hideAllPickers() {
         startDateAndTimePickerCell.datePicker.isHidden = true
         startDateAndTimePickerCell.timePicker.isHidden = true
@@ -266,13 +247,6 @@ extension EventEditViewController {
         
         if startDateAndTime > endDateAndTime {
             displayInvalidDateIntervalWarning()
-            return
-        }
-        
-        let componentsToCompare: [Calendar.Component] = [.year, .month, .day]
-        if shouldBeInTheSameDay
-            && startDateAndTime.getComponents(componentsToCompare) != endDateAndTime.getComponents(componentsToCompare) {
-            displayNotInSameDayWarning(startDateAndTime: startDateAndTime, endDateAndTime: endDateAndTime)
             return
         }
         
@@ -444,19 +418,24 @@ extension EventEditViewController: DateAndTimePickerDelegate {
             return
         }
         
-        if startDateAndTimePickerCell.dateAndTime > endDateAndTimePickerCell.dateAndTime {
-            let startDateAndTime = startDateAndTimePickerCell.dateAndTime
-            let newEndDateAndTime = Date(
-                timeInterval: 40 * TimeInterval.secsOfOneMinute,
-                since: startDateAndTime
-            )
-            endDateAndTimePickerCell.dateAndTime = newEndDateAndTime
+        let startDateAndTime = startDateAndTimePickerCell.dateAndTime
+        let endDateAndTime = endDateAndTimePickerCell.dateAndTime
+        if startDateAndTime >  endDateAndTime {
+            var newEndDateAndTime = startDateAndTime + 40 * TimeInterval.secsOfOneMinute
+            if !isDateSelectable && !Calendar.current.isDate(newEndDateAndTime, inSameDayAs: startDateAndTime) {
+                newEndDateAndTime = Calendar.current.date(
+                    bySettingHour: 23,
+                    minute: 55,
+                    second: 59,
+                    of: startDateAndTime
+                    )!
+            }
             
+            endDateAndTimePickerCell.dateAndTime = newEndDateAndTime
             endDateAndTimeSelectionCell.updateDateAndTimeRepr(with: newEndDateAndTime)
-            validateEndDateAndTime()
-        } else {
-            return
         }
+        
+        validateEndDateAndTime()
     }
     
     private func validateEndDateAndTime() {
@@ -504,31 +483,21 @@ extension EventEditViewController: UITextViewDelegate {
     }
     
     // https://stackoverflow.com/questions/27652227/add-placeholder-text-inside-uitextview-in-swift
+    // https://stackoverflow.com/questions/58583806/textview-capitalizes-first-two-characters-instead-of-one
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         guard let textView = textView as? TextViewWithPlaceHolder else {
             return true
         }
         
-//        let currentText: String = textView.text
-//        let updatedText = (currentText as NSString).replacingCharacters(in: range, with: text)
-//
-//        if updatedText.isEmpty {
-//            textView.content = ""
-//        } else if textView.isShowingPlaceHolder {
-//            textView.text = ""
-//        }
-//        return true
-        
-        // The above code makes the first two characters capitalized.
-        // https://stackoverflow.com/questions/58583806/textview-capitalizes-first-two-characters-instead-of-one
-        if text.isEmpty {
+        if text.isEmpty {  // Deletion.
             let updatedText = (textView.text as NSString).replacingCharacters(in: range, with: text)
-            if updatedText.isEmpty {
-                textView.content = ""
+            if updatedText.isEmpty {  // All chrs are deleted.
+                textView.content = ""  // Shows the placeholder.
             }
-        } else if textView.isShowingPlaceHolder {
-            textView.text = ""
-            textView.textColor = Theme.textColor
+        } else {  // Insertion.
+            if textView.isShowingPlaceHolder {
+                textView.content = text  // Hides the placeholder.
+            }
         }
         return true
     }
@@ -601,6 +570,10 @@ extension EventEditViewController: DateAndTimeSelectionCellDelegate {
     // MARK: - DateAndTimeSelectionCell Delegate
     
     internal func toggleDatePickerVisibility(inRow row: Int) {
+        guard isDateSelectable else {
+            return
+        }
+        
         togglePickersVisibility(in: row, shouldToggleDatePicker: true, shouldToggleTimePicker: false)
     }
     
@@ -624,10 +597,7 @@ extension EventEditViewController {
         Date()
     }
     static var defaultEndDate: Date {
-        Date(
-            timeInterval: 40 * TimeInterval.secsOfOneMinute,
-            since: EventEditViewController.defaultStartDate
-        )
+        EventEditViewController.defaultStartDate + 40 * TimeInterval.secsOfOneMinute
     }
     
     static let eventTextViewCellReusableIdentifier = "EventTextViewCell"

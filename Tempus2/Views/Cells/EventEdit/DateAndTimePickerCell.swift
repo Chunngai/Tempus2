@@ -154,7 +154,8 @@ extension DateAndTimePickerCell: JTACMonthViewDelegate {
         
         cell.updateValues(
             date: date,
-            cellState: cellState
+            cellState: cellState,
+            shouldHideDaysNotInCurrentMonth: true
         )
     }
     

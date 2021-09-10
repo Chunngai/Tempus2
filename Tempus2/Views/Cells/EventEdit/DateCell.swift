@@ -46,16 +46,29 @@ class DateCell: JTACDayCell {
         }
     }
     
-    func updateValues(date: Date, cellState: CellState) {
-        dateLabel.text = cellState.dateBelongsTo == .thisMonth
-            ? cellState.text
-            : ""
-        dateLabel.backgroundColor = (
-            Calendar.current.isDateInToday(date)
-                && cellState.dateBelongsTo == .thisMonth
-            )
-            ? DateCell.todayColor
-            : DateCell.commonColor
+    func updateValues(
+        date: Date, cellState: CellState,
+        shouldHideDaysNotInCurrentMonth: Bool = false,
+        textColorForCurrentDay: UIColor = .white, textColorForCurrentMonthExceptCurrentDay: UIColor = Theme.textColor, textColorForOtherMonths: UIColor = Theme.textColor
+    ) {
+        dateLabel.text = cellState.text
+        if shouldHideDaysNotInCurrentMonth
+            && cellState.dateBelongsTo != .thisMonth {
+            dateLabel.text = ""
+        }
+        
+        if cellState.dateBelongsTo == .thisMonth {
+            if Calendar.current.isDateInToday(date) {
+                dateLabel.backgroundColor = DateCell.todayColor
+                dateLabel.textColor = textColorForCurrentDay
+            } else {
+                dateLabel.backgroundColor = DateCell.commonColor
+                dateLabel.textColor = textColorForCurrentMonthExceptCurrentDay
+            }
+        } else {
+            dateLabel.backgroundColor = DateCell.commonColor
+            dateLabel.textColor = textColorForOtherMonths
+        }
     }
 }
 

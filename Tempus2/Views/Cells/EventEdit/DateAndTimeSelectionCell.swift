@@ -38,6 +38,7 @@ class DateAndTimeSelectionCell: EventBaseCell {
         textView.textAlignment = .left
         textView.font = Theme.bodyFont
         textView.isEditable = false
+        textView.isSelectable = false
         textView.sizeToFit()
         return textView
     }()

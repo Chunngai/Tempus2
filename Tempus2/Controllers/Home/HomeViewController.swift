@@ -339,10 +339,7 @@ extension HomeViewController {
         var defaultStartDate: Date
         if let dateOfLatestTask = tasksOfCurrentDate.last {
             // Convenient for creating multiple events.
-            defaultStartDate = Date(
-                timeInterval: 10 * TimeInterval.secsOfOneMinute,
-                since: dateOfLatestTask.dateInterval.end
-            )
+            defaultStartDate = dateOfLatestTask.dateInterval.end + 10 * TimeInterval.secsOfOneMinute
         } else {
             defaultStartDate = currentDate
         }
@@ -351,18 +348,12 @@ extension HomeViewController {
             defaultStartDate = Date()
         }
         // min % 5 == 0.
-        defaultStartDate = Date(
-            timeInterval: TimeInterval(5 - defaultStartDate.getComponent(.minute) % 5) * TimeInterval.secsOfOneMinute,
-            since: defaultStartDate
-        )
+        defaultStartDate += TimeInterval(5 - defaultStartDate.getComponent(.minute) % 5) * TimeInterval.secsOfOneMinute
         
-        let defaultEndDate = Date(
-            timeInterval: 40 * TimeInterval.secsOfOneMinute,
-            since: defaultStartDate
-        )
+        let defaultEndDate = defaultStartDate + 40 * TimeInterval.secsOfOneMinute
         
         let taskViewController = EventEditViewController()
-        taskViewController.updateValues(delegate: self, defaultStartDate: defaultStartDate, defaultEndDate: defaultEndDate, shouldBeInTheSameDay: true)
+        taskViewController.updateValues(delegate: self, defaultStartDate: defaultStartDate, defaultEndDate: defaultEndDate, isDateSelectable: false)
         navigationController?.present(
             EventEditNavController(rootViewController: taskViewController),
             animated: true,
@@ -413,22 +404,18 @@ extension HomeViewController {
             .removeAllPendingNotificationRequests()
         
         let center = UNUserNotificationCenter.current()
-
+        
         for task in tasksOfToday {
             center.add(makeNotificationRequest(
                 title: task.titleReprText + " will start at " + task.dateInterval.start.timeRepr(),
                 body: task.timeAndDurationReprText,
-                triggerDate: Date(
-                    timeInterval: -10 * TimeInterval.secsOfOneMinute,
-                    since: task.dateInterval.start
-            )))
+                triggerDate: task.dateInterval.start - 10 * TimeInterval.secsOfOneMinute
+            ))
             center.add(makeNotificationRequest(
                 title: task.titleReprText + " will finish at " + task.dateInterval.end.timeRepr(),
                 body: task.timeAndDurationReprText,
-                triggerDate: Date(
-                    timeInterval: -10 * TimeInterval.secsOfOneMinute,
-                    since: task.dateInterval.end
-            )))
+                triggerDate: task.dateInterval.end - 10 * TimeInterval.secsOfOneMinute
+            ))
         }
         
         // https://stackoverflow.com/questions/40270598/ios-10-how-to-view-a-list-of-pending-notifications-using-unusernotificationcente
@@ -608,7 +595,7 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
     
     internal func edit(_ task: Task) {
         let eventEditViewController = EventEditViewController()
-        eventEditViewController.updateValues(task: task, delegate: self, shouldBeInTheSameDay: true)
+        eventEditViewController.updateValues(task: task, delegate: self, isDateSelectable: false)
         navigationController?.present(
             EventEditNavController(rootViewController: eventEditViewController),
             animated: true,

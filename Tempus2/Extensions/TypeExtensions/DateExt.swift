@@ -87,10 +87,10 @@ extension Date {
 
 extension Date {
     var yesterday: Date {
-        Date(timeInterval: -TimeInterval.secsOfOneDay, since: self)
+        self - TimeInterval.secsOfOneDay
     }
     
     var tomorrow: Date {
-        Date(timeInterval: TimeInterval.secsOfOneDay, since: self)
+        self + TimeInterval.secsOfOneDay
     }
 }

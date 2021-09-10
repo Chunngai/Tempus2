@@ -36,7 +36,12 @@ class TextViewWithPlaceHolder: UITextView {
                 textColor = Theme.placeHolderColor
                 selectMostLeft()
             } else {
-                text = newValue
+                text = isShowingPlaceHolder
+                    // textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool
+                    // will update the text.
+                    // So no need to update here.
+                    ? ""
+                    : newValue
                 textColor = Theme.textColor
             }
         }

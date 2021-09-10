@@ -103,13 +103,11 @@ class CalendarCell: DateCell {
     }
     
     func updateValues(date: Date, cellState: CellState, hasTasks: Bool, shouldDrawBottomLine: Bool) {
-        super.updateValues(date: date, cellState: cellState)
-        
-        dateLabel.text = cellState.text
-        dateLabel.textColor = cellState.dateBelongsTo == .thisMonth
-            ? Theme.textColor
-            : Theme.weakTextColor
-        
+        super.updateValues(
+            date: date, cellState: cellState,
+            textColorForCurrentDay: .white, textColorForCurrentMonthExceptCurrentDay: Theme.textColor, textColorForOtherMonths: Theme.weakTextColor
+        )
+                
         if hasTasks {
             havingTasksIndicator.backgroundColor = Theme.lightBlue
         } else {
