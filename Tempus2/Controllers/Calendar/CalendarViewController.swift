@@ -39,6 +39,13 @@ class CalendarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            title: "This month",
+            style: .plain,
+            target: self,
+            action: #selector(thisMonthButtonTapped)
+        )
+        
         calendar.calendarDataSource = self
         calendar.calendarDelegate = self
         calendar.register(
@@ -77,14 +84,27 @@ class CalendarViewController: UIViewController {
     
     func updateValues(date: Date, delegate: HomeViewController) {
         currentMonth = date
-        navigationItem.title = currentMonth.monthRepr()
-        calendar.scrollToHeaderForDate(date, withAnimation: false)
+        calendar.scrollToHeaderForDate(currentMonth, withAnimation: false)
         
         self.delegate = delegate
     }
 }
 
+extension CalendarViewController {
+    
+    // MARK: - Actions
+    
+    @objc func thisMonthButtonTapped() {
+        currentMonth = Date()
+        calendar.scrollToHeaderForDate(currentMonth, withAnimation: true)
+    }
+    
+}
+
 extension CalendarViewController: JTACMonthViewDataSource {
+    
+    // MARK: - JTACMonthView Data Source
+    
     func configureCalendar(_ calendar: JTACMonthView) -> ConfigurationParameters {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy MM dd"
@@ -95,6 +115,9 @@ extension CalendarViewController: JTACMonthViewDataSource {
 }
 
 extension CalendarViewController: JTACMonthViewDelegate {
+    
+    // MARK: - JTACMonthView Delegate
+    
     func calendar(_ calendar: JTACMonthView, cellForItemAt date: Date, cellState: CellState, indexPath: IndexPath) -> JTACDayCell {
         guard let cell = calendar.dequeueReusableJTAppleCell(withReuseIdentifier: CalendarViewController.cellReuseIdentifier, for: indexPath)
             as? CalendarCell else {

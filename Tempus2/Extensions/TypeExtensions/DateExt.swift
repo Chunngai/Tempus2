@@ -34,7 +34,7 @@ extension Date {
     }
     
     private var defaultMonthFormat: String {
-        return "MMMM"
+        return "MMMM, yyyy"
     }
     
     private func makeRepr(with format: String) -> String {
