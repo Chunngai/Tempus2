@@ -26,6 +26,8 @@ class HomeViewController: UIViewController {
         }
     }
     
+    internal var shouldScrollToCurrentTime: Bool!
+    
     // MARK: - Models
     
     private var tasks: [Task]! {
@@ -73,7 +75,7 @@ class HomeViewController: UIViewController {
         return tableView
     }()
     
-    private var tableView1: UITableView = {
+    internal var tableView1: UITableView = {
         let tableView = UITableView()
         tableView.backgroundColor = .white
         tableView.separatorStyle = .none
@@ -185,10 +187,13 @@ class HomeViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         drawTasks()
         drawCurrentTimeIndicator()
-        
-        // Editing or removing a task will invoke the func,
-        // but should not scroll at that time.
-//        scrollToCurrentTime()
+
+        if shouldScrollToCurrentTime {
+            scrollToCurrentTime()
+            // Editing or removing a task will invoke the func,
+            // but should not scroll at that time.
+            shouldScrollToCurrentTime = false
+        }
     }
     
     override func viewDidLayoutSubviews() {
@@ -468,13 +473,12 @@ extension HomeViewController {
         let top = HomeViewController.timeSliceCellHeight
             * (CGFloat(startH) + CGFloat(startM) / CGFloat(TimeInterval.secsOfOneMinute))
             + horizontalSeparatorYOffset
-        var height = HomeViewController.timeSliceCellHeight
+        let height = HomeViewController.timeSliceCellHeight
             * (CGFloat(hs) + CGFloat(ms) / CGFloat(TimeInterval.secsOfOneMinute))
         
         // Min height limitation.
         var inOneLine: Bool = false
         if height <= HomeViewController.timeSliceCellHeight / 2 {
-            height = HomeViewController.timeSliceCellHeight / 2
             inOneLine = true
         }
                 
