@@ -61,7 +61,7 @@ class HomeEventCell: UIView {
     func updateLayouts() {
         mainView.snp.makeConstraints { (make) in
             make.top.leading.trailing.equalToSuperview()
-            make.height.equalToSuperview().multipliedBy(0.90)
+            make.height.equalToSuperview().multipliedBy(0.95)
         }
         
         label.snp.makeConstraints { (make) in
