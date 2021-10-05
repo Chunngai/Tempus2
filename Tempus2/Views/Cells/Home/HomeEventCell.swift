@@ -20,9 +20,12 @@ class HomeEventCell: UIView {
     
     // MARK: - Views
     
-    private let mainView: UIView = {
-        let view = UIView()
+    private let mainView: UILabel = {
+        let view = UILabel()
         view.backgroundColor = Theme.homeEventCellColor
+        view.layer.cornerRadius = 5
+        view.layer.masksToBounds = true
+        view.isUserInteractionEnabled = true
         return view
     }()
     
