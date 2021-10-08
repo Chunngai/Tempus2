@@ -105,7 +105,7 @@ class CalendarCell: DateCell {
     func updateValues(date: Date, cellState: CellState, hasTasks: Bool, shouldDrawBottomLine: Bool) {
         super.updateValues(
             date: date, cellState: cellState,
-            textColorForCurrentDay: .white, textColorForCurrentMonthExceptCurrentDay: Theme.textColor, textColorForOtherMonths: Theme.weakTextColor
+            textColorForCurrentDay: .white, textColorForCurrentMonthExceptCurrentDay: Theme.textColor, textColorForOtherMonths: UIColor.lightGray
         )
                 
         if hasTasks {

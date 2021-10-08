@@ -132,7 +132,7 @@ extension EventDisplayViewController {
     private func displayDeletionWarning(completion: @escaping (_ shouldDelete: Bool) -> Void) {
         let deletionAlert = UIAlertController(
             title: nil,
-            message: "Do you really want to delete the event?",
+            message: "Do you really want to delete the event: \(task.titleReprText)?",
             preferredStyle: .actionSheet
         )
         
