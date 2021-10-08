@@ -97,7 +97,7 @@ class DateAndTimePickerCell: UITableViewCell {
         
         datePicker.snp.makeConstraints { (make) in
             make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(EventEditViewController.largeCellHeight)
+            make.height.equalTo(EventEditViewController.datePickerCellHeight)
         }
     }
     

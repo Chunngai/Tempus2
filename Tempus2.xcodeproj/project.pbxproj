@@ -10,6 +10,7 @@
 		0E31C038C430D6F5A5678C88 /* Pods_Tempus2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8006638FED3B8ECE1A3C4F9 /* Pods_Tempus2.framework */; };
 		AEA9238F01D0B13B39424058 /* Pods_Tempus2_Tempus2UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 536BC6AAA7E95F3617C79F4C /* Pods_Tempus2_Tempus2UITests.framework */; };
 		C257A921F9BE966E5A94C968 /* Pods_Tempus2Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6C425F389686398F160AEC /* Pods_Tempus2Tests.framework */; };
+		FF475165270F85E60015E862 /* PseudoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF475164270F85E60015E862 /* PseudoCell.swift */; };
 		FF4CAE7226DCE3F7009BB111 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7126DCE3F7009BB111 /* Theme.swift */; };
 		FF4CAE7526DCE424009BB111 /* UIColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7426DCE424009BB111 /* UIColorExt.swift */; };
 		FF4CAE7726DCE459009BB111 /* StringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7626DCE459009BB111 /* StringExt.swift */; };
@@ -42,7 +43,6 @@
 		FF6E370726DE8CEF00464183 /* WeekdaysHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6E370626DE8CEF00464183 /* WeekdaysHeader.swift */; };
 		FF6EED7626DD4787009483A2 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6EED7526DD4787009483A2 /* HomeViewController.swift */; };
 		FF6EED7A26DD4787009483A2 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6EED7926DD4787009483A2 /* Task.swift */; };
-		FF6EED7E26DD4787009483A2 /* TimeSliceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6EED7D26DD4787009483A2 /* TimeSliceCell.swift */; };
 		FFCB837426E133B7004A4F53 /* UINavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB837326E133B7004A4F53 /* UINavigationItem.swift */; };
 		FFCB837926E1D132004A4F53 /* TextViewWithPlaceHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB837826E1D132004A4F53 /* TextViewWithPlaceHolder.swift */; };
 		FFCB837B26E1D5E9004A4F53 /* UINavigationBarExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB837A26E1D5E9004A4F53 /* UINavigationBarExt.swift */; };
@@ -109,6 +109,7 @@
 		771943421009012C558B189B /* Pods-Tempus2Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tempus2Tests.debug.xcconfig"; path = "Target Support Files/Pods-Tempus2Tests/Pods-Tempus2Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		90AA7456B3591FA5198797F3 /* Pods-Tempus2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tempus2.debug.xcconfig"; path = "Target Support Files/Pods-Tempus2/Pods-Tempus2.debug.xcconfig"; sourceTree = "<group>"; };
 		D8006638FED3B8ECE1A3C4F9 /* Pods_Tempus2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tempus2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		FF475164270F85E60015E862 /* PseudoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PseudoCell.swift; sourceTree = "<group>"; };
 		FF4CAE7126DCE3F7009BB111 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		FF4CAE7426DCE424009BB111 /* UIColorExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExt.swift; sourceTree = "<group>"; };
 		FF4CAE7626DCE459009BB111 /* StringExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExt.swift; sourceTree = "<group>"; };
@@ -146,7 +147,6 @@
 		FF6E370626DE8CEF00464183 /* WeekdaysHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekdaysHeader.swift; sourceTree = "<group>"; };
 		FF6EED7526DD4787009483A2 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		FF6EED7926DD4787009483A2 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
-		FF6EED7D26DD4787009483A2 /* TimeSliceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSliceCell.swift; sourceTree = "<group>"; };
 		FFCB837326E133B7004A4F53 /* UINavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationItem.swift; sourceTree = "<group>"; };
 		FFCB837826E1D132004A4F53 /* TextViewWithPlaceHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewWithPlaceHolder.swift; sourceTree = "<group>"; };
 		FFCB837A26E1D5E9004A4F53 /* UINavigationBarExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBarExt.swift; sourceTree = "<group>"; };
@@ -251,8 +251,8 @@
 		FF5179D526DF571000CD0272 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				FF6EED7D26DD4787009483A2 /* TimeSliceCell.swift */,
 				FF4CAE8C26DCF7A9009BB111 /* HomeEventCell.swift */,
+				FF475164270F85E60015E862 /* PseudoCell.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -719,7 +719,6 @@
 				FF4CAE7526DCE424009BB111 /* UIColorExt.swift in Sources */,
 				FF4CAE8D26DCF7A9009BB111 /* HomeEventCell.swift in Sources */,
 				FF6A09F826DBEA0900A6E09A /* AppDelegate.swift in Sources */,
-				FF6EED7E26DD4787009483A2 /* TimeSliceCell.swift in Sources */,
 				FF4CAE7926DCE505009BB111 /* Separator.swift in Sources */,
 				FF51D64D26DE0F2B0091ABAA /* UIImageExt.swift in Sources */,
 				FF51D65226DE45220091ABAA /* DateAndTimeSelectionCell.swift in Sources */,
@@ -728,6 +727,7 @@
 				FF50601226DFC3AC00BF1F50 /* EventDisplayViewController.swift in Sources */,
 				FFCB837426E133B7004A4F53 /* UINavigationItem.swift in Sources */,
 				FF4CAE7226DCE3F7009BB111 /* Theme.swift in Sources */,
+				FF475165270F85E60015E862 /* PseudoCell.swift in Sources */,
 				FF6A09FA26DBEA0900A6E09A /* SceneDelegate.swift in Sources */,
 				FF6E370326DE7FF400464183 /* DateCell.swift in Sources */,
 				FFEA452426E4B7FB00357126 /* CalendarNavController.swift in Sources */,

@@ -47,6 +47,14 @@ extension Task {
             : "(No title)"
     }
     
+    var titleAttrReprText: NSAttributedString {
+        let attrString = NSMutableAttributedString(string: titleReprText)
+        if isCompleted {
+            attrString.setDeleteLine()
+        }
+        return attrString
+    }
+    
     var timeReprText: String {
         return dateInterval.start.timeRepr()
             + " - "
@@ -63,26 +71,6 @@ extension Task {
         return dateInterval.start.dateRepr()
             + " · "
             + timeAndDurationReprText
-    }
-    
-    private func homeEventLabelText(with separator: String) -> NSAttributedString {
-        let attributedTitle = NSMutableAttributedString(
-            string: titleReprText
-                + separator
-                + timeAndDurationReprText
-        )
-        if isCompleted {
-            attributedTitle.setDeleteLine(for: titleReprText)
-        }
-        return attributedTitle
-    }
-    
-    var homeEventMultilineLabelText: NSAttributedString {
-        return homeEventLabelText(with: "\n")
-    }
-    
-    var homeEventOneLineLabelText: NSAttributedString {
-        return homeEventLabelText(with: " ")
     }
     
     private var uncompletedTaskTitleAttrs: [NSAttributedString.Key: Any] {

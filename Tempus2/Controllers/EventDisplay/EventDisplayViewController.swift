@@ -127,6 +127,38 @@ extension EventDisplayViewController {
 
 extension EventDisplayViewController {
     
+    // MARK: - Utils
+    
+    private func displayDeletionWarning(completion: @escaping (_ shouldDelete: Bool) -> Void) {
+        let deletionAlert = UIAlertController(
+            title: nil,
+            message: "Do you really want to delete the event?",
+            preferredStyle: .actionSheet
+        )
+        
+        let shouldDeleteButton = UIAlertAction(
+            title: "Delete",
+            style: .destructive,
+            handler: { (action) -> Void in
+                completion(true)
+        })
+        
+        let cancelButton = UIAlertAction(
+            title: "Cancel",
+            style: .cancel
+        ) { (action) -> Void in
+            completion(false)
+        }
+        
+        deletionAlert.addAction(shouldDeleteButton)
+        deletionAlert.addAction(cancelButton)
+        
+        self.present(deletionAlert, animated: true, completion: nil)
+    }
+}
+
+extension EventDisplayViewController {
+    
     // MARK: - Actions
     
     @objc private func editButtonTapped() {
@@ -134,8 +166,14 @@ extension EventDisplayViewController {
     }
     
     @objc private func deleteButtonTapped() {
-        delegate.remove(task)
-        navigationController?.popViewController(animated: true)
+        displayDeletionWarning { (shouldDelete) in
+            if shouldDelete {
+                self.delegate.remove(self.task)
+                self.navigationController?.popViewController(animated: true)
+            } else {
+                return
+            }
+        }
     }
 }
 
@@ -146,10 +184,7 @@ extension EventDisplayViewController: EventCompletionTogglingViewDelegate {
     internal func toggleCompletion() {
         self.task.isCompleted.toggle()
         self.delegate.toggleCompletion(of: task)
-        // If the task is completed, pops the view controller.
-        if self.task.isCompleted {
-            navigationController?.popViewController(animated: true)
-        }
+        navigationController?.popViewController(animated: true)
     }
 }
 

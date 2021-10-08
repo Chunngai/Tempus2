@@ -10,23 +10,17 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    private var horizontalSeparatorYOffset: CGFloat! {
-        (tableView1.visibleCells.first as? TimeSliceCell)?
-            .horizontalSeparatorYOffset
-    }
-    
     private var width: CGFloat!
     private var height: CGFloat!
     private var currentDate: Date = Date() {
         didSet {
+            navigationItem.title = currentDate.dateRepr()
+            
             // For loop view.
-            drawTasks()
-            drawCurrentTimeIndicator()
+            reloadTables()
             loopScrollView.contentOffset = CGPoint(x: width, y: 0)
         }
     }
-    
-    internal var shouldScrollToCurrentTime: Bool!
     
     // MARK: - Models
     
@@ -38,12 +32,9 @@ class HomeViewController: UIViewController {
             Task.save(tasks)
             prepareForNotifications()
             
+            // For event adding, deleting and editing.
             if tableView1.frame != .zero {
-                // For event adding, deleting and editing.
-                drawTasks()
-                // Redraws the indicator so that it
-                // will not be covered by the cells.
-                drawCurrentTimeIndicator()
+                reloadTables()
             }
         }
     }
@@ -153,20 +144,32 @@ class HomeViewController: UIViewController {
         tableView0.dataSource = self
         tableView0.delegate = self
         tableView0.register(
-            TimeSliceCell.classForCoder(),
-            forCellReuseIdentifier: HomeViewController.timeSliceCellReuseIdentifier
+            HomeEventCell.classForCoder(),
+            forCellReuseIdentifier: HomeViewController.homeEventCellReuseIdentifier
+        )
+        tableView0.register(
+            PseudoCell.classForCoder(),
+            forCellReuseIdentifier: HomeViewController.pseudoCellReuseIdentifier
         )
         tableView1.dataSource = self
         tableView1.delegate = self
         tableView1.register(
-            TimeSliceCell.classForCoder(),
-            forCellReuseIdentifier: HomeViewController.timeSliceCellReuseIdentifier
+            HomeEventCell.classForCoder(),
+            forCellReuseIdentifier: HomeViewController.homeEventCellReuseIdentifier
+        )
+        tableView1.register(
+            PseudoCell.classForCoder(),
+            forCellReuseIdentifier: HomeViewController.pseudoCellReuseIdentifier
         )
         tableView2.dataSource = self
         tableView2.delegate = self
         tableView2.register(
-            TimeSliceCell.classForCoder(),
-            forCellReuseIdentifier: HomeViewController.timeSliceCellReuseIdentifier
+            HomeEventCell.classForCoder(),
+            forCellReuseIdentifier: HomeViewController.homeEventCellReuseIdentifier
+        )
+        tableView2.register(
+            PseudoCell.classForCoder(),
+            forCellReuseIdentifier: HomeViewController.pseudoCellReuseIdentifier
         )
         
         newEventButton.addTarget(
@@ -184,18 +187,6 @@ class HomeViewController: UIViewController {
         navigationController?.navigationBar.showBarSeparator()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        drawTasks()
-        drawCurrentTimeIndicator()
-
-        if shouldScrollToCurrentTime {
-            scrollToCurrentTime()
-            // Editing or removing a task will invoke the func,
-            // but should not scroll at that time.
-            shouldScrollToCurrentTime = false
-        }
-    }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         
@@ -210,6 +201,8 @@ class HomeViewController: UIViewController {
     }
     
     func updateViews() {
+        navigationItem.title = Date().dateRepr()
+        
         view.addSubview(loopScrollView)
         loopScrollView.addSubview(tableView0)
         loopScrollView.addSubview(tableView1)
@@ -273,17 +266,12 @@ extension HomeViewController: UIScrollViewDelegate {
         }
     }
     
-    private func alignTableViewVerticalContentOffset() {
-        tableView0.contentOffset = tableView1.contentOffset
-        tableView2.contentOffset = tableView1.contentOffset
-    }
-    
     // MARK: - UIScrollView Delegate
     
     internal func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+        // For the "Today" button.
         if scrollView == loopScrollView {
             self.currentDate = Date()
-            self.scrollToCurrentTime(animated: true)
         }
     }
     
@@ -292,8 +280,9 @@ extension HomeViewController: UIScrollViewDelegate {
         // the table views. And they should be processed separately.
                 
         if scrollView.tag != 0 {
-            alignTableViewVerticalContentOffset()
+            // A tableview is scrolled.
         } else {
+            // The loop view is scrolled.
             changeLoopViewVisibleContent(horizontalContentOffset: scrollView.contentOffset.x)
         }
     }
@@ -327,16 +316,8 @@ extension HomeViewController {
         }
         
         if currentDate < Date() {
-            // The following two lines of code
-            // make the transition more natural.
-            clearEventCells(in: tableView2)
-            draw(tasksOfToday, in: tableView2)
-            
             loopScrollView.setContentOffset(CGPoint(x: 2 * self.width, y: 0), animated: true)
         } else {
-            clearEventCells(in: tableView0)
-            draw(tasksOfToday, in: tableView0)
-            
             loopScrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
         }
     }
@@ -412,6 +393,10 @@ extension HomeViewController {
         let center = UNUserNotificationCenter.current()
         
         for task in tasksOfToday {
+            if task.isCompleted {
+                continue
+            }
+            
             center.add(makeNotificationRequest(
                 title: task.titleReprText + " will start at " + task.dateInterval.start.timeRepr(),
                 body: task.timeAndDurationReprText,
@@ -434,63 +419,21 @@ extension HomeViewController {
                 )
             }
         })
-        
     }
     
-    private func clearEventCells(in tableView: UITableView) {
-        // Clears current event cells.
-        for subView in tableView.subviews {
-            if let homeEventCell = subView as? HomeEventCell {
-                homeEventCell.removeFromSuperview()
+    private func reloadTables() {
+        for tableView in [tableView0, tableView1, tableView2] {
+            tableView.reloadData()
+            // Scrolls to top.
+            // The following code is crucial to make the transition smooth.
+            if tableView.numberOfRows(inSection: 0) > 0 {
+                tableView.scrollToRow(
+                    at: IndexPath(row: 0, section: 0),
+                    at: .top,
+                    animated: false
+                )
             }
         }
-    }
-    
-    private func drawTasks() {
-        navigationItem.title = currentDate.dateRepr()
-        
-        draw(tasksOfLastDate, in: tableView0)
-        draw(tasksOfCurrentDate, in: tableView1)
-        draw(tasksOfNextDate, in: tableView2)
-    }
-    
-    private func draw(_ tasksToDraw: [Task], in tableViewOfTasksToDraw: UITableView) {
-        clearEventCells(in: tableViewOfTasksToDraw)
-        for task in tasksToDraw {
-            draw(task, in: tableViewOfTasksToDraw)
-        }
-    }
-    
-    private func draw(_ task: Task, in tableViewOfTasksToDraw: UITableView) {
-        let startH = task.dateInterval.start.getComponent(.hour)
-        let endH = task.dateInterval.end.getComponent(.hour)
-        let hs = endH - startH
-        
-        let startM = task.dateInterval.start.getComponent(.minute)
-        let endM = task.dateInterval.end.getComponent(.minute)
-        let ms = endM - startM
-        
-        let top = HomeViewController.timeSliceCellHeight
-            * (CGFloat(startH) + CGFloat(startM) / CGFloat(TimeInterval.secsOfOneMinute))
-            + horizontalSeparatorYOffset
-        let height = HomeViewController.timeSliceCellHeight
-            * (CGFloat(hs) + CGFloat(ms) / CGFloat(TimeInterval.secsOfOneMinute))
-        
-        // Min height limitation.
-        var inOneLine: Bool = false
-        if height <= HomeViewController.timeSliceCellHeight / 2 {
-            inOneLine = true
-        }
-                
-        let eventCell = HomeEventCell()
-        tableViewOfTasksToDraw.addSubview(eventCell)
-        eventCell.updateValues(task: task, delegate: self, inOneLine: inOneLine)
-        eventCell.frame = CGRect(
-            x: HomeViewController.homeEventCellLeading,
-            y: top,
-            width: HomeViewController.homeEventCellWidth * 0.95,
-            height: height
-        )
     }
 }
 
@@ -503,46 +446,67 @@ extension HomeViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        24 + 1
+        var numberOfRows = 0
+        
+        if tableView.tag == 1 {
+            numberOfRows = tasksOfLastDate.count
+        } else if tableView.tag == 2 {
+            numberOfRows = tasksOfCurrentDate.count
+        } else if tableView.tag == 3 {
+            numberOfRows = tasksOfNextDate.count
+        }
+        
+        if numberOfRows == 0 {
+            numberOfRows = 1  // For pseudo cell.
+        }
+        
+        return numberOfRows
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: HomeViewController.timeSliceCellReuseIdentifier)
-            as! TimeSliceCell
-        
-        let hour = indexPath.row
-        
-        if indexPath.row < 24 {
-            cell.updateValues(hour: hour)
-        } else {
-            // Prevents the home event cell from being drown oob.
-            cell.updateValues(hour: hour, displayText: false)
+        var tasksToLoad: [Task] = []
+        if tableView.tag == 1 {
+            tasksToLoad = tasksOfLastDate
+        } else if tableView.tag == 2 {
+            tasksToLoad = tasksOfCurrentDate
+        } else if tableView.tag == 3 {
+            tasksToLoad = tasksOfNextDate
         }
         
-//        if tableView.tag == 1 {
-//            cell.backgroundColor = .red
-//        } else if tableView.tag == 2 {
-//            cell.backgroundColor = .yellow
-//        } else {
-//            cell.backgroundColor = .green
-//        }
-        
-        return cell
+        if !tasksToLoad.isEmpty {
+            let cell = tableView.dequeueReusableCell(withIdentifier: HomeViewController.homeEventCellReuseIdentifier)
+                as! HomeEventCell
+            cell.updateValues(task: tasksToLoad[indexPath.row], delegate: self)
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: HomeViewController.pseudoCellReuseIdentifier)
+                as! PseudoCell
+            return cell
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        var height = HomeViewController.timeSliceCellHeight
-        if indexPath.row == 24 {
-            // Prevents the home event cell from being drown oob.
-            height /= 2
-        }
-        return height
+        return HomeViewController.homeEventCellHeight
     }
 }
 
 extension HomeViewController: UITableViewDelegate {
     
     // MARK: - UITableView Delegate
+    
+    internal func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        " "
+    }
+    
+    internal func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        HomeViewController.headerHeight
+    }
+    
+    internal func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let headerView = UIView()
+        headerView.backgroundColor = .white
+        return headerView
+    }
 }
 
 extension HomeViewController: EventEditViewControllerDelegate {
@@ -620,66 +584,6 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
     }
 }
 
-extension HomeViewController {
-    
-    internal func scrollToCurrentTime(animated: Bool = false) {
-        // When the app is launched
-        // and the func is invoked by SceneDelegate,
-        // the frame of the table is .zero.
-        guard tableView1.frame != .zero else {
-            return
-        }
-        
-        for tableView in [tableView0, tableView1, tableView2] {
-            tableView.scrollToRow(
-                at: IndexPath(
-                    row: Date().getComponent(.hour),
-                    section: 0
-                ),
-                at: .middle,
-                animated: animated
-            )
-        }
-    }
-    
-    internal func drawCurrentTimeIndicator() {
-        currentTimeIndicator.removeFromSuperview()
-        
-        // When the app is launched
-        // and the func is invoked by SceneDelegate,
-        // horizontalSeparatorYOffset is nil.
-        guard horizontalSeparatorYOffset != nil else {
-            return
-        }
-        
-        let h = Date().getComponent(.hour)
-        let m = Date().getComponent(.minute)
-        let top = HomeViewController.timeSliceCellHeight
-            * (CGFloat(h) + CGFloat(m) / CGFloat(TimeInterval.secsOfOneMinute))
-            + horizontalSeparatorYOffset / 2
-        
-        // The following snippet of code makes the transition more natural.
-        var tableViewToDraw: UITableView
-        if Calendar.current.isDateInToday(currentDate.yesterday) {
-            tableViewToDraw = tableView0
-        } else if Calendar.current.isDateInToday(currentDate) {
-            tableViewToDraw = tableView1
-        } else if Calendar.current.isDateInToday(currentDate.tomorrow) {
-            tableViewToDraw = tableView2
-        } else {
-            return
-        }
-        
-        tableViewToDraw.addSubview(currentTimeIndicator)
-        currentTimeIndicator.snp.makeConstraints { (make) in
-            make.leading.equalTo(HomeViewController.homeEventCellLeading - CurrentTimeIndicator.circleDiameter / 2)
-            make.width.equalTo(HomeViewController.homeEventCellWidth * 0.98)
-            make.top.equalTo(top)
-            make.height.equalTo(CurrentTimeIndicator.circleDiameter)
-        }
-    }
-}
-
 extension HomeViewController: CalendarViewControllerDelegate {
     
     // CalendarViewController Delegate
@@ -694,21 +598,12 @@ extension HomeViewController: CalendarViewControllerDelegate {
 }
 
 extension HomeViewController {
-    static let timeSliceCellHeight: CGFloat = 60
-    static let timeSliceCellReuseIdentifier: String = "TimeSliceCell"
+    static var homeEventCellReuseIdentifier = "HomeEventCell"
+    static var homeEventCellHeight: CGFloat = 90
+    static var headerHeight: CGFloat = 30
     
-    static var homeEventCellLeading: CGFloat {
-        CGFloat(
-            TimeSliceCell.timeSliceLabelLeadingOffset
-                + TimeSliceCell.timeSliceLabelWidth
-                + TimeSliceCell.verticalSeparatorLeadingOffset
-        )
-    }
-    static var homeEventCellWidth: CGFloat {
-        CGFloat(UIScreen.main.bounds.width - HomeViewController.homeEventCellLeading)
-    }
-    static var spaceBetweenOverlappedCells: CGFloat = 1
- 
+    static let pseudoCellReuseIdentifier = "PseudoCell"
+    
     static let newEventButtonDiameter = 65
     
     static let leftRatioThreshold: CGFloat = 0.7

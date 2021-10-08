@@ -44,13 +44,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneWillEnterForeground(_ scene: UIScene) {
         // Called as the scene transitions from the background to the foreground.
         // Use this method to undo the changes made on entering the background.
-        
-        homeViewController.drawCurrentTimeIndicator()
-        if homeViewController.tableView1.frame == .zero {
-            homeViewController.shouldScrollToCurrentTime = true  // For the first load.
-        } else {
-            homeViewController.scrollToCurrentTime()  // For the subsequent loads.
-        }
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
