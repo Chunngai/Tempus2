@@ -101,7 +101,16 @@ class HomeEventCell: UITableViewCell {
         mainView.backgroundColor = task.isCompleted
             ? Theme.homeEventCellCompletionColor
             : Theme.homeEventCellColor
-        titleLabel.attributedText = task.titleAttrReprText
+        
+        if !task.description.isEmpty {
+            titleLabel.attributedText = NSMutableAttributedString(
+                string: task.titleAttrReprText.string + " 🏷",
+                attributes: task.titleAttrReprText.attributes(at: 0, effectiveRange: nil)
+            )
+        } else {
+            titleLabel.attributedText = task.titleAttrReprText
+        }
+        
         timeLabel.text = task.timeAndDurationReprText
     }
 }
