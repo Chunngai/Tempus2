@@ -126,6 +126,10 @@ class HomeViewController: UIViewController {
         // Loads tasks.
         tasks = Task.load()
         
+        // The line of code below cannot be placed in `updateViews()`
+        // as the func will be called every time the tables are reloaded,
+        // making that the date displayed is changed to the date of today.
+        navigationItem.title = Date().dateRepr()
         navigationItem.leftBarButtonItem = UIBarButtonItem(
             image: UIImage(systemName: HomeViewController.calendarIconName),
             style: .plain,
@@ -201,8 +205,6 @@ class HomeViewController: UIViewController {
     }
     
     func updateViews() {
-        navigationItem.title = Date().dateRepr()
-        
         view.addSubview(loopScrollView)
         loopScrollView.addSubview(tableView0)
         loopScrollView.addSubview(tableView1)
@@ -335,9 +337,20 @@ extension HomeViewController {
             defaultStartDate = Date()
         }
         // min % 5 == 0.
-        defaultStartDate += TimeInterval(5 - defaultStartDate.getComponent(.minute) % 5) * TimeInterval.secsOfOneMinute
+        let minuteOffset = defaultStartDate.getComponent(.minute) % 5
+        if minuteOffset != 0 {  // If minuteOffset is 0, the defaultStartTime will be added 15 mins.
+            defaultStartDate += TimeInterval(5 - minuteOffset) * TimeInterval.secsOfOneMinute
+        }
         
-        let defaultEndDate = defaultStartDate + 40 * TimeInterval.secsOfOneMinute
+        var defaultEndDate = defaultStartDate + 40 * TimeInterval.secsOfOneMinute
+        if !Calendar.current.isDate(defaultStartDate, inSameDayAs: defaultEndDate) {
+            defaultEndDate = Calendar.current.date(
+                bySettingHour: 23,
+                minute: 55,
+                second: 59,
+                of: defaultStartDate
+                )!
+        }
         
         let taskViewController = EventEditViewController()
         taskViewController.updateValues(delegate: self, defaultStartDate: defaultStartDate, defaultEndDate: defaultEndDate, isDateSelectable: false)
