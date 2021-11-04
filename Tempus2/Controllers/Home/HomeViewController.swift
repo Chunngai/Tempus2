@@ -17,7 +17,7 @@ class HomeViewController: UIViewController {
             navigationItem.title = currentDate.dateRepr()
             
             // For loop view.
-            reloadTables()
+            reloadTables(scrollToTop: true)
             loopScrollView.contentOffset = CGPoint(x: width, y: 0)
         }
     }
@@ -34,7 +34,7 @@ class HomeViewController: UIViewController {
             
             // For event adding, deleting and editing.
             if tableView1.frame != .zero {
-                reloadTables()
+                reloadTables(scrollToTop: false)
             }
         }
     }
@@ -434,12 +434,12 @@ extension HomeViewController {
         })
     }
     
-    private func reloadTables() {
+    private func reloadTables(scrollToTop: Bool = false) {
         for tableView in [tableView0, tableView1, tableView2] {
             tableView.reloadData()
             // Scrolls to top.
             // The following code is crucial to make the transition smooth.
-            if tableView.numberOfRows(inSection: 0) > 0 {
+            if scrollToTop && tableView.numberOfRows(inSection: 0) > 0 {
                 tableView.scrollToRow(
                     at: IndexPath(row: 0, section: 0),
                     at: .top,
@@ -528,6 +528,16 @@ extension HomeViewController: EventEditViewControllerDelegate {
     
     internal func add(_ task: Task) {
         tasks.append(task)
+        
+        // Scrolls to the newly added cell.
+        let indexOfAddedCell = tasksOfCurrentDate.firstIndex { (currentTask) -> Bool in
+            return currentTask.dateInterval == task.dateInterval
+        }!
+        tableView1.scrollToRow(
+            at: IndexPath(row: indexOfAddedCell, section: 0),
+            at: .bottom,
+            animated: true
+        )
     }
     
     internal func replace(_ oldTask: Task, with newTask: Task) {

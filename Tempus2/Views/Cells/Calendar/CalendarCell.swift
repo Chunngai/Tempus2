@@ -70,6 +70,7 @@ class CalendarCell: DateCell {
         dateLabel.snp.makeConstraints { (make) in
             make.centerX.equalToSuperview()
             make.width.height.equalTo(DateCell.diameter)
+            make.top.equalToSuperview().inset(2)
         }
         
         topHorizontalSeparator.snp.makeConstraints { (make) in
@@ -109,7 +110,7 @@ class CalendarCell: DateCell {
         )
                 
         if hasTasks {
-            havingTasksIndicator.backgroundColor = Theme.lightBlue
+            havingTasksIndicator.backgroundColor = Theme.lightBlue2
         } else {
             havingTasksIndicator.backgroundColor = contentView.backgroundColor
         }
