@@ -22,6 +22,8 @@ class HomeViewController: UIViewController {
         }
     }
     
+    private var notificationCenter = UNUserNotificationCenter.current()
+    
     // MARK: - Models
     
     private var tasks: [Task]! {
@@ -368,7 +370,7 @@ extension HomeViewController {
     
     // MARK: - Utils
     
-    private func makeNotificationRequest(title: String, body: String, triggerDate: Date) -> UNNotificationRequest {
+    private func makeNotificationRequest(title: String, body: String, identifier: String, triggerDate: Date) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
@@ -388,9 +390,9 @@ extension HomeViewController {
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
 
         // Creates request.
-        let uniqueID = UUID().uuidString
+//        let uniqueID = UUID().uuidString
         let request = UNNotificationRequest(
-            identifier: uniqueID,
+            identifier: identifier,
             content: content,
             trigger: trigger
         )
@@ -404,28 +406,28 @@ extension HomeViewController {
         UNUserNotificationCenter
             .current()
             .removeAllPendingNotificationRequests()
-        
-        let center = UNUserNotificationCenter.current()
-        
+                
         for task in tasksOfToday {
             if task.isCompleted {
                 continue
             }
             
-            center.add(makeNotificationRequest(
+            notificationCenter.add(makeNotificationRequest(
                 title: task.titleReprText + " will start at " + task.dateInterval.start.timeRepr(),
                 body: task.timeAndDurationReprText,
+                identifier: task.identifier,
                 triggerDate: task.dateInterval.start - 10 * TimeInterval.secsOfOneMinute
             ))
-            center.add(makeNotificationRequest(
+            notificationCenter.add(makeNotificationRequest(
                 title: task.titleReprText + " will finish at " + task.dateInterval.end.timeRepr(),
                 body: task.timeAndDurationReprText,
+                identifier: task.identifier,
                 triggerDate: task.dateInterval.end - 10 * TimeInterval.secsOfOneMinute
             ))
         }
         
         // https://stackoverflow.com/questions/40270598/ios-10-how-to-view-a-list-of-pending-notifications-using-unusernotificationcente
-        center.getPendingNotificationRequests(completionHandler: { requests in
+        notificationCenter.getPendingNotificationRequests(completionHandler: { requests in
             for request in requests {
                 print(
                     "request title: \(request.content.title)"
@@ -606,6 +608,8 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
             return
         }
         tasks[index].isCompleted.toggle()
+        
+        notificationCenter.removePendingNotificationRequests(withIdentifiers: [task.identifier])
     }
 }
 

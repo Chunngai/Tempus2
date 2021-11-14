@@ -134,3 +134,9 @@ extension Task {
         return repr
     }
 }
+
+extension Task {
+    var identifier: String {
+        return dateAndTimeAndDurationReprText
+    }
+}
