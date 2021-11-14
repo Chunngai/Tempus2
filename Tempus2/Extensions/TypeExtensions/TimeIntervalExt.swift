@@ -9,27 +9,33 @@
 import Foundation
 
 extension TimeInterval {
-    static var secsOfOneMinute: TimeInterval {
+    
+    // MARK: - Seconds of Time Units
+    
+    static var secondsOfOneMinute: TimeInterval {
         return 60
     }
     
-    static var secsOfOneHour: TimeInterval {
-        return 60 * secsOfOneMinute
+    static var secondsOfOneHour: TimeInterval {
+        return 60 * secondsOfOneMinute
     }
     
-    static var secsOfOneDay: TimeInterval {
-        return 24 * secsOfOneHour
+    static var secondsOfOneDay: TimeInterval {
+        return 24 * secondsOfOneHour
     }
 }
 
 extension TimeInterval {
+    
+    // MARK: - Representations
+    
     var durationRepr: String {
         if self == 0 {
             return "0m"
         }
         
-        let hours = Int(self) / Int(TimeInterval.secsOfOneHour)
-        let minutes = Int(self) % Int(TimeInterval.secsOfOneHour) / Int(TimeInterval.secsOfOneMinute)
+        let hours = Int(self) / Int(TimeInterval.secondsOfOneHour)
+        let minutes = Int(self) % Int(TimeInterval.secondsOfOneHour) / Int(TimeInterval.secondsOfOneMinute)
         
         var repr = ""
         if hours != 0 {

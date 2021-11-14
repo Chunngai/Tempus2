@@ -69,7 +69,7 @@ class EventBaseCell: UITableViewCell {
     func updateValues(iconName: String?) {
         if let iconName = iconName {
             iconImageView.image = UIImage(imageLiteralResourceName: iconName)
-                .set(color: Theme.weakTextColor)
+                .convertTo(color: Theme.weakTextColor)
         } else {
             iconImageView.image = nil
         }

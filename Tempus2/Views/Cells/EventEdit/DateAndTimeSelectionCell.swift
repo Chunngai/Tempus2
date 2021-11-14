@@ -107,8 +107,8 @@ class DateAndTimeSelectionCell: EventBaseCell {
     }
     
     func updateDateAndTimeRepr(with dateAndTime: Date) {
-        dateButton.text = dateAndTime.dateRepr()
-        timeButton.setTitle(dateAndTime.timeRepr(), for: .normal)
+        dateButton.text = dateAndTime.dateRepresentation()
+        timeButton.setTitle(dateAndTime.timeRepresentation(), for: .normal)
     }
 }
 

@@ -106,7 +106,7 @@ extension Task {
                 title: "Breakfast",
                 dateInterval: DateInterval(
                     start: makeDate(hour: 8, minute: 0),
-                    duration: TimeInterval.secsOfOneHour * 1
+                    duration: TimeInterval.secondsOfOneHour * 1
                 ),
                 description: "breakfast description",
                 isCompleted: false
@@ -115,7 +115,7 @@ extension Task {
                 title: "AI course",
                 dateInterval: DateInterval(
                     start: makeDate(hour: 10, minute: 30),
-                    duration: TimeInterval.secsOfOneHour * 1),
+                    duration: TimeInterval.secondsOfOneHour * 1),
                 description: "ai course description",
                 isCompleted: false
             ),
@@ -123,7 +123,7 @@ extension Task {
                 title: "Math course",
                 dateInterval: DateInterval(
                     start: makeDate(hour: 13, minute: 0),
-                    duration: TimeInterval.secsOfOneHour * 1.5),
+                    duration: TimeInterval.secondsOfOneHour * 1.5),
                 description: "math course description",
                 isCompleted: true
             )

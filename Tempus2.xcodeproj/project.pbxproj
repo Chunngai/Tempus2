@@ -272,6 +272,18 @@
 			path = EventEdit;
 			sourceTree = "<group>";
 		};
+		FF6555772741840B00778A0E /* CustomizedViews */ = {
+			isa = PBXGroup;
+			children = (
+				FF4CAE7126DCE3F7009BB111 /* Theme.swift */,
+				FF4CAE7826DCE505009BB111 /* Separator.swift */,
+				FF50602426E0AB2200BF1F50 /* EventCompletionTogglingView.swift */,
+				FFCB837826E1D132004A4F53 /* TextViewWithPlaceHolder.swift */,
+				FFEA451D26E4954100357126 /* CurrentTimeIndicator.swift */,
+			);
+			path = CustomizedViews;
+			sourceTree = "<group>";
+		};
 		FF6A09EB26DBEA0900A6E09A = {
 			isa = PBXGroup;
 			children = (
@@ -345,11 +357,7 @@
 			children = (
 				FF5179E626DF5A6200CD0272 /* Headers */,
 				FF6EED7C26DD4787009483A2 /* Cells */,
-				FF4CAE7126DCE3F7009BB111 /* Theme.swift */,
-				FF4CAE7826DCE505009BB111 /* Separator.swift */,
-				FF50602426E0AB2200BF1F50 /* EventCompletionTogglingView.swift */,
-				FFCB837826E1D132004A4F53 /* TextViewWithPlaceHolder.swift */,
-				FFEA451D26E4954100357126 /* CurrentTimeIndicator.swift */,
+				FF6555772741840B00778A0E /* CustomizedViews */,
 			);
 			path = Views;
 			sourceTree = "<group>";

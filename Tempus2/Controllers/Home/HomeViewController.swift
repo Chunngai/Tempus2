@@ -14,7 +14,7 @@ class HomeViewController: UIViewController {
     private var height: CGFloat!
     private var currentDate: Date = Date() {
         didSet {
-            navigationItem.title = currentDate.dateRepr()
+            navigationItem.title = currentDate.dateRepresentation()
             
             // For loop view.
             reloadTables(scrollToTop: true)
@@ -131,7 +131,7 @@ class HomeViewController: UIViewController {
         // The line of code below cannot be placed in `updateViews()`
         // as the func will be called every time the tables are reloaded,
         // making that the date displayed is changed to the date of today.
-        navigationItem.title = Date().dateRepr()
+        navigationItem.title = Date().dateRepresentation()
         navigationItem.leftBarButtonItem = UIBarButtonItem(
 //            image: UIImage(systemName: HomeViewController.calendarIconName),
             image: UIImage(imageLiteralResourceName: "calendar"),  // TODO: - Antoher way to make the icon smaller?
@@ -332,7 +332,7 @@ extension HomeViewController {
         var defaultStartDate: Date
         if let dateOfLatestTask = tasksOfCurrentDate.last {
             // Convenient for creating multiple events.
-            defaultStartDate = dateOfLatestTask.dateInterval.end + 10 * TimeInterval.secsOfOneMinute
+            defaultStartDate = dateOfLatestTask.dateInterval.end + 10 * TimeInterval.secondsOfOneMinute
         } else {
             defaultStartDate = currentDate
         }
@@ -341,12 +341,12 @@ extension HomeViewController {
             defaultStartDate = Date()
         }
         // min % 5 == 0.
-        let minuteOffset = defaultStartDate.getComponent(.minute) % 5
+        let minuteOffset = defaultStartDate.get(.minute) % 5
         if minuteOffset != 0 {  // If minuteOffset is 0, the defaultStartTime will be added 15 mins.
-            defaultStartDate += TimeInterval(5 - minuteOffset) * TimeInterval.secsOfOneMinute
+            defaultStartDate += TimeInterval(5 - minuteOffset) * TimeInterval.secondsOfOneMinute
         }
         
-        var defaultEndDate = defaultStartDate + 40 * TimeInterval.secsOfOneMinute
+        var defaultEndDate = defaultStartDate + 40 * TimeInterval.secondsOfOneMinute
         if !Calendar.current.isDate(defaultStartDate, inSameDayAs: defaultEndDate) {
             defaultEndDate = Calendar.current.date(
                 bySettingHour: 23,
@@ -382,11 +382,11 @@ extension HomeViewController {
         var calendar = Calendar.current
         calendar.timeZone = TimeZone.current
         var triggerDateComponents = DateComponents()
-        triggerDateComponents.year = triggerDate.getComponent(.year)
-        triggerDateComponents.month = triggerDate.getComponent(.month)
-        triggerDateComponents.day = triggerDate.getComponent(.day)
-        triggerDateComponents.hour = triggerDate.getComponent(.hour)
-        triggerDateComponents.minute = triggerDate.getComponent(.minute)
+        triggerDateComponents.year = triggerDate.get(.year)
+        triggerDateComponents.month = triggerDate.get(.month)
+        triggerDateComponents.day = triggerDate.get(.day)
+        triggerDateComponents.hour = triggerDate.get(.hour)
+        triggerDateComponents.minute = triggerDate.get(.minute)
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
 
         // Creates request.
@@ -413,16 +413,16 @@ extension HomeViewController {
             }
             
             notificationCenter.add(makeNotificationRequest(
-                title: task.titleReprText + " will start at " + task.dateInterval.start.timeRepr(),
-                body: task.timeAndDurationReprText,
+                title: task.titleRepresentation + " will start at " + task.dateInterval.start.timeRepresentation(),
+                body: task.timeAndDurationRepresentation,
                 identifier: task.identifier,
-                triggerDate: task.dateInterval.start - 10 * TimeInterval.secsOfOneMinute
+                triggerDate: task.dateInterval.start - 10 * TimeInterval.secondsOfOneMinute
             ))
             notificationCenter.add(makeNotificationRequest(
-                title: task.titleReprText + " will finish at " + task.dateInterval.end.timeRepr(),
-                body: task.timeAndDurationReprText,
+                title: task.titleRepresentation + " will finish at " + task.dateInterval.end.timeRepresentation(),
+                body: task.timeAndDurationRepresentation,
                 identifier: task.identifier,
-                triggerDate: task.dateInterval.end - 10 * TimeInterval.secsOfOneMinute
+                triggerDate: task.dateInterval.end - 10 * TimeInterval.secondsOfOneMinute
             ))
         }
         
@@ -557,7 +557,7 @@ extension HomeViewController: EventEditViewControllerDelegate {
         for task in tasks {
             if let intersectionInterval = task.dateInterval.intersection(with: newTask.dateInterval) {
                 let componentsToCompare: [Calendar.Component] = [.year, .month, .day, .hour, .minute]
-                if intersectionInterval.start.getComponents(componentsToCompare) == intersectionInterval.end.getComponents(componentsToCompare) {
+                if intersectionInterval.start.get(componentsToCompare) == intersectionInterval.end.get(componentsToCompare) {
                     // 8:00-8:30, 8:30-9:30. Has intersection but is allowed.
                     return nil
                 }

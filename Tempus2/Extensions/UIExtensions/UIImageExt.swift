@@ -10,7 +10,10 @@ import Foundation
 import UIKit
 
 extension UIImage {
-    func set(color: UIColor) -> UIImage {
+    
+    // MARK: - Color Conversions
+    
+    func convertTo(color: UIColor) -> UIImage {
         UIGraphicsBeginImageContext(self.size)
         
         color.setFill()
@@ -37,12 +40,8 @@ extension UIImage {
 }
 
 extension UIImage {
-    func resize(to targetSize: CGSize) -> UIImage {
-        let size = self.size
-        let widthRatio = targetSize.width / size.width
-        let heightRatio = targetSize.height / size.height
-        return resize(widthRatio: widthRatio, heightRatio: heightRatio)
-    }
+    
+    // MARK: - Resizing
     
     func resize(widthRatio: CGFloat, heightRatio: CGFloat) -> UIImage {
         let newSize = widthRatio > heightRatio
@@ -56,6 +55,13 @@ extension UIImage {
         UIGraphicsEndImageContext()
         
         return newImage!
+    }
+    
+    func resize(to targetSize: CGSize) -> UIImage {
+        let size = self.size
+        let widthRatio = targetSize.width / size.width
+        let heightRatio = targetSize.height / size.height
+        return resize(widthRatio: widthRatio, heightRatio: heightRatio)
     }
     
     func scale(to ratio: CGFloat) -> UIImage {

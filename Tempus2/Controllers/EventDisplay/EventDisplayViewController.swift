@@ -107,7 +107,7 @@ extension EventDisplayViewController {
             titleCell = EventDisplayCell()
             titleCell.updateValues(
                 iconName: "title",
-                attributedText: task.titleAndDateTimeRepr
+                attributedText: task.attributedRepresentation
             )
             return titleCell
         case 1:
@@ -116,7 +116,7 @@ extension EventDisplayViewController {
                 iconName: task.description.isEmpty
                     ? nil
                     : "description",
-                attributedText: task.descriptionRepr
+                attributedText: task.descriptionAttributedRepresentation
             )
             return descriptionCell
         default:
@@ -132,7 +132,7 @@ extension EventDisplayViewController {
     private func displayDeletionWarning(completion: @escaping (_ shouldDelete: Bool) -> Void) {
         let deletionAlert = UIAlertController(
             title: nil,
-            message: "Do you really want to delete the event: \(task.titleReprText)?",
+            message: "Do you really want to delete the event: \(task.titleRepresentation)?",
             preferredStyle: .actionSheet
         )
         

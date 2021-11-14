@@ -13,7 +13,7 @@ class CalendarViewController: UIViewController {
     
     private var currentMonth: Date! {
         didSet {
-            navigationItem.title = currentMonth.monthRepr()
+            navigationItem.title = currentMonth.monthRepresentation()
         }
     }
     

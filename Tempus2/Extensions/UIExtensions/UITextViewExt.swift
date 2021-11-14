@@ -10,7 +10,8 @@ import Foundation
 import UIKit
 
 extension UITextView {
-    func selectMostLeft() {
+        
+    func selectBeginning() {
         self.selectedTextRange = self.textRange(
             from: self.beginningOfDocument,
             to: self.beginningOfDocument

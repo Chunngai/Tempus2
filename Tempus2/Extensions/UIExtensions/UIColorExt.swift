@@ -10,6 +10,9 @@ import Foundation
 import UIKit
 
 extension UIColor {
+    
+    // MARK: - Architecture Conversions
+    
     static func intRGB2UIColor(red: Int, green: Int, blue: Int, alpha: CGFloat = 1) -> UIColor {
         return UIColor(
             red: CGFloat(red) / 255,

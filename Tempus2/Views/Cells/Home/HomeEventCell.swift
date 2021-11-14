@@ -104,14 +104,14 @@ class HomeEventCell: UITableViewCell {
         
         if !task.description.isEmpty {
             titleLabel.attributedText = NSMutableAttributedString(
-                string: task.titleAttrReprText.string + " 🏷",
-                attributes: task.titleAttrReprText.attributes(at: 0, effectiveRange: nil)
+                string: task.titleAttributedRepresentation.string + " 🏷",
+                attributes: task.titleAttributedRepresentation.attributes(at: 0, effectiveRange: nil)
             )
         } else {
-            titleLabel.attributedText = task.titleAttrReprText
+            titleLabel.attributedText = task.titleAttributedRepresentation
         }
         
-        timeLabel.text = task.timeAndDurationReprText
+        timeLabel.text = task.timeAndDurationRepresentation
     }
 }
 

@@ -57,10 +57,10 @@ class EventEditViewController: UITableViewController {
     private var oldDescription: String!
     private var isContentChanged: Bool {
         return oldTitle != titleCell.textView.content
-            || oldStartDateAndTime.dateRepr() != startDateAndTimePickerCell.dateAndTime.dateRepr()
-            || oldStartDateAndTime.timeRepr() != startDateAndTimePickerCell.dateAndTime.timeRepr()
-            || oldEndDateAndTime.dateRepr() != endDateAndTimePickerCell.dateAndTime.dateRepr()
-            || oldEndDateAndTime.timeRepr() != endDateAndTimePickerCell.dateAndTime.timeRepr()
+            || oldStartDateAndTime.dateRepresentation() != startDateAndTimePickerCell.dateAndTime.dateRepresentation()
+            || oldStartDateAndTime.timeRepresentation() != startDateAndTimePickerCell.dateAndTime.timeRepresentation()
+            || oldEndDateAndTime.dateRepresentation() != endDateAndTimePickerCell.dateAndTime.dateRepresentation()
+            || oldEndDateAndTime.timeRepresentation() != endDateAndTimePickerCell.dateAndTime.timeRepresentation()
             || oldDescription != descriptionCell.textView.content
     }
     
@@ -202,7 +202,7 @@ extension EventEditViewController {
         let dateIntervalConflictAlert = UIAlertController(
             title: "Date interval conflict",
             message: "The current date interval is conflicted with task:  \(conflictedTask.title)"
-                + " (\(conflictedTask.timeReprText))",
+                + " (\(conflictedTask.timeReprsentation))",
             preferredStyle: .alert
         )
         
@@ -466,7 +466,7 @@ extension EventEditViewController: DateAndTimePickerDelegate {
         let startDateAndTime = startDateAndTimePickerCell.dateAndTime
         let endDateAndTime = endDateAndTimePickerCell.dateAndTime
         if startDateAndTime >  endDateAndTime {
-            var newEndDateAndTime = startDateAndTime + 40 * TimeInterval.secsOfOneMinute
+            var newEndDateAndTime = startDateAndTime + 40 * TimeInterval.secondsOfOneMinute
             if !isDateSelectable && !Calendar.current.isDate(newEndDateAndTime, inSameDayAs: startDateAndTime) {
                 newEndDateAndTime = Calendar.current.date(
                     bySettingHour: 23,
@@ -554,7 +554,7 @@ extension EventEditViewController: UITextViewDelegate {
         }
         
         if textView.isShowingPlaceHolder {
-            textView.selectMostLeft()
+            textView.selectBeginning()
         }
     }
     
@@ -567,7 +567,7 @@ extension EventEditViewController: UITextViewDelegate {
         }
         
         if textView.isShowingPlaceHolder {
-            textView.selectMostLeft()
+            textView.selectBeginning()
         }
         return true
     }
@@ -645,7 +645,7 @@ extension EventEditViewController {
         Date()
     }
     static var defaultEndDate: Date {
-        EventEditViewController.defaultStartDate + 40 * TimeInterval.secsOfOneMinute
+        EventEditViewController.defaultStartDate + 40 * TimeInterval.secondsOfOneMinute
     }
     
     static let eventTextViewCellReusableIdentifier = "EventTextViewCell"

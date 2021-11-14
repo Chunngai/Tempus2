@@ -15,6 +15,8 @@ extension UINavigationBar {
         setBackgroundImage(UIImage(), for: UIBarMetrics.default)
         shadowImage = UIImage()
     }
+    
+    // https://stackoverflow.com/questions/26390072/how-to-remove-border-of-the-navigationbar-in-swift
     func showBarSeparator() {
         setBackgroundImage(nil, for: UIBarMetrics.default)
         shadowImage = nil

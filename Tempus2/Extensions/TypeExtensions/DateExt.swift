@@ -9,21 +9,29 @@
 import Foundation
 
 extension Date {
+    
+    // MARK: - Getting Components
+    
     // https://stackoverflow.com/questions/38248941/how-to-get-time-hour-minute-second-in-swift-3-using-nsdate
-    func getComponent(_ component: Calendar.Component) -> Int {
+    func get(_ component: Calendar.Component) -> Int {
         return Calendar
             .current
-            .component(component, from: self)
+            .component(
+                component,
+                from: self
+            )
     }
     
-    func getComponents(_ components: [Calendar.Component]) -> [Int] {
+    func get(_ components: [Calendar.Component]) -> [Int] {
         return components.compactMap { (component) -> Int in
-            getComponent(component)
+            get(component)
         }
     }
 }
  
 extension Date {
+    
+    // MARK: - Representations
     
     private var defaultDateFormat: String {
         "EEEE, MMM d"
@@ -37,30 +45,37 @@ extension Date {
         return "MMMM, yyyy"
     }
     
-    private func makeRepr(with format: String) -> String {
+    private func makeRepresentation(with format: String) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = format
         dateFormatter.timeZone = TimeZone(secondsFromGMT: TimeZone.current.secondsFromGMT())
         return dateFormatter.string(from: self)
     }
     
-    func dateRepr(ofFormat format: String = "") -> String {
-        let dateFormat = format.isEmpty ? defaultDateFormat : format
-        return makeRepr(with: dateFormat)
+    func dateRepresentation(ofFormat format: String = "") -> String {
+        let dateFormat = format.isEmpty
+            ? defaultDateFormat
+            : format
+        return makeRepresentation(with: dateFormat)
     }
     
-    func timeRepr(ofFormat format: String = "") -> String {
-        let timeFormat = format.isEmpty ? defaultTimeFormat : format
-        return makeRepr(with: timeFormat)
+    func timeRepresentation(ofFormat format: String = "") -> String {
+        let timeFormat = format.isEmpty
+            ? defaultTimeFormat
+            : format
+        return makeRepresentation(with: timeFormat)
     }
     
-    func monthRepr(ofFormat format: String = "") -> String {
-        let monthFormat = format.isEmpty ? defaultMonthFormat : format
-        return makeRepr(with: monthFormat)
+    func monthRepresentation(ofFormat format: String = "") -> String {
+        let monthFormat = format.isEmpty
+            ? defaultMonthFormat
+            : format
+        return makeRepresentation(with: monthFormat)
     }
 }
 
 extension Date {
+        
     // https://stackoverflow.com/questions/5979462/problem-combining-a-date-and-a-time-into-a-single-nsdate
     static func combine(date: Date, with time: Date) -> Date {
         let calendar = Calendar.current
@@ -86,11 +101,14 @@ extension Date {
 }
 
 extension Date {
+    
+    // MARK: - Days
+    
     var yesterday: Date {
-        self - TimeInterval.secsOfOneDay
+        self - TimeInterval.secondsOfOneDay
     }
     
     var tomorrow: Date {
-        self + TimeInterval.secsOfOneDay
+        self + TimeInterval.secondsOfOneDay
     }
 }

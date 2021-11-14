@@ -10,12 +10,14 @@ import Foundation
 import UIKit
 
 extension Array where Element == Task {
+        
+    // TODO: - Use another way to get tasks of the same date.
     func tasksOf(_ date: Date) -> [Task] {
         return self.compactMap { (task) -> Task? in
             if Calendar.current.isDate(
                 task.dateInterval.start,
                 inSameDayAs: date
-                ) {
+            ) {
                 return task
             } else {
                 return nil
@@ -25,6 +27,7 @@ extension Array where Element == Task {
 }
 
 extension Array where Element == Task {
+        
     mutating func replace(_ oldTask: Task, with newTask: Task) {
         guard let oldTaskIndex = self.firstIndex(of: oldTask) else {
             return
@@ -41,45 +44,58 @@ extension Array where Element == Task {
 }
 
 extension Task {
-    var titleReprText: String {
+    
+    // MARK: - Title Representations
+    
+    var titleRepresentation: String {
         return !title.isEmpty
             ? title
             : "(No title)"
     }
     
-    var titleAttrReprText: NSAttributedString {
-        let attrString = NSMutableAttributedString(string: titleReprText)
+    var titleAttributedRepresentation: NSAttributedString {
+        let attrString = NSMutableAttributedString(string: titleRepresentation)
         if isCompleted {
             attrString.setDeleteLine()
         }
         return attrString
     }
+}
+
+extension Task {
     
-    var timeReprText: String {
-        return dateInterval.start.timeRepr()
+    // MARK: - DateInterval Representations
+    
+    var timeReprsentation: String {
+        return dateInterval.start.timeRepresentation()
             + " - "
-            + dateInterval.end.timeRepr()
+            + dateInterval.end.timeRepresentation()
     }
     
-    var timeAndDurationReprText: String {
-        return timeReprText
+    var timeAndDurationRepresentation: String {
+        return timeReprsentation
             + " "
             + "(\(dateInterval.duration.durationRepr))"
     }
     
-    var dateAndTimeAndDurationReprText: String {
-        return dateInterval.start.dateRepr()
+    var dateAndTimeAndDurationRepresentation: String {
+        return dateInterval.start.dateRepresentation()
             + " · "
-            + timeAndDurationReprText
+            + timeAndDurationRepresentation
     }
+}
+
+extension Task {
     
-    private var uncompletedTaskTitleAttrs: [NSAttributedString.Key: Any] {
+    // MARK: - Task Representations
+    
+    private var uncompletedTextAttributes: [NSAttributedString.Key: Any] {
         return [
             .font : Theme.title2Font
         ]
     }
     
-    private var completedTaskTitleAttrs: [NSAttributedString.Key: Any] {
+    private var completedTextAttributes: [NSAttributedString.Key: Any] {
         return [
             .strikethroughStyle: NSUnderlineStyle.single.rawValue,
             .strikethroughColor: UIColor.black,
@@ -87,56 +103,67 @@ extension Task {
         ]
     }
     
-    private var taskDateAndTimeAttrs: [NSAttributedString.Key: Any] {
+    private var dateAndTimeAndDurationTextAttributes: [NSAttributedString.Key: Any] {
         return [
             .font : Theme.bodyFont
         ]
     }
     
-    var titleAndDateTimeRepr: NSAttributedString {
+    private var taskTextAttributes: [NSAttributedString.Key: Any] {
+        return [
+            .paragraphStyle : {
+                let paraStyle = NSMutableParagraphStyle()
+                paraStyle.lineSpacing = 10
+                return paraStyle
+            }()
+        ]
+    }
+    
+    var attributedRepresentation: NSAttributedString {
         let repr = NSMutableAttributedString(
-            string: titleReprText
+            string: titleRepresentation
                 + "\n"
-                + dateAndTimeAndDurationReprText
+                + dateAndTimeAndDurationRepresentation
         )
         
         repr.set(
             attributes: isCompleted
-                ? completedTaskTitleAttrs
-                : uncompletedTaskTitleAttrs,
-            for: titleReprText
+                ? completedTextAttributes
+                : uncompletedTextAttributes,
+            for: titleRepresentation
         )
         repr.set(
-            attributes: taskDateAndTimeAttrs,
-            for: dateAndTimeAndDurationReprText
+            attributes: dateAndTimeAndDurationTextAttributes,
+            for: dateAndTimeAndDurationRepresentation
         )
         repr.set(
-            attributes: [
-                .paragraphStyle : {
-                    let paraStyle = NSMutableParagraphStyle()
-                    paraStyle.lineSpacing = 10
-                    return paraStyle
-                }()
-            ]
+            attributes: taskTextAttributes
         )
-        return repr
-    }
-    
-    private var descriptionAttrs: [NSAttributedString.Key: Any] {
-        return [
-            .font : Theme.bodyFont
-        ]
-    }
-    
-    var descriptionRepr: NSAttributedString {
-        let repr = NSMutableAttributedString(string: description)
-        repr.set(attributes: descriptionAttrs)
+        
         return repr
     }
 }
 
 extension Task {
+    
+    // MARK: - Description representations
+    
+    private var descriptionTextAttributes: [NSAttributedString.Key: Any] {
+        return [
+            .font : Theme.bodyFont
+        ]
+    }
+    
+    var descriptionAttributedRepresentation: NSAttributedString {
+        let repr = NSMutableAttributedString(string: description)
+        repr.set(attributes: descriptionTextAttributes)
+        return repr
+    }
+}
+
+extension Task {
+        
     var identifier: String {
-        return dateAndTimeAndDurationReprText
+        return dateAndTimeAndDurationRepresentation
     }
 }

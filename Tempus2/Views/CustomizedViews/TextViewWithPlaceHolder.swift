@@ -34,7 +34,7 @@ class TextViewWithPlaceHolder: UITextView {
             if newValue.isEmpty {
                 text = placeHolder
                 textColor = Theme.placeHolderColor
-                selectMostLeft()
+                selectBeginning()
             } else {
                 text = isShowingPlaceHolder
                     // textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool
@@ -63,7 +63,7 @@ extension TextViewWithPlaceHolder {
         let bool = super.becomeFirstResponder()
         
         if text == placeHolder {
-            selectMostLeft()
+            selectBeginning()
         }
         return bool
     }
