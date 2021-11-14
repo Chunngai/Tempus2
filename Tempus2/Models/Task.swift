@@ -9,15 +9,18 @@
 import Foundation
 
 struct Task: Codable {
+    
     var title: String
+    
     // The dates in dateInterval are UTC.
     // Note that It's not appropriate to set a timezone for Date objs.
     var dateInterval: DateInterval
+    
     var description: String
     
     var isCompleted: Bool
 }
- 
+
 extension Task {
     
     // MARK: - IO
@@ -25,7 +28,8 @@ extension Task {
     // https://stackoverflow.com/questions/57665746/swift-5-xcode-11-betas-5-6-how-to-write-to-a-json-file
     static func load() -> [Task] {
         do {
-            let fileURL = try FileManager.default
+            let fileURL = try FileManager
+                .default
                 .url(
                     for: .applicationSupportDirectory,
                     in: .userDomainMask,
@@ -36,15 +40,18 @@ extension Task {
             
             let data = try Data(contentsOf: fileURL)
             let tasks = try JSONDecoder().decode([Task].self, from: data)
+            
             return tasks
         } catch {
             print(error)
+            
             return []
         }
     }
     static func save(_ tasks: [Task]) {
         do {
-            let fileURL = try FileManager.default
+            let fileURL = try FileManager
+                .default
                 .url(
                     for: .applicationSupportDirectory,
                     in: .userDomainMask,
@@ -52,7 +59,7 @@ extension Task {
                     create: true
             )
                 .appendingPathComponent("tasks.json")
-
+            
             try JSONEncoder()
                 .encode(tasks)
                 .write(to: fileURL)
@@ -63,34 +70,44 @@ extension Task {
 }
 
 extension Task: Equatable {
+    
+    // MARK: - Equatable
+    
     static func == (lhs: Task, rhs: Task) -> Bool {
+        // TODO: - Using an identifier or `dateInterval` may be enough.
         return lhs.title == rhs.title
             && lhs.dateInterval == rhs.dateInterval
             && lhs.description == rhs.description
+            && lhs.isCompleted == rhs.isCompleted
     }
 }
 
 extension Task {
-    func loadSamples() -> [Task] {
-        func makeDate(hour: Int, minute: Int) -> Date {
-            var dateComponents = Calendar
-                .current
-                .dateComponents(
-                    in: TimeZone.current,
-                    from: Date()
-            )
-            dateComponents.hour = hour
-            dateComponents.minute = minute
-            return Calendar.current.date(from: dateComponents) ?? Date()
-        }
+    
+    // MARK: - Samples
+    
+    private func makeDate(hour: Int, minute: Int) -> Date {
+        var dateComponents = Calendar
+            .current
+            .dateComponents(
+                in: TimeZone.current,
+                from: Date()
+        )
         
+        dateComponents.hour = hour
+        dateComponents.minute = minute
+        
+        return Calendar.current.date(from: dateComponents) ?? Date()
+    }
+    
+    func loadSamples() -> [Task] {
         return [
             Task(
                 title: "Breakfast",
                 dateInterval: DateInterval(
                     start: makeDate(hour: 8, minute: 0),
                     duration: TimeInterval.secsOfOneHour * 1
-            ),
+                ),
                 description: "breakfast description",
                 isCompleted: false
             ),
@@ -109,7 +126,7 @@ extension Task {
                     duration: TimeInterval.secsOfOneHour * 1.5),
                 description: "math course description",
                 isCompleted: true
-            ),
+            )
         ]
     }
 }
