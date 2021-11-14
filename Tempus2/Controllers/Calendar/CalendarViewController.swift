@@ -40,7 +40,7 @@ class CalendarViewController: UIViewController {
         super.viewDidLoad()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "This month",
+            image: UIImage(imageLiteralResourceName: "now"),
             style: .plain,
             target: self,
             action: #selector(thisMonthButtonTapped)

@@ -131,13 +131,15 @@ class HomeViewController: UIViewController {
         // making that the date displayed is changed to the date of today.
         navigationItem.title = Date().dateRepr()
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: HomeViewController.calendarIconName),
+//            image: UIImage(systemName: HomeViewController.calendarIconName),
+            image: UIImage(imageLiteralResourceName: "calendar"),  // TODO: - Antoher way to make the icon smaller?
             style: .plain,
             target: self,
             action: #selector(calendarButtonTapped)
         )
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "Today",
+//            title: "Today",
+            image: UIImage(imageLiteralResourceName: "now"),
             style: .plain,
             target: self,
             action: #selector(todayButtonTapped)
