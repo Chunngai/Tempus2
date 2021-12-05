@@ -150,7 +150,7 @@ extension EventEditViewController {
     // http://swiftdeveloperblog.com/uialertcontroller-confirmation-dialog-swift/
     private func displayInvalidDateIntervalWarning() {
         let invalidDateIntervalAlert = UIAlertController(
-            title: "Invalid date interval",
+            title: "Invalid Date Interval",
             message: "The event end time cannot be set before the start time.",
             preferredStyle: .alert
         )
@@ -173,13 +173,13 @@ extension EventEditViewController {
     // https://stackoverflow.com/questions/38990882/closure-use-of-non-escaping-parameter-may-allow-it-to-escape
     private func displayEditDiscardingWarning(completion: @escaping (_ shouldDiscard: Bool) -> Void) {
         let unsaveAndQuitAlert = UIAlertController(
-            title: nil,
+            title: "Discarding Edits",
             message: "Changes may be made.\nAre you sure you want to discard your changes?",
             preferredStyle: .actionSheet
         )
         
         let discardChangesButton = UIAlertAction(
-            title: "Discard Changes",
+            title: "Discarding Changes",
             style: .default,
             handler: { (action) -> Void in
                 completion(true)
@@ -198,9 +198,36 @@ extension EventEditViewController {
         self.present(unsaveAndQuitAlert, animated: true, completion: nil)
     }
     
+    private func displayStartAfterCurrentWarning(completion: @escaping (_ isOk: Bool) -> Void) {
+        let startBeforeCurrentAlert = UIAlertController(
+            title: "Starting before Current",
+            message: "The current event starts before current, is it Ok?",
+            preferredStyle: .actionSheet
+        )
+        
+        let isOkButton = UIAlertAction(
+            title: "Yes",
+            style: .default,
+            handler: { (action) -> Void in
+                completion(true)
+        })
+        
+        let isNotOkButton = UIAlertAction(
+            title: "No",
+            style: .cancel
+        ) { (action) -> Void in
+            completion(false)
+        }
+        
+        startBeforeCurrentAlert.addAction(isOkButton)
+        startBeforeCurrentAlert.addAction(isNotOkButton)
+        
+        self.present(startBeforeCurrentAlert, animated: true, completion: nil)
+    }
+    
     func displayDateIntervalConflictWarning(conflictedTask: Task) {
         let dateIntervalConflictAlert = UIAlertController(
-            title: "Date interval conflict",
+            title: "Date Interval Conflict",
             message: "The current date interval is conflicted with task:  \(conflictedTask.title)"
                 + " (\(conflictedTask.timeReprsentation))",
             preferredStyle: .alert
@@ -242,6 +269,33 @@ extension EventEditViewController {
 
 extension EventEditViewController {
     
+    private func save(title: String, startDateAndTime: Date, endDateAndTime: Date, description: String) {
+        let dateInterval = DateInterval(
+            start: startDateAndTime,
+            end: endDateAndTime
+        )
+        
+        let newTask = Task(
+            title: title,
+            dateInterval: dateInterval,
+            description: description,
+            isCompleted: task?.isCompleted ?? false
+        )
+        
+        if let conflictedTask = delegate.taskConflicted(with: newTask),
+            conflictedTask != task {
+            displayDateIntervalConflictWarning(conflictedTask: conflictedTask)
+            return
+        }
+        
+        if let task = task {
+            delegate.replace(task, with: newTask)
+        } else {
+            delegate.add(newTask)
+        }
+        delegate.dismiss(animated: true, completion: nil)
+    }
+    
     // MARK: - Actions
     
     @objc private func cancelButtonTapped() {
@@ -271,30 +325,27 @@ extension EventEditViewController {
             return
         }
         
-        let dateInterval = DateInterval(
-            start: startDateAndTime,
-            end: endDateAndTime
-        )
-        
-        let newTask = Task(
-            title: title,
-            dateInterval: dateInterval,
-            description: description,
-            isCompleted: task?.isCompleted ?? false
-        )
-        
-        if let conflictedTask = delegate.taskConflicted(with: newTask),
-            conflictedTask != task {
-            displayDateIntervalConflictWarning(conflictedTask: conflictedTask)
-            return
-        }
-        
-        if let task = task {
-            delegate.replace(task, with: newTask)
+        if startDateAndTime + TimeInterval.secondsOfOneMinute < Date() {
+            displayStartAfterCurrentWarning { (isOk) in
+                if !isOk {
+                    return
+                } else {
+                    self.save(
+                        title: title,
+                        startDateAndTime: startDateAndTime,
+                        endDateAndTime: endDateAndTime,
+                        description: description
+                    )
+                }
+            }
         } else {
-            delegate.add(newTask)
+            self.save(
+                title: title,
+                startDateAndTime: startDateAndTime,
+                endDateAndTime: endDateAndTime,
+                description: description
+            )
         }
-        delegate.dismiss(animated: true, completion: nil)
     }
 }
 

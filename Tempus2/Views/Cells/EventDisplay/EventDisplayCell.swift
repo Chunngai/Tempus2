@@ -42,7 +42,7 @@ class EventDisplayCell: EventBaseCell {
         
         label.snp.makeConstraints { (make) in
             make.leading.equalToSuperview()
-            make.trailing.equalToSuperview()
+            make.trailing.equalToSuperview().inset(5)
             make.top.equalToSuperview()
             make.bottom.equalToSuperview()
         }
