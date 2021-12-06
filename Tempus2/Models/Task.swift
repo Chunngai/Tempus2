@@ -10,6 +10,8 @@ import Foundation
 
 struct Task: Codable {
     
+    var identifier: String
+    
     var title: String
     
     // The dates in dateInterval are UTC.
@@ -101,6 +103,7 @@ extension Task {
     func loadSamples() -> [Task] {
         return [
             Task(
+                identifier: "sample_1",
                 title: "Breakfast",
                 dateInterval: DateInterval(
                     start: makeDate(hour: 8, minute: 0),
@@ -110,6 +113,7 @@ extension Task {
                 isCompleted: false
             ),
             Task(
+                identifier: "sample_2",
                 title: "AI course",
                 dateInterval: DateInterval(
                     start: makeDate(hour: 10, minute: 30),
@@ -118,6 +122,7 @@ extension Task {
                 isCompleted: false
             ),
             Task(
+                identifier: "sample_3",
                 title: "Math course",
                 dateInterval: DateInterval(
                     start: makeDate(hour: 13, minute: 0),

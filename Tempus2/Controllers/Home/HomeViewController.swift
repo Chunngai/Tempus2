@@ -555,6 +555,10 @@ extension HomeViewController: EventEditViewControllerDelegate {
     
     internal func taskConflicted(with newTask: Task) -> Task? {
         for task in tasks {
+            if task.identifier == newTask.identifier {
+                continue
+            }
+            
             if let intersectionInterval = task.dateInterval.intersection(with: newTask.dateInterval) {
                 let componentsToCompare: [Calendar.Component] = [.year, .month, .day, .hour, .minute]
                 if intersectionInterval.start.get(componentsToCompare) == intersectionInterval.end.get(componentsToCompare) {

@@ -276,14 +276,14 @@ extension EventEditViewController {
         )
         
         let newTask = Task(
+            identifier: task?.identifier ?? String(Date().hashValue),
             title: title,
             dateInterval: dateInterval,
             description: description,
             isCompleted: task?.isCompleted ?? false
         )
         
-        if let conflictedTask = delegate.taskConflicted(with: newTask),
-            conflictedTask != task {
+        if let conflictedTask = delegate.taskConflicted(with: newTask) {
             displayDateIntervalConflictWarning(conflictedTask: conflictedTask)
             return
         }
