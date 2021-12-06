@@ -225,6 +225,35 @@ extension EventEditViewController {
         self.present(startBeforeCurrentAlert, animated: true, completion: nil)
     }
     
+    private func displayDelayTasksWarning(conflictedTask: Task, completion: @escaping (_ shouldDelay: Bool) -> Void) {
+        let delayTasksAlert = UIAlertController(
+            title: "Date Interval Conflict",
+            message: "The current date interval is conflicted with task:  \(conflictedTask.title)"
+                + " (\(conflictedTask.timeReprsentation))."
+                + " Should delay all subsequent tasks?",
+            preferredStyle: .actionSheet
+        )
+        
+        let shouldDelay = UIAlertAction(
+            title: "Yes",
+            style: .default,
+            handler: { (action) -> Void in
+                completion(true)
+        })
+        
+        let shouldNotDelay = UIAlertAction(
+            title: "No",
+            style: .cancel
+        ) { (action) -> Void in
+            completion(false)
+        }
+        
+        delayTasksAlert.addAction(shouldDelay)
+        delayTasksAlert.addAction(shouldNotDelay)
+        
+        self.present(delayTasksAlert, animated: true, completion: nil)
+    }
+    
     func displayDateIntervalConflictWarning(conflictedTask: Task) {
         let dateIntervalConflictAlert = UIAlertController(
             title: "Date Interval Conflict",
@@ -284,16 +313,33 @@ extension EventEditViewController {
         )
         
         if let conflictedTask = delegate.taskConflicted(with: newTask) {
-            displayDateIntervalConflictWarning(conflictedTask: conflictedTask)
-            return
-        }
-        
-        if let task = task {
-            delegate.replace(task, with: newTask)
+            if conflictedTask.dateInterval.start < newTask.dateInterval.start
+                && conflictedTask.dateInterval.end > newTask.dateInterval.start {
+                displayDateIntervalConflictWarning(conflictedTask: conflictedTask)
+                return
+            } else {
+                displayDelayTasksWarning(conflictedTask: conflictedTask) { (shouldDelay) in
+                    if shouldDelay {
+                        let secsToDelay = conflictedTask.dateInterval.start.distance(to: newTask.dateInterval.end)
+                        self.delegate.delay(tasksInTheSameDayAfter: newTask, for: secsToDelay)
+                    }
+                    
+                    if let task = self.task {
+                        self.delegate.replace(task, with: newTask)
+                    } else {
+                        self.delegate.add(newTask)
+                    }
+                    self.delegate.dismiss(animated: true, completion: nil)
+                }
+            }
         } else {
-            delegate.add(newTask)
+            if let task = task {
+                delegate.replace(task, with: newTask)
+            } else {
+                delegate.add(newTask)
+            }
+            delegate.dismiss(animated: true, completion: nil)
         }
-        delegate.dismiss(animated: true, completion: nil)
     }
     
     // MARK: - Actions
@@ -684,7 +730,9 @@ protocol EventEditViewControllerDelegate {
         
     func add(_ task: Task)
     func replace(_ oldTask: Task, with newTask: Task)
+    
     func taskConflicted(with newTask: Task) -> Task?
+    func delay(tasksInTheSameDayAfter task: Task, for secsToDelay: TimeInterval)
 }
 
 extension EventEditViewController {
