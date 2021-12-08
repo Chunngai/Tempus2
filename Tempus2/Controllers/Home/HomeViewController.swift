@@ -563,7 +563,7 @@ extension HomeViewController: EventEditViewControllerDelegate {
                 let componentsToCompare: [Calendar.Component] = [.year, .month, .day, .hour, .minute]
                 if intersectionInterval.start.get(componentsToCompare) == intersectionInterval.end.get(componentsToCompare) {
                     // 8:00-8:30, 8:30-9:30. Has intersection but is allowed.
-                    return nil
+                    continue
                 }
                 
                 return task
