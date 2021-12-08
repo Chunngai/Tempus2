@@ -201,7 +201,7 @@ extension EventEditViewController {
     private func displayStartAfterCurrentWarning(completion: @escaping (_ isOk: Bool) -> Void) {
         let startBeforeCurrentAlert = UIAlertController(
             title: "Starting before Current",
-            message: "The current event starts before current, is it Ok?",
+            message: "The event starts before current, is it Ok?",
             preferredStyle: .actionSheet
         )
         
@@ -371,7 +371,8 @@ extension EventEditViewController {
             return
         }
         
-        if startDateAndTime + TimeInterval.secondsOfOneMinute < Date() {
+        if startDateAndTime + TimeInterval.secondsOfOneMinute < Date()
+            && task == nil {
             displayStartAfterCurrentWarning { (isOk) in
                 if !isOk {
                     return
