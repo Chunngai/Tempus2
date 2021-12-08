@@ -73,9 +73,13 @@ extension Task {
     }
     
     var timeAndDurationRepresentation: String {
-        return timeReprsentation
-            + " "
-            + "(\(dateInterval.duration.durationRepr))"
+        if dateInterval.duration == 0 {
+            return String(timeReprsentation.split(separator: "-")[0]).trimmingWhitespacesAndNewlines()
+        } else {
+            return timeReprsentation
+                + " "
+                + "(\(dateInterval.duration.durationRepr))"
+        }
     }
     
     var dateAndTimeAndDurationRepresentation: String {
