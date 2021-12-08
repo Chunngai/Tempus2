@@ -21,6 +21,27 @@ struct Task: Codable {
     var description: String
     
     var isCompleted: Bool
+    
+    // MARK: - Init
+    
+    init(identifier: String?, title: String, dateInterval: DateInterval, description: String, isCompleted: Bool) {
+        self.identifier = identifier ?? String(Date().hashValue)
+        
+        self.title = title
+        self.dateInterval = dateInterval
+        self.description = description
+        self.isCompleted = isCompleted
+    }
+    
+    init(title: String, dateInterval: DateInterval, description: String, isCompleted: Bool) {
+        self.init(
+            identifier: nil,
+            title: title,
+            dateInterval: dateInterval,
+            description: description,
+            isCompleted: isCompleted
+        )
+    }
 }
 
 extension Task {
@@ -103,7 +124,6 @@ extension Task {
     func loadSamples() -> [Task] {
         return [
             Task(
-                identifier: "sample_1",
                 title: "Breakfast",
                 dateInterval: DateInterval(
                     start: makeDate(hour: 8, minute: 0),
@@ -113,7 +133,6 @@ extension Task {
                 isCompleted: false
             ),
             Task(
-                identifier: "sample_2",
                 title: "AI course",
                 dateInterval: DateInterval(
                     start: makeDate(hour: 10, minute: 30),
@@ -122,7 +141,6 @@ extension Task {
                 isCompleted: false
             ),
             Task(
-                identifier: "sample_3",
                 title: "Math course",
                 dateInterval: DateInterval(
                     start: makeDate(hour: 13, minute: 0),

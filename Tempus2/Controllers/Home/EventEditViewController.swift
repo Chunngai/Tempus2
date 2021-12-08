@@ -305,7 +305,7 @@ extension EventEditViewController {
         )
         
         let newTask = Task(
-            identifier: task?.identifier ?? String(Date().hashValue),
+            identifier: task?.identifier,
             title: title,
             dateInterval: dateInterval,
             description: description,
