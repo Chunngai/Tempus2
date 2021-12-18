@@ -572,15 +572,15 @@ extension HomeViewController: EventEditViewControllerDelegate {
         return nil
     }
     
-    internal func delay(tasksInTheSameDayAfter targetTask: Task, for secsToDelay: TimeInterval) {
-        for (i, task) in tasks.enumerated() {
-            if Calendar.current.isDate(task.dateInterval.start, inSameDayAs: targetTask.dateInterval.start) {
-                if task.dateInterval.start >= targetTask.dateInterval.start {
-                    tasks[i].dateInterval.start += secsToDelay
-                }
-            }
-        }
-    }
+//    internal func delay(tasksInTheSameDayAfter targetTask: Task, for secsToDelay: TimeInterval) {
+//        for (i, task) in tasks.enumerated() {
+//            if Calendar.current.isDate(task.dateInterval.start, inSameDayAs: targetTask.dateInterval.start) {
+//                if task.dateInterval.start >= targetTask.dateInterval.start {
+//                    tasks[i].dateInterval.start += secsToDelay
+//                }
+//            }
+//        }
+//    }
 }
 
 extension HomeViewController: HomeEventCellDelegate {
