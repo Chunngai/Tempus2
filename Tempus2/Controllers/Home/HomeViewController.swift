@@ -24,7 +24,7 @@ class HomeViewController: UIViewController {
     
     private var notificationCenter = UNUserNotificationCenter.current()
     
-    // Convenience for continuous event creation.
+    // Convenient for continuous event creation.
     private var endDateAndTimeOfLastAddedTask: Date? = nil
     
     // MARK: - Models
