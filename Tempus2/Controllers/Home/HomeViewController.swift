@@ -33,6 +33,7 @@ class HomeViewController: UIViewController {
         didSet {
             tasks.sort {
                 $0.dateInterval.start < $1.dateInterval.start
+                    || $0.dateInterval.end < $1.dateInterval.end
             }
             Task.save(tasks)
             prepareForNotifications()
