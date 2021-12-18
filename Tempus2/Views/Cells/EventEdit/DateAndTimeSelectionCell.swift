@@ -85,6 +85,13 @@ class DateAndTimeSelectionCell: EventBaseCell {
     override func updateLayouts() {
         super.updateLayouts()
         
+        iconImageView.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            // Aligns with the top of the text view (dateButton) container inset.
+            make.top.equalToSuperview().inset(TextViewWithPlaceHolder().textContainerInset.top)
+            make.height.width.equalTo(Theme.bodyFont.lineHeight * 1.2)
+        }
+        
         timeButton.snp.makeConstraints { (make) in
             make.top.bottom.trailing.equalToSuperview()
             make.width.equalTo(EventBaseCell.widthUnit)

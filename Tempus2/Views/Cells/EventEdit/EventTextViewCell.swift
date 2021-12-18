@@ -41,6 +41,13 @@ class EventTextViewCell: EventBaseCell {
     override func updateLayouts() {
         super.updateLayouts()
         
+        iconImageView.snp.makeConstraints { (make) in
+            make.centerX.equalToSuperview()
+            // Aligns with the top of the text view container inset.
+            make.top.equalToSuperview().inset(TextViewWithPlaceHolder().textContainerInset.top)
+            make.height.width.equalTo(Theme.bodyFont.lineHeight * 1.2)
+        }
+        
         textView.snp.makeConstraints { (make) in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()

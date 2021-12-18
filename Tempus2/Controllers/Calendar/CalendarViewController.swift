@@ -31,6 +31,7 @@ class CalendarViewController: UIViewController {
         calendar.showsVerticalScrollIndicator = false
         calendar.minimumLineSpacing = 0
         calendar.minimumInteritemSpacing = 0
+        calendar.showsHorizontalScrollIndicator = false
         return calendar
     }()
     

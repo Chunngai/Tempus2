@@ -12,7 +12,7 @@ class EventBaseCell: UITableViewCell {
     
     // MARK: - Views
     
-    private var iconImageView = UIImageView()
+    internal var iconImageView = UIImageView()
     private let iconBackView: UILabel = {
         let label = UILabel()
         return label
@@ -54,7 +54,8 @@ class EventBaseCell: UITableViewCell {
         }
         
         iconImageView.snp.makeConstraints { (make) in
-            make.centerY.centerX.equalToSuperview()
+//            make.centerY.centerX.equalToSuperview()
+            make.centerX.equalToSuperview()
             make.height.width.equalTo(Theme.bodyFont.lineHeight * 1.2)
         }
         
