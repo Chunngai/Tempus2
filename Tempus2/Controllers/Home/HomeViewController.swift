@@ -24,6 +24,9 @@ class HomeViewController: UIViewController {
     
     private var notificationCenter = UNUserNotificationCenter.current()
     
+    // Convenience for continuous event creation.
+    private var endDateAndTimeOfLastAddedTask: Date? = nil
+    
     // MARK: - Models
     
     private var tasks: [Task]! {
@@ -330,9 +333,9 @@ extension HomeViewController {
     
     @objc private func newEventButtonTapped() {
         var defaultStartDate: Date
-        if let dateOfLatestTask = tasksOfCurrentDate.last {
+        if let endDateAndTimeOfLastAddedTask = endDateAndTimeOfLastAddedTask {
             // Convenient for creating multiple events.
-            defaultStartDate = dateOfLatestTask.dateInterval.end + 10 * TimeInterval.secondsOfOneMinute
+            defaultStartDate = endDateAndTimeOfLastAddedTask + 10 * TimeInterval.secondsOfOneMinute
         } else {
             defaultStartDate = currentDate
         }
@@ -532,6 +535,8 @@ extension HomeViewController: EventEditViewControllerDelegate {
     
     internal func add(_ task: Task) {
         tasks.append(task)
+        
+        endDateAndTimeOfLastAddedTask = task.dateInterval.end
         
         // Scrolls to the newly added cell.
         let indexOfAddedCell = tasksOfCurrentDate.firstIndex { (currentTask) -> Bool in
