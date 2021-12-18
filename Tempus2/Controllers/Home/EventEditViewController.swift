@@ -383,7 +383,7 @@ extension EventEditViewController {
             return
         }
         
-        if startDateAndTime + TimeInterval.secondsOfOneMinute < Date()
+        if startDateAndTime + TimeInterval.Minute < Date()
             && task == nil {
             displayStartAfterCurrentWarning { (isOk) in
                 if !isOk {
@@ -576,7 +576,7 @@ extension EventEditViewController: DateAndTimePickerDelegate {
         let startDateAndTime = startDateAndTimePickerCell.dateAndTime
         let endDateAndTime = endDateAndTimePickerCell.dateAndTime
         if startDateAndTime >  endDateAndTime {
-            var newEndDateAndTime = startDateAndTime + 40 * TimeInterval.secondsOfOneMinute
+            var newEndDateAndTime = startDateAndTime + 40 * TimeInterval.Minute
             if !isDateSelectable && !Calendar.current.isDate(newEndDateAndTime, inSameDayAs: startDateAndTime) {
                 newEndDateAndTime = Calendar.current.date(
                     bySettingHour: 23,
@@ -757,7 +757,7 @@ extension EventEditViewController {
         Date()
     }
     static var defaultEndDate: Date {
-        EventEditViewController.defaultStartDate + 40 * TimeInterval.secondsOfOneMinute
+        EventEditViewController.defaultStartDate + 40 * TimeInterval.Minute
     }
     
     static let eventTextViewCellReusableIdentifier = "EventTextViewCell"

@@ -105,10 +105,10 @@ extension Date {
     // MARK: - Days
     
     var yesterday: Date {
-        self - TimeInterval.secondsOfOneDay
+        self - TimeInterval.Day
     }
     
     var tomorrow: Date {
-        self + TimeInterval.secondsOfOneDay
+        self + TimeInterval.Day
     }
 }

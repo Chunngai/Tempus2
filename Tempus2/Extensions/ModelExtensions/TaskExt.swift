@@ -75,7 +75,7 @@ extension Task {
     var timeAndDurationRepresentation: String {        
         // Instead of `if dateInterval.duration == 0`,
         // use the code below instead.
-        if dateInterval.duration < TimeInterval.secondsOfOneMinute {
+        if dateInterval.duration < TimeInterval.Minute {
             return String(timeReprsentation.split(separator: "-")[0]).trimmingWhitespacesAndNewlines()
         } else {
             return timeReprsentation

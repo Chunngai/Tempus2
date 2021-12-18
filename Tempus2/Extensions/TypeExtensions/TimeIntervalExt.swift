@@ -12,16 +12,16 @@ extension TimeInterval {
     
     // MARK: - Seconds of Time Units
     
-    static var secondsOfOneMinute: TimeInterval {
+    static var Minute: TimeInterval {
         return 60
     }
     
-    static var secondsOfOneHour: TimeInterval {
-        return 60 * secondsOfOneMinute
+    static var Hour: TimeInterval {
+        return 60 * Minute
     }
     
-    static var secondsOfOneDay: TimeInterval {
-        return 24 * secondsOfOneHour
+    static var Day: TimeInterval {
+        return 24 * Hour
     }
 }
 
@@ -34,8 +34,8 @@ extension TimeInterval {
             return "0m"
         }
         
-        let hours = Int(self) / Int(TimeInterval.secondsOfOneHour)
-        let minutes = Int(self) % Int(TimeInterval.secondsOfOneHour) / Int(TimeInterval.secondsOfOneMinute)
+        let hours = Int(self) / Int(TimeInterval.Hour)
+        let minutes = Int(self) % Int(TimeInterval.Hour) / Int(TimeInterval.Minute)
         
         var repr = ""
         if hours != 0 {

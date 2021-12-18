@@ -336,7 +336,7 @@ extension HomeViewController {
         var defaultStartDate: Date
         if let endDateAndTimeOfLastAddedTask = endDateAndTimeOfLastAddedTask {
             // Convenient for creating multiple events.
-            defaultStartDate = endDateAndTimeOfLastAddedTask + 10 * TimeInterval.secondsOfOneMinute
+            defaultStartDate = endDateAndTimeOfLastAddedTask + 10 * TimeInterval.Minute
         } else {
             defaultStartDate = currentDate
         }
@@ -347,10 +347,10 @@ extension HomeViewController {
         // min % 5 == 0.
         let minuteOffset = defaultStartDate.get(.minute) % 5
         if minuteOffset != 0 {  // If minuteOffset is 0, the defaultStartTime will be added 15 mins.
-            defaultStartDate += TimeInterval(5 - minuteOffset) * TimeInterval.secondsOfOneMinute
+            defaultStartDate += TimeInterval(5 - minuteOffset) * TimeInterval.Minute
         }
         
-        var defaultEndDate = defaultStartDate + 40 * TimeInterval.secondsOfOneMinute
+        var defaultEndDate = defaultStartDate + 40 * TimeInterval.Minute
         if !Calendar.current.isDate(defaultStartDate, inSameDayAs: defaultEndDate) {
             defaultEndDate = Calendar.current.date(
                 bySettingHour: 23,
@@ -420,13 +420,13 @@ extension HomeViewController {
                 title: task.titleRepresentation + " will start at " + task.dateInterval.start.timeRepresentation(),
                 body: task.timeAndDurationRepresentation,
                 identifier: task.identifier,
-                triggerDate: task.dateInterval.start - 10 * TimeInterval.secondsOfOneMinute
+                triggerDate: task.dateInterval.start - 10 * TimeInterval.Minute
             ))
             notificationCenter.add(makeNotificationRequest(
                 title: task.titleRepresentation + " will finish at " + task.dateInterval.end.timeRepresentation(),
                 body: task.timeAndDurationRepresentation,
                 identifier: task.identifier,
-                triggerDate: task.dateInterval.end - 10 * TimeInterval.secondsOfOneMinute
+                triggerDate: task.dateInterval.end - 10 * TimeInterval.Minute
             ))
         }
         
