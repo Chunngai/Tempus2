@@ -424,13 +424,13 @@ extension HomeViewController {
             notificationCenter.add(makeNotificationRequest(
                 title: task.titleRepresentation + " will start at " + task.dateInterval.start.timeRepresentation(),
                 body: task.timeAndDurationRepresentation,
-                identifier: task.identifier,
+                identifier: task.identifier + " start",
                 triggerDate: task.dateInterval.start - 10 * TimeInterval.Minute
             ))
             notificationCenter.add(makeNotificationRequest(
                 title: task.titleRepresentation + " will finish at " + task.dateInterval.end.timeRepresentation(),
                 body: task.timeAndDurationRepresentation,
-                identifier: task.identifier,
+                identifier: task.identifier + " finish",
                 triggerDate: task.dateInterval.end - 10 * TimeInterval.Minute
             ))
         }
