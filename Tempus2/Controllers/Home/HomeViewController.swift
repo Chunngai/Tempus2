@@ -16,6 +16,11 @@ class HomeViewController: UIViewController {
         didSet {
             navigationItem.title = currentDate.dateRepresentation()
             
+            // Resets to nil.
+            // Otherwise the date of it remains
+            // the date before `currentDate` is updaated.
+            endDateAndTimeOfLastAddedTask = nil
+            
             // For loop view.
             reloadTables(scrollToTop: true)
             loopScrollView.contentOffset = CGPoint(x: width, y: 0)
