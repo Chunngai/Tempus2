@@ -422,17 +422,28 @@ extension HomeViewController {
             }
             
             notificationCenter.add(makeNotificationRequest(
-                title: task.titleRepresentation + " will start at " + task.dateInterval.start.timeRepresentation(),
-                body: task.timeAndDurationRepresentation,
-                identifier: task.identifier + " start",
+                title: task.titleRepresentation,
+                body: "Will start at " + task.dateInterval.start.timeRepresentation(),
+                identifier: task.identifier + "-will-start",
                 triggerDate: task.dateInterval.start - 10 * TimeInterval.Minute
             ))
             notificationCenter.add(makeNotificationRequest(
-                title: task.titleRepresentation + " will finish at " + task.dateInterval.end.timeRepresentation(),
-                body: task.timeAndDurationRepresentation,
-                identifier: task.identifier + " finish",
-                triggerDate: task.dateInterval.end - 10 * TimeInterval.Minute
+                title: task.titleRepresentation,
+                body: (task.dateInterval.duration >= 1 * TimeInterval.Minute
+                    ? "Started: "
+                    : ""
+                ) + task.timeAndDurationRepresentation,
+                identifier: task.identifier + "-start",
+                triggerDate: task.dateInterval.start
             ))
+            if task.dateInterval.duration >= 1 * TimeInterval.Minute {
+                notificationCenter.add(makeNotificationRequest(
+                    title: task.titleRepresentation,
+                    body: "Finished",
+                    identifier: task.identifier + "-finish",
+                    triggerDate: task.dateInterval.end
+                ))
+            }
         }
         
         // https://stackoverflow.com/questions/40270598/ios-10-how-to-view-a-list-of-pending-notifications-using-unusernotificationcente

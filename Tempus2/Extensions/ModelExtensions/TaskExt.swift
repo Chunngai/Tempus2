@@ -80,7 +80,7 @@ extension Task {
         } else {
             return timeReprsentation
                 + " "
-                + "(\(dateInterval.duration.durationRepr))"
+                + "[\(dateInterval.duration.durationRepr)]"
         }
     }
     
