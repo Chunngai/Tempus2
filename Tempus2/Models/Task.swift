@@ -98,8 +98,7 @@ extension Task: Equatable {
     
     static func == (lhs: Task, rhs: Task) -> Bool {
         // No overlap in any of the two tasks.
-        // TODO: - Using an identifier or `dateInterval` may be enough.
-        return lhs.dateInterval == rhs.dateInterval
+        return lhs.identifier == rhs.identifier
     }
 }
 

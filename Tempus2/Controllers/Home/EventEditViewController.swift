@@ -167,6 +167,25 @@ extension EventEditViewController {
         self.present(invalidDateIntervalAlert, animated: true, completion: nil)
     }
     
+    private func displayStartAndEndDateNotInSameDayWarning() {
+        let alert = UIAlertController(
+            title: "Invalid Date Interval",
+            message: "The event start time is not in the same day as the event end time, which is currently not supported.",
+            preferredStyle: .alert
+        )
+        
+        let okButton = UIAlertAction(
+            title: "OK",
+            style: .default,
+            handler: { (action) -> Void in
+                return
+        })
+        
+        alert.addAction(okButton)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     // https://stackoverflow.com/questions/36116490/how-to-create-alert-sliding-from-bottom-with-buttons-on-ios
     // https://stackoverflow.com/questions/28487743/show-a-space-below-actions-in-uialertcontroller
     //
@@ -380,6 +399,11 @@ extension EventEditViewController {
         
         if startDateAndTime > endDateAndTime {
             displayInvalidDateIntervalWarning()
+            return
+        }
+        // TODO: - Tmp solution.
+        if !Calendar.current.isDate(startDateAndTime, inSameDayAs: endDateAndTime) {
+            displayStartAndEndDateNotInSameDayWarning()
             return
         }
         

@@ -627,7 +627,7 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
     
     internal func edit(_ task: Task) {
         let eventEditViewController = EventEditViewController()
-        eventEditViewController.updateValues(task: task, delegate: self, isDateSelectable: false)
+        eventEditViewController.updateValues(task: task, delegate: self, isDateSelectable: true)
         navigationController?.present(
             EventEditNavController(rootViewController: eventEditViewController),
             animated: true,
