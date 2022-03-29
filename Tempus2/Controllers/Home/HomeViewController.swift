@@ -12,7 +12,7 @@ class HomeViewController: UIViewController {
     
     private var width: CGFloat!
     private var height: CGFloat!
-    private var currentDate: Date = Date() {
+    private var currentDate: Date! {
         didSet {
             navigationItem.title = currentDate.dateRepresentation()
             
@@ -65,6 +65,10 @@ class HomeViewController: UIViewController {
     private var tasksOfNextDate: [Task] {
         return tasks.tasksOf(currentDate.tomorrow)
     }
+    
+    // MARK: - Controllers
+    
+    var delegate: CalendarViewController!
     
     // MARK: - Views
     
@@ -133,10 +137,7 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Loads tasks.
-        tasks = Task.load()
-        
+                
         // The line of code below cannot be placed in `updateViews()`
         // as the func will be called every time the tables are reloaded,
         // making that the date displayed is changed to the date of today.
@@ -218,6 +219,8 @@ class HomeViewController: UIViewController {
     }
     
     func updateViews() {
+        view.backgroundColor = .white
+        
         view.addSubview(loopScrollView)
         loopScrollView.addSubview(tableView0)
         loopScrollView.addSubview(tableView1)
@@ -225,6 +228,12 @@ class HomeViewController: UIViewController {
         
         view.addSubview(newEventButtonShadowView)
         newEventButtonShadowView.addSubview(newEventButton)
+    }
+    
+    func updateValues(tasks: [Task], date: Date, delegate: CalendarViewController) {
+        self.tasks = tasks
+        self.currentDate = date
+        self.delegate = delegate
     }
     
     func updateLayouts() {
@@ -317,12 +326,8 @@ extension HomeViewController {
     @objc private func calendarButtonTapped() {
         navigationItem.hideBackBarButtonItem()
         
-        let calendarViewController = CalendarViewController()
-        calendarViewController.updateValues(date: currentDate, delegate: self)
-        navigationController?.pushViewController(
-            calendarViewController,
-            animated: true
-        )
+        delegate.updateValues(date: currentDate)
+        navigationController?.popViewController(animated: true)
     }
     
     @objc private func todayButtonTapped() {
@@ -646,19 +651,6 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
         tasks[index].isCompleted.toggle()
         
         notificationCenter.removePendingNotificationRequests(withIdentifiers: [task.identifier])
-    }
-}
-
-extension HomeViewController: CalendarViewControllerDelegate {
-    
-    // CalendarViewController Delegate
-    
-    internal func updateCurrentDate(to date: Date) {
-        currentDate = date
-    }
-    
-    internal func containsTasksOf(date: Date) -> Bool {
-        return !tasks.tasksOf(date).isEmpty
     }
 }
 

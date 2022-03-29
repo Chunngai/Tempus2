@@ -11,15 +11,15 @@ import JTAppleCalendar
 
 class CalendarViewController: UIViewController {
     
-    private var currentMonth: Date! {
+    private var currentDate: Date! {
         didSet {
-            navigationItem.title = currentMonth.monthRepresentation()
+            navigationItem.title = currentDate.monthRepresentation()
         }
     }
     
-    // MARK: - Controllers
+    // MARK: - Models
     
-    private var delegate: HomeViewController!
+    var tasks: [Task] = Task.load()
     
     // MARK: - Views
     
@@ -83,11 +83,9 @@ class CalendarViewController: UIViewController {
         }
     }
     
-    func updateValues(date: Date, delegate: HomeViewController) {
-        currentMonth = date
-        calendar.scrollToHeaderForDate(currentMonth, withAnimation: false)
-        
-        self.delegate = delegate
+    func updateValues(date: Date) {
+        currentDate = date
+        calendar.scrollToHeaderForDate(currentDate, withAnimation: false)
     }
 }
 
@@ -96,8 +94,8 @@ extension CalendarViewController {
     // MARK: - Actions
     
     @objc func thisMonthButtonTapped() {
-        currentMonth = Date()
-        calendar.scrollToHeaderForDate(currentMonth, withAnimation: true)
+        currentDate = Date()
+        calendar.scrollToHeaderForDate(currentDate, withAnimation: true)
     }
     
 }
@@ -140,7 +138,7 @@ extension CalendarViewController: JTACMonthViewDelegate {
         }
         
         var hasTasks = false
-        if delegate.containsTasksOf(date: date) {
+        if self.tasks.hasTasks(on: date) {
             hasTasks = true
         }
         cell.updateValues(
@@ -152,12 +150,14 @@ extension CalendarViewController: JTACMonthViewDelegate {
     }
     
     func calendar(_ calendar: JTACMonthView, didSelectDate date: Date, cell: JTACDayCell?, cellState: CellState, indexPath: IndexPath) {
-        delegate.updateCurrentDate(to: date)
-        navigationController?.popViewController(animated: true)
+        let homeViewController = HomeViewController()
+        homeViewController.viewDidLayoutSubviews()
+        homeViewController.updateValues(tasks: self.tasks, date: date, delegate: self)
+        navigationController?.pushViewController(homeViewController, animated: true)
     }
     
     func calendar(_ calendar: JTACMonthView, didScrollToDateSegmentWith visibleDates: DateSegmentInfo) {
-        currentMonth = visibleDates.monthDates[0].date
+        currentDate = visibleDates.monthDates[0].date
     }
     
     func calendar(_ calendar: JTACMonthView, headerViewForDateRange range: (start: Date, end: Date), at indexPath: IndexPath) -> JTACMonthReusableView {

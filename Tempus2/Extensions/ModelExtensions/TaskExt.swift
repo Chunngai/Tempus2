@@ -27,6 +27,14 @@ extension Array where Element == Task {
 }
 
 extension Array where Element == Task {
+    
+    func hasTasks(on date: Date) -> Bool {
+        return !self.tasksOf(date).isEmpty
+    }
+    
+}
+
+extension Array where Element == Task {
         
     mutating func replace(_ oldTask: Task, with newTask: Task) {
         guard let oldTaskIndex = self.firstIndex(of: oldTask) else {

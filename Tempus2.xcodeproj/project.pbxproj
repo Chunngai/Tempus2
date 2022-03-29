@@ -36,7 +36,7 @@
 		FF6A0A0426DBEA0900A6E09A /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FF6A0A0226DBEA0900A6E09A /* LaunchScreen.storyboard */; };
 		FF6A0A0F26DBEA0900A6E09A /* Tempus2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6A0A0E26DBEA0900A6E09A /* Tempus2Tests.swift */; };
 		FF6A0A1A26DBEA0A00A6E09A /* Tempus2UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6A0A1926DBEA0A00A6E09A /* Tempus2UITests.swift */; };
-		FF6A0A2D26DBEB4B00A6E09A /* HomeNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6A0A2C26DBEB4B00A6E09A /* HomeNavController.swift */; };
+		FF6A0A2D26DBEB4B00A6E09A /* NavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6A0A2C26DBEB4B00A6E09A /* NavController.swift */; };
 		FF6A0A5826DBEE9C00A6E09A /* SnapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FF6A0A5426DBEE9400A6E09A /* SnapKit.framework */; };
 		FF6A0A5926DBEE9C00A6E09A /* SnapKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = FF6A0A5426DBEE9400A6E09A /* SnapKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		FF6E370326DE7FF400464183 /* DateCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6E370226DE7FF400464183 /* DateCell.swift */; };
@@ -140,7 +140,7 @@
 		FF6A0A1526DBEA0A00A6E09A /* Tempus2UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tempus2UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF6A0A1926DBEA0A00A6E09A /* Tempus2UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tempus2UITests.swift; sourceTree = "<group>"; };
 		FF6A0A1B26DBEA0A00A6E09A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		FF6A0A2C26DBEB4B00A6E09A /* HomeNavController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeNavController.swift; sourceTree = "<group>"; };
+		FF6A0A2C26DBEB4B00A6E09A /* NavController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavController.swift; sourceTree = "<group>"; };
 		FF6A0A4E26DBEE9400A6E09A /* SnapKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SnapKit.xcodeproj; path = "../../Downloads/SnapKit-develop/SnapKit.xcodeproj"; sourceTree = "<group>"; };
 		FF6E370226DE7FF400464183 /* DateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateCell.swift; sourceTree = "<group>"; };
 		FF6E370626DE8CEF00464183 /* WeekdaysHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekdaysHeader.swift; sourceTree = "<group>"; };
@@ -344,10 +344,11 @@
 		FF6A0A2926DBEAC300A6E09A /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				FF6A0A2C26DBEB4B00A6E09A /* NavController.swift */,
+				FFEA452526E4B7FF00357126 /* Calendar */,
 				FF6EED7226DD4787009483A2 /* Home */,
 				FF5179E726DF5A7500CD0272 /* EventEdit */,
 				FF50601726DFC3F200BF1F50 /* EventDisplay */,
-				FFEA452526E4B7FF00357126 /* Calendar */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -384,7 +385,6 @@
 		FF6EED7226DD4787009483A2 /* Home */ = {
 			isa = PBXGroup;
 			children = (
-				FF6A0A2C26DBEB4B00A6E09A /* HomeNavController.swift */,
 				FF6EED7526DD4787009483A2 /* HomeViewController.swift */,
 			);
 			path = Home;
@@ -709,7 +709,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FF6A0A2D26DBEB4B00A6E09A /* HomeNavController.swift in Sources */,
+				FF6A0A2D26DBEB4B00A6E09A /* NavController.swift in Sources */,
 				FF6EED7626DD4787009483A2 /* HomeViewController.swift in Sources */,
 				FFEA451E26E4954100357126 /* CurrentTimeIndicator.swift in Sources */,
 				FF50602526E0AB2200BF1F50 /* EventCompletionTogglingView.swift in Sources */,

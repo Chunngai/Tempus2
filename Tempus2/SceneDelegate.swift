@@ -12,15 +12,22 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
     
-    let homeViewController = HomeViewController()
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
                 
         self.window = UIWindow(windowScene: scene as! UIWindowScene)
-        let homeNavController = HomeNavController(rootViewController: homeViewController)
-        self.window?.rootViewController = homeNavController
+        
+        let calendarViewController = CalendarViewController()
+        calendarViewController.updateValues(date: Date())
+        let navController = NavController(rootViewController: calendarViewController)
+        
+        self.window?.rootViewController = navController
         self.window?.makeKeyAndVisible()
-                        
+        
+        let homeViewController = HomeViewController()
+        homeViewController.viewDidLayoutSubviews()
+        homeViewController.updateValues(tasks: calendarViewController.tasks, date: Date(), delegate: calendarViewController)
+        navController.pushViewController(homeViewController, animated: false)
+        
         guard let _ = (scene as? UIWindowScene) else { return }
     }
 
