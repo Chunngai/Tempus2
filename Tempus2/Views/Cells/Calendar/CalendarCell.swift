@@ -35,13 +35,6 @@ class CalendarCell: DateCell {
     }()
     private var trailingVerticalSeparatorWidth: CGFloat = CalendarCell.lineWidth
     
-    private var havingTasksIndicator: UILabel = {
-        let label = UILabel()
-        label.layer.masksToBounds = true
-        label.layer.cornerRadius = CalendarCell.indicatorDiameter
-        return label
-    }()
-    
     // MARK: - Init
         
     override init(frame: CGRect) {
@@ -61,9 +54,7 @@ class CalendarCell: DateCell {
         addSubview(topHorizontalSeparator)
         addSubview(bottomHorizontalSeparator)
         addSubview(leadingVerticalSeparator)
-        addSubview(trailingVerticalSeparator)
-        
-        addSubview(havingTasksIndicator)
+        addSubview(trailingVerticalSeparator)        
     }
     
     override func updateLayouts() {
@@ -94,13 +85,6 @@ class CalendarCell: DateCell {
             make.trailing.top.bottom.equalToSuperview()
             make.width.equalTo(trailingVerticalSeparatorWidth)
         }
-        
-        havingTasksIndicator.snp.makeConstraints { (make) in
-            make.top.equalToSuperview().offset(DateCell.diameter * 1.3)
-            make.centerX.equalToSuperview()
-            make.width.equalTo(CalendarCell.indicatorDiameter)
-            make.height.equalTo(CalendarCell.indicatorDiameter)
-        }
     }
     
     func updateValues(date: Date, cellState: CellState, hasTasks: Bool, shouldDrawBottomLine: Bool) {
@@ -110,9 +94,9 @@ class CalendarCell: DateCell {
         )
                 
         if hasTasks {
-            havingTasksIndicator.backgroundColor = Theme.lightBlue2
+            contentView.backgroundColor = Theme.lightBlue2
         } else {
-            havingTasksIndicator.backgroundColor = contentView.backgroundColor
+            contentView.backgroundColor = .white
         }
         
         if !shouldDrawBottomLine {
@@ -124,6 +108,5 @@ class CalendarCell: DateCell {
 }
 
 extension CalendarCell {
-    static let indicatorDiameter: CGFloat = 9
     static let lineWidth: CGFloat = 0.1
 }
