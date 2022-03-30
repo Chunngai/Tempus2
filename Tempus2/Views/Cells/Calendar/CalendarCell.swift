@@ -75,16 +75,16 @@ class CalendarCell: DateCell {
             make.bottom.equalToSuperview().inset(bottomHorizontalSeparatorWidth)
             make.height.equalTo(bottomHorizontalSeparatorWidth)
         }
-        
-        leadingVerticalSeparator.snp.makeConstraints { (make) in
-            make.leading.top.bottom.equalToSuperview()
-            make.width.equalTo(leadingVerticalSeparatorWidth)
-        }
-        
-        trailingVerticalSeparator.snp.makeConstraints { (make) in
-            make.trailing.top.bottom.equalToSuperview()
-            make.width.equalTo(trailingVerticalSeparatorWidth)
-        }
+//
+//        leadingVerticalSeparator.snp.makeConstraints { (make) in
+//            make.leading.top.bottom.equalToSuperview()
+//            make.width.equalTo(leadingVerticalSeparatorWidth)
+//        }
+//
+//        trailingVerticalSeparator.snp.makeConstraints { (make) in
+//            make.trailing.top.bottom.equalToSuperview()
+//            make.width.equalTo(trailingVerticalSeparatorWidth)
+//        }
     }
     
     func updateValues(date: Date, cellState: CellState, hasTasks: Bool, shouldDrawBottomLine: Bool) {
