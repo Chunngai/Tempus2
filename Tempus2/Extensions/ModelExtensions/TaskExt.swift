@@ -32,6 +32,18 @@ extension Array where Element == Task {
         return !self.tasksOf(date).isEmpty
     }
     
+    func hasUnfinishedTasks(on date: Date) -> Bool {
+        guard !self.tasksOf(date).isEmpty else {
+            return false
+        }
+        
+        for task in self.tasksOf(date) {
+            if !task.isCompleted {
+                return true
+            }
+        }
+        return false
+    }
 }
 
 extension Array where Element == Task {

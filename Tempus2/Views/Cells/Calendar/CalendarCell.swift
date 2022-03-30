@@ -87,14 +87,18 @@ class CalendarCell: DateCell {
 //        }
     }
     
-    func updateValues(date: Date, cellState: CellState, hasTasks: Bool, shouldDrawBottomLine: Bool) {
+    func updateValues(date: Date, cellState: CellState, hasTasks: Bool, hasUnfinishedTasks: Bool, shouldDrawBottomLine: Bool) {
         super.updateValues(
             date: date, cellState: cellState,
             textColorForCurrentDay: .white, textColorForCurrentMonthExceptCurrentDay: Theme.textColor, textColorForOtherMonths: UIColor.lightGray
         )
                 
         if hasTasks {
-            contentView.backgroundColor = Theme.lightBlue2
+            if hasUnfinishedTasks {
+                contentView.backgroundColor = Theme.lightBlue
+            } else {
+                contentView.backgroundColor = Theme.lightBlue2
+            }
         } else {
             contentView.backgroundColor = .white
         }
