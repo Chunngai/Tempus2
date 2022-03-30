@@ -19,7 +19,13 @@ class CalendarViewController: UIViewController {
     
     // MARK: - Models
     
-    var tasks: [Task] = Task.load()
+    var tasks: [Task] = Task.load() {
+        didSet {
+            // TODO: - Fix here.
+            
+            calendar.reloadData()
+        }
+    }
     
     // MARK: - Views
     
