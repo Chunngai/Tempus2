@@ -36,6 +36,11 @@ class HomeViewController: UIViewController {
     
     private var tasks: [Task]! {
         didSet {
+            // TODO: - Fix here.
+            if delegate != nil {
+                delegate.tasks = tasks
+            }
+            
             tasks.sort {
                 $0.dateInterval.start < $1.dateInterval.start
                     || $0.dateInterval.end < $1.dateInterval.end
