@@ -50,7 +50,7 @@ class CalendarViewController: UIViewController {
             image: UIImage(imageLiteralResourceName: "now"),
             style: .plain,
             target: self,
-            action: #selector(thisMonthButtonTapped)
+            action: #selector(homeButtonTapped)
         )
         
         calendar.calendarDataSource = self
@@ -99,8 +99,22 @@ extension CalendarViewController {
     
     // MARK: - Actions
     
-    @objc func thisMonthButtonTapped() {
+    @objc func homeButtonTapped() {
         currentDate = Date()
+        for dateInfo in calendar.visibleDates().monthDates {
+            if Calendar.current.isDate(currentDate, inSameDayAs: dateInfo.date) {
+                // Already displaying the current month.
+                // Displays the current day.
+                let homeViewController = HomeViewController()
+                homeViewController.viewDidLayoutSubviews()
+                homeViewController.updateValues(tasks: self.tasks, date: currentDate, delegate: self)
+                navigationController?.pushViewController(homeViewController, animated: true)
+                
+                return
+            }
+        }
+        
+        // Scrolls to the current month.
         calendar.scrollToHeaderForDate(currentDate, withAnimation: true)
     }
     
