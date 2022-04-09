@@ -55,8 +55,14 @@ class EventDisplayViewController: UITableViewController {
     }
     
     func updateViews() {
+//        let editButton = UIBarButtonItem(
+//            barButtonSystemItem: .edit,
+//            target: self,
+//            action: #selector(editButtonTapped)
+//        )
         let editButton = UIBarButtonItem(
-            barButtonSystemItem: .edit,
+            image: UIImage(imageLiteralResourceName: "edit"),
+            style: .plain,
             target: self,
             action: #selector(editButtonTapped)
         )

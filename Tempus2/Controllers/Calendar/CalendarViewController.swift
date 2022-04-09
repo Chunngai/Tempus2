@@ -47,7 +47,7 @@ class CalendarViewController: UIViewController {
         super.viewDidLoad()
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            image: UIImage(imageLiteralResourceName: "now"),
+            image: UIImage(imageLiteralResourceName: "home"),
             style: .plain,
             target: self,
             action: #selector(homeButtonTapped)

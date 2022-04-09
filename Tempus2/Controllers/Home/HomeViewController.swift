@@ -156,7 +156,7 @@ class HomeViewController: UIViewController {
         )
         navigationItem.rightBarButtonItem = UIBarButtonItem(
 //            title: "Today",
-            image: UIImage(imageLiteralResourceName: "now"),
+            image: UIImage(imageLiteralResourceName: "home"),
             style: .plain,
             target: self,
             action: #selector(todayButtonTapped)

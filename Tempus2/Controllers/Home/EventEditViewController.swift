@@ -109,14 +109,26 @@ class EventEditViewController: UITableViewController {
     }
     
     func updateViews() {
+//        navigationItem.leftBarButtonItem = UIBarButtonItem(
+//            barButtonSystemItem: .cancel,
+//            target: self,
+//            action: #selector(cancelButtonTapped)
+//        )
         navigationItem.leftBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .cancel,
+            image: UIImage(imageLiteralResourceName: "cancel"),
+            style: .plain,
             target: self,
             action: #selector(cancelButtonTapped)
         )
         
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(
+//            barButtonSystemItem: .save,
+//            target: self,
+//            action: #selector(saveBarButtonItemTapped)
+//        )
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .save,
+            image: UIImage(imageLiteralResourceName: "done"),
+            style: .done,
             target: self,
             action: #selector(saveBarButtonItemTapped)
         )
@@ -483,7 +495,7 @@ extension EventEditViewController {
         case 1:
             startDateAndTimeSelectionCell = DateAndTimeSelectionCell()
             startDateAndTimeSelectionCell.updateValues(
-                iconName: "startTime",
+                iconName: nil,
                 delegate: self,
                 targetPickerRow: row + 1
             )
@@ -505,7 +517,7 @@ extension EventEditViewController {
         case 3:
             endDateAndTimeSelectionCell = DateAndTimeSelectionCell()
             endDateAndTimeSelectionCell.updateValues(
-                iconName: "finishTime",
+                iconName: nil,
                 delegate: self,
                 targetPickerRow: row + 1
             )

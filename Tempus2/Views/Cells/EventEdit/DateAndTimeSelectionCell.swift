@@ -104,7 +104,7 @@ class DateAndTimeSelectionCell: EventBaseCell {
     }
     
     func updateValues(
-        iconName: String,
+        iconName: String?,
         delegate: EventEditViewController, targetPickerRow: Int
     ) {
         super.updateValues(iconName: iconName)
