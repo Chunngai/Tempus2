@@ -44,6 +44,19 @@ extension Array where Element == Task {
         }
         return false
     }
+    
+    func hasDues(on date: Date) -> Bool {
+        guard !self.tasksOf(date).isEmpty else {
+            return false
+        }
+        
+        for task in self.tasksOf(date) {
+            if task.type == .due {
+                return true
+            }
+        }
+        return false
+    }
 }
 
 extension Array where Element == Task {
@@ -78,6 +91,16 @@ extension Task {
         if isCompleted {
             attrString.setDeleteLine()
         }
+        
+        attrString.setTextColor(with: Theme.textColor)
+        if type == .due {
+            if isCompleted {
+                attrString.setUnderline(style: [], color: Theme.textColor)
+            } else {
+                attrString.setUnderline(style: .thick, color: .red)
+            }
+        }
+        
         return attrString
     }
 }
@@ -92,10 +115,8 @@ extension Task {
             + dateInterval.end.timeRepresentation()
     }
     
-    var timeAndDurationRepresentation: String {        
-        // Instead of `if dateInterval.duration == 0`,
-        // use the code below instead.
-        if dateInterval.duration < TimeInterval.Minute {
+    var timeAndDurationRepresentation: String {
+        if type == .task || type == .due {
             return String(timeReprsentation.split(separator: "-")[0]).trimmingWhitespacesAndNewlines()
         } else {
             return timeReprsentation

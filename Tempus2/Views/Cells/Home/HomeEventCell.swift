@@ -34,7 +34,6 @@ class HomeEventCell: UITableViewCell {
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         label.textAlignment = .center
-        label.textColor = Theme.textColor
         label.font = UIFont.systemFont(ofSize: Theme.bodyFont.pointSize, weight: .light)
         return label
     }()

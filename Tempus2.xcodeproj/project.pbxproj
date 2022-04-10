@@ -213,11 +213,11 @@
 		FF4CAE8A26DCF5F7009BB111 /* UIExtensions */ = {
 			isa = PBXGroup;
 			children = (
+				FFCB837A26E1D5E9004A4F53 /* UINavigationBarExt.swift */,
 				FF4CAE7426DCE424009BB111 /* UIColorExt.swift */,
 				FF51D64C26DE0F2B0091ABAA /* UIImageExt.swift */,
 				FF5179EB26DF61BE00CD0272 /* UITextViewExt.swift */,
 				FFCB837326E133B7004A4F53 /* UINavigationItem.swift */,
-				FFCB837A26E1D5E9004A4F53 /* UINavigationBarExt.swift */,
 				FFEA451126E228FB00357126 /* UITableViewCellExt.swift */,
 			);
 			path = UIExtensions;

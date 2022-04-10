@@ -87,7 +87,7 @@ class CalendarCell: DateCell {
 //        }
     }
     
-    func updateValues(date: Date, cellState: CellState, hasTasks: Bool, hasUnfinishedTasks: Bool, shouldDrawBottomLine: Bool) {
+    func updateValues(date: Date, cellState: CellState, hasTasks: Bool, hasUnfinishedTasks: Bool, hasDues: Bool, shouldDrawBottomLine: Bool) {
         super.updateValues(
             date: date, cellState: cellState,
             textColorForCurrentDay: Theme.highlightedTextColor, textColorForCurrentMonthExceptCurrentDay: Theme.textColor, textColorForOtherMonths: UIColor.lightGray
@@ -105,6 +105,12 @@ class CalendarCell: DateCell {
             contentView.backgroundColor = .white
             dateLabel.backgroundColor = .white
         }
+        
+        let attributedDateText = NSMutableAttributedString(string: dateLabel.text!)
+        if hasDues {
+            attributedDateText.setUnderline(style: NSUnderlineStyle.thick, color: .red)
+        }
+        dateLabel.attributedText = attributedDateText
         
         if !shouldDrawBottomLine {
             bottomHorizontalSeparator.isHidden = true
