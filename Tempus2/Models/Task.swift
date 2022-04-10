@@ -14,6 +14,8 @@ struct Task: Codable {
     
     var title: String
     
+    var type: Task.Type_?  // The optional type is for compatibility.
+    
     // The dates in dateInterval are UTC.
     // Note that It's not appropriate to set a timezone for Date objs.
     var dateInterval: DateInterval
@@ -24,23 +26,37 @@ struct Task: Codable {
     
     // MARK: - Init
     
-    init(identifier: String?, title: String, dateInterval: DateInterval, description: String, isCompleted: Bool) {
+    init(identifier: String?, title: String, type: Task.Type_, dateInterval: DateInterval, description: String, isCompleted: Bool) {
         self.identifier = identifier ?? String(Date().hashValue)
         
         self.title = title
+        self.type = type
         self.dateInterval = dateInterval
         self.description = description
         self.isCompleted = isCompleted
     }
     
-    init(title: String, dateInterval: DateInterval, description: String, isCompleted: Bool) {
+    init(title: String, type: Task.Type_, dateInterval: DateInterval, description: String, isCompleted: Bool) {
         self.init(
             identifier: nil,
             title: title,
+            type: type,
             dateInterval: dateInterval,
             description: description,
             isCompleted: isCompleted
         )
+    }
+}
+
+extension Task {
+    enum Type_: Int, Codable {
+        case event
+        case task
+        case due
+    }
+    
+    static var typeStrings: [String] {
+        ["Event", "Task", "Due"]
     }
 }
 
@@ -67,8 +83,10 @@ extension Task {
             return tasks
         } catch {
             print(error)
+            // return []
             
-            return []
+            // TODO: - rm here.
+            exit(1)
         }
     }
     static func save(_ tasks: [Task]) {
@@ -88,6 +106,9 @@ extension Task {
                 .write(to: fileURL)
         } catch {
             print(error)
+            
+            // TODO: - rm here.
+            exit(1)
         }
     }
 }
@@ -124,6 +145,7 @@ extension Task {
         return [
             Task(
                 title: "Breakfast",
+                type: .event,
                 dateInterval: DateInterval(
                     start: makeDate(hour: 8, minute: 0),
                     duration: TimeInterval.Hour * 1
@@ -133,6 +155,7 @@ extension Task {
             ),
             Task(
                 title: "AI course",
+                type: .event,
                 dateInterval: DateInterval(
                     start: makeDate(hour: 10, minute: 30),
                     duration: TimeInterval.Hour * 1),
@@ -141,6 +164,7 @@ extension Task {
             ),
             Task(
                 title: "Math course",
+                type: .event,
                 dateInterval: DateInterval(
                     start: makeDate(hour: 13, minute: 0),
                     duration: TimeInterval.Hour * 1.5),

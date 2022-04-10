@@ -45,6 +45,7 @@ class EventEditViewController: UITableViewController {
     }
     
     private var titleCell: EventTextViewCell!
+    private var typeCell: TypeCell!
     private var startDateAndTimeSelectionCell: DateAndTimeSelectionCell!
     private var startDateAndTimePickerCell: DateAndTimePickerCell!
     private var endDateAndTimeSelectionCell: DateAndTimeSelectionCell!
@@ -52,11 +53,13 @@ class EventEditViewController: UITableViewController {
     private var descriptionCell: EventTextViewCell!
     
     private var oldTitle: String!
+    private var oldType: Task.Type_!
     private var oldStartDateAndTime: Date!
     private var oldEndDateAndTime: Date!
     private var oldDescription: String!
     private var isContentChanged: Bool {
         return oldTitle != titleCell.textView.content
+            || oldType != typeCell.type
             || oldStartDateAndTime.dateRepresentation() != startDateAndTimePickerCell.dateAndTime.dateRepresentation()
             || oldStartDateAndTime.timeRepresentation() != startDateAndTimePickerCell.dateAndTime.timeRepresentation()
             || oldEndDateAndTime.dateRepresentation() != endDateAndTimePickerCell.dateAndTime.dateRepresentation()
@@ -68,6 +71,8 @@ class EventEditViewController: UITableViewController {
     private var defaultEndDate: Date = EventEditViewController.defaultEndDate
     
     private var isDateSelectable: Bool!
+    
+    internal var isEvent: Bool!  // Controls whether the startDateAndTime* should be displayed.
     
     // MARK: - Models
     
@@ -329,7 +334,7 @@ extension EventEditViewController {
 
 extension EventEditViewController {
     
-    private func save(title: String, startDateAndTime: Date, endDateAndTime: Date, description: String) {
+    private func save(title: String, type: Task.Type_, startDateAndTime: Date, endDateAndTime: Date, description: String) {
         let dateInterval = DateInterval(
             start: startDateAndTime,
             end: endDateAndTime
@@ -338,6 +343,7 @@ extension EventEditViewController {
         let newTask = Task(
             identifier: task?.identifier,
             title: title,
+            type: type,
             dateInterval: dateInterval,
             description: description,
             isCompleted: task?.isCompleted ?? false
@@ -405,9 +411,14 @@ extension EventEditViewController {
     
     @objc private func saveBarButtonItemTapped() {
         let title = titleCell.textView.content
-        let startDateAndTime = startDateAndTimePickerCell.dateAndTime
+        let type = typeCell.type!
+        var startDateAndTime = startDateAndTimePickerCell.dateAndTime
         let endDateAndTime = endDateAndTimePickerCell.dateAndTime
         let description = descriptionCell.textView.content
+        
+        if type != .event {
+            startDateAndTime = endDateAndTime
+        }
         
         if startDateAndTime > endDateAndTime {
             displayInvalidDateIntervalWarning()
@@ -427,6 +438,7 @@ extension EventEditViewController {
                 } else {
                     self.save(
                         title: title,
+                        type: type,
                         startDateAndTime: startDateAndTime,
                         endDateAndTime: endDateAndTime,
                         description: description
@@ -436,6 +448,7 @@ extension EventEditViewController {
         } else {
             self.save(
                 title: title,
+                type: type,
                 startDateAndTime: startDateAndTime,
                 endDateAndTime: endDateAndTime,
                 description: description
@@ -473,14 +486,14 @@ extension EventEditViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        6
+        7
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let row = indexPath.row
         switch row {
-        case 0:
+        case EventEditViewController.titleCellIndex:
             oldTitle = task?.title ?? ""
             
             titleCell = EventTextViewCell()
@@ -492,7 +505,19 @@ extension EventEditViewController {
             )
             titleCell.textView.font = Theme.title2Font
             return titleCell
-        case 1:
+        case EventEditViewController.typeCellIndex:
+            oldType = task?.type ?? .event
+            isEvent = oldType == .event
+            
+            typeCell = TypeCell()
+            typeCell.updateValues(
+                iconName: "type",
+                type: oldType,
+                delegate: self
+            )
+            typeCell.removeSeparator()
+            return typeCell
+        case EventEditViewController.startDateAndTimeSelectionCellIndex:
             startDateAndTimeSelectionCell = DateAndTimeSelectionCell()
             startDateAndTimeSelectionCell.updateValues(
                 iconName: nil,
@@ -503,7 +528,7 @@ extension EventEditViewController {
             startDateAndTimeSelectionCell.updateDateAndTimeRepr(with: dateAndTime)
             startDateAndTimeSelectionCell.removeSeparator()
             return startDateAndTimeSelectionCell
-        case 2:
+        case EventEditViewController.startDateAndTimePickerCellIndex:
             oldStartDateAndTime = task?.dateInterval.start ?? defaultStartDate
             
             startDateAndTimePickerCell = DateAndTimePickerCell()
@@ -514,7 +539,7 @@ extension EventEditViewController {
             )
             startDateAndTimePickerCell.removeSeparator()
             return startDateAndTimePickerCell
-        case 3:
+        case EventEditViewController.endDateAndTimeSelectionCellIndex:
             endDateAndTimeSelectionCell = DateAndTimeSelectionCell()
             endDateAndTimeSelectionCell.updateValues(
                 iconName: nil,
@@ -524,7 +549,7 @@ extension EventEditViewController {
             let dateAndTime = task?.dateInterval.end ?? defaultEndDate
             endDateAndTimeSelectionCell.updateDateAndTimeRepr(with: dateAndTime)
             return endDateAndTimeSelectionCell
-        case 4:
+        case EventEditViewController.endDateAndTimePickerCellIndex:
             oldEndDateAndTime = task?.dateInterval.end ?? defaultEndDate
             
             endDateAndTimePickerCell = DateAndTimePickerCell()
@@ -534,7 +559,7 @@ extension EventEditViewController {
                 dateAndTime: oldEndDateAndTime
             )
             return endDateAndTimePickerCell
-        case 5:
+        case EventEditViewController.descriptionCellIndex:
             oldDescription = task?.description ?? ""
             
             descriptionCell = EventTextViewCell()
@@ -551,59 +576,68 @@ extension EventEditViewController {
         return UITableViewCell()
     }
     
-    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        let row = indexPath.row
-        
-        if row != 2 && row != 4 {
-            return EventEditViewController.cellHeight
-        } else if row == 2 {
-            return bothPickersInRowTwoAreHidden
-                ? 0
-                : (
-                    isDatePickerInRowTwoHidden
-                        ? EventEditViewController.timePickerCellHeight
-                        : EventEditViewController.datePickerCellHeight
-            )
-        } else {
-            return bothPickersInRowFourAreHidden
-                ? 0
-                : (
-                    isDatePickerInRowFourHidden
-                        ? EventEditViewController.timePickerCellHeight
-                        : EventEditViewController.datePickerCellHeight
-            )
-        }
-    }
+//    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+//        let row = indexPath.row
+//
+//        if row == EventEditViewController.startDateAndTimePickerCellIndex {
+//            if bothPickersInRowTwoAreHidden {
+//                return 0
+//            } else if isDatePickerInRowTwoHidden {
+//                return EventEditViewController.timePickerCellHeight
+//            } else if isTimePickerInRowTwoHidden {
+//                return EventEditViewController.datePickerCellHeight
+//            }
+//        } else if row == EventEditViewController.endDateAndTimePickerCellIndex {
+//            if bothPickersInRowFourAreHidden {
+//                return 0
+//            } else if isDatePickerInRowFourHidden {
+//                return EventEditViewController.timePickerCellHeight
+//            } else if isTimePickerInRowFourHidden {
+//                return EventEditViewController.datePickerCellHeight
+//            }
+//        }
+//
+//        return EventEditViewController.cellHeight
+//    }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = indexPath.row
-        
-        if row != 2 && row != 4 {
-            return UITableView.automaticDimension
-        } else if row == 2 {
-            return bothPickersInRowTwoAreHidden
-                ? 0
-                : (
-                    isDatePickerInRowTwoHidden
-                        ? EventEditViewController.timePickerCellHeight
-                        : EventEditViewController.datePickerCellHeight
-            )
-        } else {
-            return bothPickersInRowFourAreHidden
-                ? 0
-                : (
-                    isDatePickerInRowFourHidden
-                        ? EventEditViewController.timePickerCellHeight
-                        : EventEditViewController.datePickerCellHeight
-            )
+
+        if row == EventEditViewController.startDateAndTimeSelectionCellIndex
+            || row == EventEditViewController.startDateAndTimePickerCellIndex {
+            if let isEvent = isEvent {
+                startDateAndTimeSelectionCell?.isHidden = !isEvent
+                startDateAndTimePickerCell?.isHidden = !isEvent
+                if !isEvent {
+                    return 0
+                }
+            }
         }
+        
+        if row == EventEditViewController.startDateAndTimePickerCellIndex {
+            if bothPickersInRowTwoAreHidden {
+                return 0
+            } else if isDatePickerInRowTwoHidden {
+                return EventEditViewController.timePickerCellHeight
+            } else if isTimePickerInRowTwoHidden {
+                return EventEditViewController.datePickerCellHeight
+            }
+        } else if row == EventEditViewController.endDateAndTimePickerCellIndex {
+            if bothPickersInRowFourAreHidden {
+                return 0
+            } else if isDatePickerInRowFourHidden {
+                return EventEditViewController.timePickerCellHeight
+            } else if isTimePickerInRowFourHidden {
+                return EventEditViewController.datePickerCellHeight
+            }
+        }
+        
+        return UITableView.automaticDimension
     }
 }
 
 extension EventEditViewController: DateAndTimePickerDelegate {
-    
-    // MARK: - DateAndTimePicker Delegate
-    
+        
     private func validateStartDateAndTime() {
         guard endDateAndTimePickerCell != nil else {
             return
@@ -640,10 +674,10 @@ extension EventEditViewController: DateAndTimePickerDelegate {
     // MARK: - DateAndTimePicker Delegate
     
     internal func updateDateAndTime(ofCellInRow row: Int, with newDateAndTime: Date) {
-        if row == 1 {
+        if row == EventEditViewController.startDateAndTimeSelectionCellIndex {
             startDateAndTimeSelectionCell.updateDateAndTimeRepr(with: newDateAndTime)
             validateStartDateAndTime()
-        } else if row == 3 {
+        } else if row == EventEditViewController.endDateAndTimeSelectionCellIndex {
             endDateAndTimeSelectionCell.updateDateAndTimeRepr(with: newDateAndTime)
             validateEndDateAndTime()
         } else {
@@ -722,13 +756,13 @@ extension EventEditViewController: UITextViewDelegate {
 extension EventEditViewController: DateAndTimeSelectionCellDelegate {
         
     private func currentPickerCellOf(_ row: Int) -> DateAndTimePickerCell {
-        return row == 2
+        return row == EventEditViewController.startDateAndTimePickerCellIndex
             ? startDateAndTimePickerCell
             : endDateAndTimePickerCell
     }
     
     private func theOtherPickerCellOf(_ row: Int) -> DateAndTimePickerCell {
-        return row == 2
+        return row == EventEditViewController.startDateAndTimePickerCellIndex
             ? endDateAndTimePickerCell
             : startDateAndTimePickerCell
     }
@@ -785,6 +819,14 @@ protocol EventEditViewControllerDelegate {
 }
 
 extension EventEditViewController {
+    static let titleCellIndex: Int = 0
+    static let typeCellIndex: Int = 1
+    static let startDateAndTimeSelectionCellIndex: Int = 2
+    static let startDateAndTimePickerCellIndex: Int = 3
+    static let endDateAndTimeSelectionCellIndex: Int = 4
+    static let endDateAndTimePickerCellIndex: Int = 5
+    static let descriptionCellIndex: Int = 6
+    
     static let cellHeight: CGFloat = 60
     static let datePickerCellHeight: CGFloat = 250
     static let timePickerCellHeight: CGFloat = 200

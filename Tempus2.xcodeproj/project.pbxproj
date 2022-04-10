@@ -11,6 +11,8 @@
 		AEA9238F01D0B13B39424058 /* Pods_Tempus2_Tempus2UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 536BC6AAA7E95F3617C79F4C /* Pods_Tempus2_Tempus2UITests.framework */; };
 		C257A921F9BE966E5A94C968 /* Pods_Tempus2Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6C425F389686398F160AEC /* Pods_Tempus2Tests.framework */; };
 		FF475165270F85E60015E862 /* PseudoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF475164270F85E60015E862 /* PseudoCell.swift */; };
+		FF4C81282801F3AB00A2379F /* TypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4C81272801F3AB00A2379F /* TypeCell.swift */; };
+		FF4C812B2801F6E600A2379F /* TypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4C812A2801F6E600A2379F /* TypeViewController.swift */; };
 		FF4CAE7226DCE3F7009BB111 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7126DCE3F7009BB111 /* Theme.swift */; };
 		FF4CAE7526DCE424009BB111 /* UIColorExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7426DCE424009BB111 /* UIColorExt.swift */; };
 		FF4CAE7726DCE459009BB111 /* StringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7626DCE459009BB111 /* StringExt.swift */; };
@@ -109,6 +111,8 @@
 		90AA7456B3591FA5198797F3 /* Pods-Tempus2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tempus2.debug.xcconfig"; path = "Target Support Files/Pods-Tempus2/Pods-Tempus2.debug.xcconfig"; sourceTree = "<group>"; };
 		D8006638FED3B8ECE1A3C4F9 /* Pods_Tempus2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tempus2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF475164270F85E60015E862 /* PseudoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PseudoCell.swift; sourceTree = "<group>"; };
+		FF4C81272801F3AB00A2379F /* TypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeCell.swift; sourceTree = "<group>"; };
+		FF4C812A2801F6E600A2379F /* TypeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeViewController.swift; sourceTree = "<group>"; };
 		FF4CAE7126DCE3F7009BB111 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		FF4CAE7426DCE424009BB111 /* UIColorExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExt.swift; sourceTree = "<group>"; };
 		FF4CAE7626DCE459009BB111 /* StringExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExt.swift; sourceTree = "<group>"; };
@@ -196,6 +200,14 @@
 				459C22A1B2CFA66062295DF1 /* Pods-Tempus2Tests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		FF4C81292801F6CB00A2379F /* Type */ = {
+			isa = PBXGroup;
+			children = (
+				FF4C812A2801F6E600A2379F /* TypeViewController.swift */,
+			);
+			path = Type;
 			sourceTree = "<group>";
 		};
 		FF4CAE8A26DCF5F7009BB111 /* UIExtensions */ = {
@@ -347,6 +359,7 @@
 				FF6A0A2C26DBEB4B00A6E09A /* NavController.swift */,
 				FFEA452526E4B7FF00357126 /* Calendar */,
 				FF6EED7226DD4787009483A2 /* Home */,
+				FF4C81292801F6CB00A2379F /* Type */,
 				FF5179E726DF5A7500CD0272 /* EventEdit */,
 				FF50601726DFC3F200BF1F50 /* EventDisplay */,
 			);
@@ -424,6 +437,7 @@
 			children = (
 				FFCB837C26E1EC60004A4F53 /* EventBaseCell.swift */,
 				FF5179DC26DF582400CD0272 /* EventTextViewCell.swift */,
+				FF4C81272801F3AB00A2379F /* TypeCell.swift */,
 				FF51D65126DE45220091ABAA /* DateAndTimeSelectionCell.swift */,
 				FF51D65326DE4D340091ABAA /* DateAndTimePickerCell.swift */,
 				FF6E370226DE7FF400464183 /* DateCell.swift */,
@@ -728,6 +742,7 @@
 				FF51D64D26DE0F2B0091ABAA /* UIImageExt.swift in Sources */,
 				FF51D65226DE45220091ABAA /* DateAndTimeSelectionCell.swift in Sources */,
 				FF4CAE7726DCE459009BB111 /* StringExt.swift in Sources */,
+				FF4C81282801F3AB00A2379F /* TypeCell.swift in Sources */,
 				FF5179EC26DF61BE00CD0272 /* UITextViewExt.swift in Sources */,
 				FF50601226DFC3AC00BF1F50 /* EventDisplayViewController.swift in Sources */,
 				FFCB837426E133B7004A4F53 /* UINavigationItem.swift in Sources */,
@@ -742,6 +757,7 @@
 				FFEA452A26E4E3EC00357126 /* CalendarCell.swift in Sources */,
 				FF4CAEA326DD325C009BB111 /* EventEditNavController.swift in Sources */,
 				FF6E370726DE8CEF00464183 /* WeekdaysHeader.swift in Sources */,
+				FF4C812B2801F6E600A2379F /* TypeViewController.swift in Sources */,
 				FFCB837D26E1EC60004A4F53 /* EventBaseCell.swift in Sources */,
 				FF4CAE9226DCFC7D009BB111 /* DateExt.swift in Sources */,
 			);

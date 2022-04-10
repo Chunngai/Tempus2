@@ -48,6 +48,7 @@ class DateAndTimePickerCell: UITableViewCell {
         picker.scrollDirection = .horizontal
         picker.scrollingMode = .stopAtEachCalendarFrame
         picker.showsVerticalScrollIndicator = false
+        picker.showsHorizontalScrollIndicator = false
         picker.isHidden = true
         return picker
     }()
