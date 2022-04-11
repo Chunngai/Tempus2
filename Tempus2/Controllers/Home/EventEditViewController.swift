@@ -416,10 +416,6 @@ extension EventEditViewController {
         let endDateAndTime = endDateAndTimePickerCell.dateAndTime
         let description = descriptionCell.textView.content
         
-        if type != .event {
-            startDateAndTime = endDateAndTime
-        }
-        
         if startDateAndTime > endDateAndTime {
             displayInvalidDateIntervalWarning()
             return
@@ -674,6 +670,19 @@ extension EventEditViewController: DateAndTimePickerDelegate {
     // MARK: - DateAndTimePicker Delegate
     
     internal func updateDateAndTime(ofCellInRow row: Int, with newDateAndTime: Date) {
+        // Handles the start if it is hidden.
+        if !isEvent {
+            startDateAndTimePickerCell.datePicker.selectDates(
+                [newDateAndTime],
+                triggerSelectionDelegate: false,  // Important. If set to true, it will result in recursion.
+                keepSelectionIfMultiSelectionAllowed: false
+            )
+            startDateAndTimePickerCell.timePicker.date = newDateAndTime
+            
+            startDateAndTimeSelectionCell.updateDateAndTimeRepr(with: newDateAndTime)
+            validateStartDateAndTime()
+        }
+        
         if row == EventEditViewController.startDateAndTimeSelectionCellIndex {
             startDateAndTimeSelectionCell.updateDateAndTimeRepr(with: newDateAndTime)
             validateStartDateAndTime()
