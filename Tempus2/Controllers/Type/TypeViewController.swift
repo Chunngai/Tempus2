@@ -88,5 +88,7 @@ extension TypeViewController {
         
         // Updates type by the delegate.
         delegate.type = Task.Type_(rawValue: indexPath.row)
+        
+        delegate.delegate.navigationController?.popViewController(animated: true)
     }
 }

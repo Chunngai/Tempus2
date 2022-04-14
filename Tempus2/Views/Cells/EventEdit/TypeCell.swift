@@ -21,7 +21,7 @@ class TypeCell: EventBaseCell {
     
     // MARK: - Controllers
     
-    private var delegate: EventEditViewController!
+    internal var delegate: EventEditViewController!
     
     // MARK: - Views
     

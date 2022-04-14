@@ -412,7 +412,7 @@ extension EventEditViewController {
     @objc private func saveBarButtonItemTapped() {
         let title = titleCell.textView.content
         let type = typeCell.type!
-        var startDateAndTime = startDateAndTimePickerCell.dateAndTime
+        let startDateAndTime = startDateAndTimePickerCell.dateAndTime
         let endDateAndTime = endDateAndTimePickerCell.dateAndTime
         let description = descriptionCell.textView.content
         
