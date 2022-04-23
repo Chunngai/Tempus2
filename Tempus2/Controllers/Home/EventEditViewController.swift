@@ -488,7 +488,7 @@ extension EventEditViewController {
             
             typeCell = TypeCell()
             typeCell.updateValues(
-                iconName: "type",
+                iconName: "time",
                 type: oldType,
                 delegate: self
             )

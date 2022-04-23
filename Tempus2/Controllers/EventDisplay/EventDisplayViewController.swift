@@ -66,8 +66,14 @@ class EventDisplayViewController: UITableViewController {
             target: self,
             action: #selector(editButtonTapped)
         )
+//        let deleteButton = UIBarButtonItem(
+//            barButtonSystemItem: .trash,
+//            target: self,
+//            action: #selector(deleteButtonTapped)
+//        )
         let deleteButton = UIBarButtonItem(
-            barButtonSystemItem: .trash,
+            image: UIImage(imageLiteralResourceName: "delete"),
+            style: .plain,
             target: self,
             action: #selector(deleteButtonTapped)
         )
