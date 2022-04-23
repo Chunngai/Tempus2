@@ -38,7 +38,7 @@ class HomeEventCell: UITableViewCell {
         return label
     }()
     
-    private let timeLabel: UILabel = {
+    private let timeAndLocationLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
         label.textAlignment = .center
@@ -65,7 +65,7 @@ class HomeEventCell: UITableViewCell {
         
         addSubview(mainView)
         mainView.addSubview(titleLabel)
-        mainView.addSubview(timeLabel)
+        mainView.addSubview(timeAndLocationLabel)
         mainView.addGestureRecognizer(UITapGestureRecognizer(
             target: self,
             action: #selector(tapped)
@@ -86,7 +86,7 @@ class HomeEventCell: UITableViewCell {
             make.centerX.equalToSuperview()
         }
         
-        timeLabel.snp.makeConstraints { (make) in
+        timeAndLocationLabel.snp.makeConstraints { (make) in
             make.width.equalTo(titleLabel.snp.width)
             make.centerX.equalToSuperview()
             make.top.equalTo(titleLabel.snp.bottom).offset(5)
@@ -110,7 +110,7 @@ class HomeEventCell: UITableViewCell {
             titleLabel.attributedText = task.titleAttributedRepresentation
         }
         
-        timeLabel.text = task.timeAndDurationRepresentation
+        timeAndLocationLabel.text = task.timeAndDurationRepresentation + " " + task.locationRepresentation
     }
 }
 

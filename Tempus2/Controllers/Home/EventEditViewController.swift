@@ -16,12 +16,14 @@ class EventEditViewController: UITableViewController {
     private var startDateAndTimePickerCell: DateAndTimePickerCell!
     private var endDateAndTimeSelectionCell: DateAndTimeSelectionCell!
     private var endDateAndTimePickerCell: DateAndTimePickerCell!
+    private var locationCell: EventTextViewCell!
     private var descriptionCell: EventTextViewCell!
     
     private var oldTitle: String!
     private var oldType: Task.Type_!
     private var oldStartDateAndTime: Date!
     private var oldEndDateAndTime: Date!
+    private var oldLocation: String!
     private var oldDescription: String!
     private var isContentChanged: Bool {
         return oldTitle != titleCell.textView.content
@@ -30,6 +32,7 @@ class EventEditViewController: UITableViewController {
             || oldStartDateAndTime.timeRepresentation() != startDateAndTimePickerCell.dateAndTime.timeRepresentation()
             || oldEndDateAndTime.dateRepresentation() != endDateAndTimePickerCell.dateAndTime.dateRepresentation()
             || oldEndDateAndTime.timeRepresentation() != endDateAndTimePickerCell.dateAndTime.timeRepresentation()
+            || oldLocation != locationCell.textView.content
             || oldDescription != descriptionCell.textView.content
     }
     
@@ -315,7 +318,7 @@ extension EventEditViewController {
 
 extension EventEditViewController {
     
-    private func save(title: String, type: Task.Type_, startDateAndTime: Date, endDateAndTime: Date, description: String) {
+    private func save(title: String, type: Task.Type_, startDateAndTime: Date, endDateAndTime: Date, location: String, description: String) {
         let dateInterval = DateInterval(
             start: startDateAndTime,
             end: endDateAndTime
@@ -326,6 +329,7 @@ extension EventEditViewController {
             title: title,
             type: type,
             dateInterval: dateInterval,
+            location: location,
             description: description,
             isCompleted: task?.isCompleted ?? false
         )
@@ -395,6 +399,7 @@ extension EventEditViewController {
         let type = typeCell.type!
         let startDateAndTime = startDateAndTimePickerCell.dateAndTime
         let endDateAndTime = endDateAndTimePickerCell.dateAndTime
+        let location = locationCell.textView.content
         let description = descriptionCell.textView.content
         
         if startDateAndTime > endDateAndTime {
@@ -418,6 +423,7 @@ extension EventEditViewController {
                         type: type,
                         startDateAndTime: startDateAndTime,
                         endDateAndTime: endDateAndTime,
+                        location: location,
                         description: description
                     )
                 }
@@ -428,6 +434,7 @@ extension EventEditViewController {
                 type: type,
                 startDateAndTime: startDateAndTime,
                 endDateAndTime: endDateAndTime,
+                location: location,
                 description: description
             )
         }
@@ -463,7 +470,7 @@ extension EventEditViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        7
+        8
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -536,6 +543,17 @@ extension EventEditViewController {
                 dateAndTime: oldEndDateAndTime
             )
             return endDateAndTimePickerCell
+        case EventEditViewController.locationCellIndex:
+            oldLocation = task?.location ?? ""
+            
+            locationCell = EventTextViewCell()
+            locationCell.updateValues(
+                iconName: "location",
+                placeHolder: EventEditViewController.locationPlaceHolder,
+                text: oldLocation,
+                delegate: self
+            )
+            return locationCell
         case EventEditViewController.descriptionCellIndex:
             oldDescription = task?.description ?? ""
             
@@ -817,7 +835,8 @@ extension EventEditViewController {
     static let startDateAndTimePickerCellIndex: Int = 3
     static let endDateAndTimeSelectionCellIndex: Int = 4
     static let endDateAndTimePickerCellIndex: Int = 5
-    static let descriptionCellIndex: Int = 6
+    static let locationCellIndex: Int = 6
+    static let descriptionCellIndex: Int = 7
     
     static let cellHeight: CGFloat = 60
     static let datePickerCellHeight: CGFloat = 250
@@ -835,5 +854,6 @@ extension EventEditViewController {
     static let dateAndTimePickerCellReuseIdentifier = "DateAndTimePickerCell"
     
     static let titlePlaceHolder = "Add title"
+    static let locationPlaceHolder = "Add location"
     static let descriptionPlaceHolder = "Add description"
 }

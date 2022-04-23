@@ -135,6 +135,19 @@ extension Task {
 
 extension Task {
     
+    // MARK: - Location Representations
+    
+    var locationRepresentation: String {
+        if let location = location, !location.trimmingWhitespacesAndNewlines().isEmpty {
+            return "@ \(location)"
+        } else {
+            return ""
+        }
+    }
+}
+
+extension Task {
+    
     // MARK: - Task Representations
     
     private var uncompletedTextAttributes: [NSAttributedString.Key: Any] {
@@ -172,6 +185,7 @@ extension Task {
             string: titleRepresentation
                 + "\n"
                 + dateAndTimeAndDurationRepresentation
+                + " " + locationRepresentation
         )
         
         repr.set(

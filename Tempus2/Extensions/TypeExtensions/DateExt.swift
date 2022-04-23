@@ -34,7 +34,7 @@ extension Date {
     // MARK: - Representations
     
     private var defaultDateFormat: String {
-        "EEEE, MMM d"
+        "EE, MMM d"
     }
     
     private var defaultTimeFormat: String {
