@@ -49,7 +49,7 @@ extension NSMutableAttributedString {
         )
     }
     
-    func setUnderline(for text: String? = nil, style: NSUnderlineStyle = .single, color: UIColor) {
+    func setUnderline(for text: String? = nil, style: NSUnderlineStyle = .single, color: UIColor = .black) {
         set(
             attributes: [
                 .underlineStyle: style.rawValue,
@@ -57,5 +57,9 @@ extension NSMutableAttributedString {
             ],
             for: text
         )
+    }
+    
+    func removeUnderline(for text: String? = nil) {
+        setUnderline(for: text, style: [], color: .black)
     }
 }

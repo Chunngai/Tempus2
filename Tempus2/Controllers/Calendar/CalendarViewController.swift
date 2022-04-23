@@ -157,15 +157,10 @@ extension CalendarViewController: JTACMonthViewDelegate {
             return
         }
         
-        let hasTasks = self.tasks.hasTasks(on: date)
-        let hasUnfinishedTasks = self.tasks.hasUnfinishedTasks(on: date)
-        let hasDues = self.tasks.hasDues(on: date)
         cell.updateValues(
             date: date,
             cellState: cellState,
-            hasTasks: hasTasks,
-            hasUnfinishedTasks: hasUnfinishedTasks,
-            hasDues: hasDues,
+            tasks: self.tasks,
             shouldDrawBottomLine: indexPath.row >= 35 && indexPath.row <= 41
         )
     }

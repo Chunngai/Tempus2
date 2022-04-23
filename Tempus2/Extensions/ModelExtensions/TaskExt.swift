@@ -12,6 +12,7 @@ import UIKit
 extension Array where Element == Task {
         
     // TODO: - Use another way to get tasks of the same date.
+    // TODO: - Rename to avoid ambiguity with .task.
     func tasksOf(_ date: Date) -> [Task] {
         return self.compactMap { (task) -> Task? in
             if Calendar.current.isDate(
@@ -24,38 +25,38 @@ extension Array where Element == Task {
             }
         }
     }
+    
+    func duesOf(_ date: Date) -> [Task] {
+        return self.tasksOf(date).compactMap { (task) -> Task? in
+            if task.type == .due {
+                return task
+            } else {
+                return nil
+            }
+        }
+    }
 }
 
 extension Array where Element == Task {
     
-    func hasTasks(on date: Date) -> Bool {
-        return !self.tasksOf(date).isEmpty
-    }
-    
-    func hasUnfinishedTasks(on date: Date) -> Bool {
-        guard !self.tasksOf(date).isEmpty else {
-            return false
-        }
-        
-        for task in self.tasksOf(date) {
+    func unfinishedTasksOf(_ date: Date) -> [Task] {
+        return self.tasksOf(date).compactMap { (task) -> Task? in
             if !task.isCompleted {
-                return true
+                return task
+            } else {
+                return nil
             }
         }
-        return false
     }
     
-    func hasDues(on date: Date) -> Bool {
-        guard !self.tasksOf(date).isEmpty else {
-            return false
-        }
-        
-        for task in self.tasksOf(date) {
-            if task.type == .due {
-                return true
+    func unfinishedDues(on date: Date) -> [Task] {
+        return self.duesOf(date).compactMap { (task) -> Task? in
+            if !task.isCompleted {
+                return task
+            } else {
+                return nil
             }
         }
-        return false
     }
 }
 
