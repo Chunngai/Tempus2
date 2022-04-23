@@ -10,40 +10,6 @@ import UIKit
 
 class EventEditViewController: UITableViewController {
     
-    private var isDatePickerInRowTwoHidden: Bool {
-        guard startDateAndTimePickerCell != nil else {
-            return true
-        }
-        return startDateAndTimePickerCell.datePicker.isHidden
-    }
-    private var isTimePickerInRowTwoHidden: Bool {
-        guard startDateAndTimePickerCell != nil else {
-            return true
-        }
-        return startDateAndTimePickerCell.timePicker.isHidden
-    }
-    private var bothPickersInRowTwoAreHidden: Bool {
-        return isDatePickerInRowTwoHidden
-            && isTimePickerInRowTwoHidden
-    }
-    
-    private var isDatePickerInRowFourHidden: Bool {
-        guard endDateAndTimePickerCell != nil else {
-            return true
-        }
-        return endDateAndTimePickerCell.datePicker.isHidden
-    }
-    private var isTimePickerInRowFourHidden: Bool {
-        guard endDateAndTimePickerCell != nil else {
-            return true
-        }
-        return endDateAndTimePickerCell.timePicker.isHidden
-    }
-    private var bothPickersInRowFourAreHidden: Bool {
-        return isDatePickerInRowFourHidden
-            && isTimePickerInRowFourHidden
-    }
-    
     private var titleCell: EventTextViewCell!
     private var typeCell: TypeCell!
     private var startDateAndTimeSelectionCell: DateAndTimeSelectionCell!
@@ -65,6 +31,20 @@ class EventEditViewController: UITableViewController {
             || oldEndDateAndTime.dateRepresentation() != endDateAndTimePickerCell.dateAndTime.dateRepresentation()
             || oldEndDateAndTime.timeRepresentation() != endDateAndTimePickerCell.dateAndTime.timeRepresentation()
             || oldDescription != descriptionCell.textView.content
+    }
+    
+    private var isDatePickerInRowTwoHidden: Bool {
+        return startDateAndTimePickerCell?.datePicker.isHidden ?? true
+    }
+    private var isTimePickerInRowTwoHidden: Bool {
+        return startDateAndTimePickerCell?.timePicker.isHidden ?? true
+    }
+    
+    private var isDatePickerInRowFourHidden: Bool {
+        return endDateAndTimePickerCell?.datePicker.isHidden ?? true
+    }
+    private var isTimePickerInRowFourHidden: Bool {
+        return endDateAndTimePickerCell?.timePicker.isHidden ?? true
     }
     
     private var defaultStartDate: Date = EventEditViewController.defaultStartDate
@@ -323,7 +303,8 @@ extension EventEditViewController {
     }
     
     private func configCellSeparators() {
-        if bothPickersInRowFourAreHidden {
+        if isDatePickerInRowFourHidden
+            && isTimePickerInRowFourHidden {
             endDateAndTimeSelectionCell.resetSeparator()
         } else {
             endDateAndTimeSelectionCell.removeSeparator()
@@ -611,7 +592,8 @@ extension EventEditViewController {
         }
         
         if row == EventEditViewController.startDateAndTimePickerCellIndex {
-            if bothPickersInRowTwoAreHidden {
+            if isDatePickerInRowTwoHidden
+                && isTimePickerInRowTwoHidden {
                 return 0
             } else if isDatePickerInRowTwoHidden {
                 return EventEditViewController.timePickerCellHeight
@@ -619,7 +601,8 @@ extension EventEditViewController {
                 return EventEditViewController.datePickerCellHeight
             }
         } else if row == EventEditViewController.endDateAndTimePickerCellIndex {
-            if bothPickersInRowFourAreHidden {
+            if isDatePickerInRowFourHidden
+                && isTimePickerInRowFourHidden {
                 return 0
             } else if isDatePickerInRowFourHidden {
                 return EventEditViewController.timePickerCellHeight
