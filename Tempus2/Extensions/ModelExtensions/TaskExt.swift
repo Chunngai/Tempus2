@@ -185,7 +185,8 @@ extension Task {
             string: titleRepresentation
                 + "\n"
                 + dateAndTimeAndDurationRepresentation
-                + " " + locationRepresentation
+                + "\n"
+                + locationRepresentation
         )
         
         repr.set(
