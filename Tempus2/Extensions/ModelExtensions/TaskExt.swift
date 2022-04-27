@@ -182,11 +182,13 @@ extension Task {
     
     var attributedRepresentation: NSAttributedString {
         let repr = NSMutableAttributedString(
-            string: titleRepresentation
-                + "\n"
-                + dateAndTimeAndDurationRepresentation
-                + "\n"
-                + locationRepresentation
+            string: (
+                titleRepresentation
+                    + "\n"
+                    + dateAndTimeAndDurationRepresentation
+                    + "\n"
+                    + locationRepresentation
+                ).trimmingWhitespacesAndNewlines()
         )
         
         repr.set(
