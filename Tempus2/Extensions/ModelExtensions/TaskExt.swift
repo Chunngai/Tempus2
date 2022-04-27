@@ -138,7 +138,7 @@ extension Task {
     // MARK: - Location Representations
     
     var locationRepresentation: String {
-        if let location = location, !location.trimmingWhitespacesAndNewlines().isEmpty {
+        if !location.trimmingWhitespacesAndNewlines().isEmpty {
             return "@ \(location)"
         } else {
             return ""

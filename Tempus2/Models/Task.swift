@@ -14,13 +14,13 @@ struct Task: Codable {
     
     var title: String
     
-    var type: Task.Type_?  // The optional type is for compatibility.
+    var type: Task.Type_
     
     // The dates in dateInterval are UTC.
     // Note that It's not appropriate to set a timezone for Date objs.
     var dateInterval: DateInterval
     
-    var location: String?
+    var location: String
     
     var description: String
     
