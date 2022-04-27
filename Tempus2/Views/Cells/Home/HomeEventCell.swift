@@ -12,7 +12,16 @@ class HomeEventCell: UITableViewCell {
         
     // MARK: - Models
     
-    private var task: Task!
+    private var task: Task! {
+        didSet {
+            mainView.backgroundColor = task.isCompleted
+                ? Theme.homeEventCellCompletionColor
+                : Theme.homeEventCellColor
+            titleLabel.attributedText = task.titleAttributedRepresentation
+            descriptionImageView.isHidden = task.description.trimmingWhitespacesAndNewlines().isEmpty
+            timeAndLocationLabel.text = task.timeAndDurationRepresentation + " " + task.locationRepresentation
+        }
+    }
     
     // MARK: - Controllers
     
@@ -29,13 +38,23 @@ class HomeEventCell: UITableViewCell {
         return view
     }()
     
-    internal let titleLabel: UILabel = {
+    internal lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
         label.lineBreakMode = .byTruncatingTail
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: Theme.bodyFont.pointSize, weight: .light)
         return label
+    }()
+    
+    internal lazy var descriptionImageView = UIImageView(image: UIImage(imageLiteralResourceName: "description"))
+    
+    internal lazy var titleStackView: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [titleLabel, descriptionImageView])
+        stack.alignment = .center
+        stack.axis = .horizontal
+        stack.distribution = .equalCentering
+        return stack
     }()
     
     private let timeAndLocationLabel: UILabel = {
@@ -64,7 +83,7 @@ class HomeEventCell: UITableViewCell {
         selectionStyle = .none
         
         addSubview(mainView)
-        mainView.addSubview(titleLabel)
+        mainView.addSubview(titleStackView)
         mainView.addSubview(timeAndLocationLabel)
         mainView.addGestureRecognizer(UITapGestureRecognizer(
             target: self,
@@ -79,38 +98,26 @@ class HomeEventCell: UITableViewCell {
             make.centerX.centerY.equalToSuperview()
         }
         
-        titleLabel.snp.makeConstraints { (make) in
-            make.width.equalToSuperview().multipliedBy(0.9)
+        titleStackView.snp.makeConstraints { (make) in
             make.top.equalToSuperview().inset(15)
             make.height.equalToSuperview().multipliedBy(0.3)
             make.centerX.equalToSuperview()
         }
+        descriptionImageView.snp.makeConstraints { (make) in
+            make.leading.equalTo(titleLabel.snp.trailing).offset(10)
+            make.height.width.equalTo(Theme.bodyFont.lineHeight)
+        }
         
         timeAndLocationLabel.snp.makeConstraints { (make) in
-            make.width.equalTo(titleLabel.snp.width)
+            make.width.equalToSuperview().multipliedBy(0.9)
             make.centerX.equalToSuperview()
-            make.top.equalTo(titleLabel.snp.bottom).offset(5)
+            make.top.equalTo(titleStackView.snp.bottom).offset(5)
         }
     }
     
     func updateValues(task: Task, delegate: HomeViewController) {
         self.task = task
         self.delegate = delegate
-        
-        mainView.backgroundColor = task.isCompleted
-            ? Theme.homeEventCellCompletionColor
-            : Theme.homeEventCellColor
-        
-        if !task.description.isEmpty {
-            titleLabel.attributedText = NSMutableAttributedString(
-                string: task.titleAttributedRepresentation.string + " 🏷",
-                attributes: task.titleAttributedRepresentation.attributes(at: 0, effectiveRange: nil)
-            )
-        } else {
-            titleLabel.attributedText = task.titleAttributedRepresentation
-        }
-        
-        timeAndLocationLabel.text = task.timeAndDurationRepresentation + " " + task.locationRepresentation
     }
 }
 

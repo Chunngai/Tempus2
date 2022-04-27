@@ -38,11 +38,11 @@ class PseudoCell: HomeEventCell {
             make.centerX.centerY.equalToSuperview()
         }
         
-        titleLabel.snp.makeConstraints { (make) in
-            make.width.equalToSuperview()
-            make.height.equalToSuperview()
+        titleStackView.snp.makeConstraints { (make) in
+            make.height.equalToSuperview().multipliedBy(0.3)
             make.centerX.centerY.equalToSuperview()
         }
+        descriptionImageView.isHidden = true
     }
 }
 
