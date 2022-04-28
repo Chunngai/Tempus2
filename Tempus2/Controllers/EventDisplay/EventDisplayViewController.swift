@@ -42,6 +42,23 @@ class EventDisplayViewController: UITableViewController {
             forCellReuseIdentifier: EventDisplayViewController.eventDisplayCellReusableIdentifier
         )
         
+        let editButton = UIBarButtonItem(
+            image: UIImage(imageLiteralResourceName: "edit"),
+            style: .plain,
+            target: self,
+            action: #selector(editButtonTapped)
+        )
+        let deleteButton = UIBarButtonItem(
+            image: UIImage(imageLiteralResourceName: "delete"),
+            style: .plain,
+            target: self,
+            action: #selector(deleteButtonTapped)
+        )
+        navigationItem.rightBarButtonItems = [deleteButton, editButton]
+        
+        tableView.addSubview(eventCompletionTogglingBottomView)
+        eventCompletionTogglingBottomView.updateValues(delegate: self)
+        
         updateViews()
         updateLayouts()
     }
@@ -55,40 +72,15 @@ class EventDisplayViewController: UITableViewController {
     }
     
     func updateViews() {
-//        let editButton = UIBarButtonItem(
-//            barButtonSystemItem: .edit,
-//            target: self,
-//            action: #selector(editButtonTapped)
-//        )
-        let editButton = UIBarButtonItem(
-            image: UIImage(imageLiteralResourceName: "edit"),
-            style: .plain,
-            target: self,
-            action: #selector(editButtonTapped)
-        )
-//        let deleteButton = UIBarButtonItem(
-//            barButtonSystemItem: .trash,
-//            target: self,
-//            action: #selector(deleteButtonTapped)
-//        )
-        let deleteButton = UIBarButtonItem(
-            image: UIImage(imageLiteralResourceName: "delete"),
-            style: .plain,
-            target: self,
-            action: #selector(deleteButtonTapped)
-        )
-        navigationItem.rightBarButtonItems = [deleteButton, editButton]
-        
         tableView.separatorStyle = .none
-        
-        tableView.addSubview(eventCompletionTogglingBottomView)
-        eventCompletionTogglingBottomView.updateValues(delegate: self)
     }
     
     func updateLayouts() {
         eventCompletionTogglingBottomView.snp.makeConstraints { (make) in
-            make.leading.trailing.bottom.equalTo(tableView.safeAreaLayoutGuide)
-            make.height.equalTo(50)
+            let bottomSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
+            make.leading.trailing.equalTo(tableView.safeAreaLayoutGuide)
+            make.bottom.equalTo(tableView.safeAreaLayoutGuide).offset(bottomSafeAreaInset)
+            make.height.equalTo(80)
         }
     }
     

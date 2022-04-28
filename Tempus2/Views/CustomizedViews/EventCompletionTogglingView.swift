@@ -78,7 +78,11 @@ class EventCompletionTogglingView: UIView {
 //            make.top.equalToSuperview().inset(10)
 //            make.trailing.equalToSuperview().inset(10)
 //            make.width.equalTo(130)
-            make.edges.equalToSuperview()
+            
+//            make.edges.equalToSuperview()
+            
+            make.top.equalToSuperview().inset(10)
+            make.centerX.equalToSuperview()
         }
     }
     
