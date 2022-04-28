@@ -23,18 +23,6 @@ class CalendarCell: DateCell {
     }()
     private var bottomHorizontalSeparatorWidth: CGFloat = CalendarCell.lineWidth
     
-    private var leadingVerticalSeparator: Separator = {
-        let separator = Separator()
-        return separator
-    }()
-    private var leadingVerticalSeparatorWidth: CGFloat = CalendarCell.lineWidth
-    
-    private var trailingVerticalSeparator: Separator = {
-        let separator = Separator()
-        return separator
-    }()
-    private var trailingVerticalSeparatorWidth: CGFloat = CalendarCell.lineWidth
-    
     // MARK: - Init
         
     override init(frame: CGRect) {
@@ -53,8 +41,6 @@ class CalendarCell: DateCell {
         
         addSubview(topHorizontalSeparator)
         addSubview(bottomHorizontalSeparator)
-        addSubview(leadingVerticalSeparator)
-        addSubview(trailingVerticalSeparator)        
     }
     
     override func updateLayouts() {
@@ -75,16 +61,6 @@ class CalendarCell: DateCell {
             make.bottom.equalToSuperview().inset(bottomHorizontalSeparatorWidth)
             make.height.equalTo(bottomHorizontalSeparatorWidth)
         }
-//
-//        leadingVerticalSeparator.snp.makeConstraints { (make) in
-//            make.leading.top.bottom.equalToSuperview()
-//            make.width.equalTo(leadingVerticalSeparatorWidth)
-//        }
-//
-//        trailingVerticalSeparator.snp.makeConstraints { (make) in
-//            make.trailing.top.bottom.equalToSuperview()
-//            make.width.equalTo(trailingVerticalSeparatorWidth)
-//        }
     }
     
     func updateValues(date: Date, cellState: CellState, tasks: [Task], shouldDrawBottomLine: Bool) {
@@ -108,9 +84,15 @@ class CalendarCell: DateCell {
         
         let attributedDateText = NSMutableAttributedString(string: dateLabel.text!)
         if !tasks.unfinishedDues(on: date).isEmpty {
-            attributedDateText.setUnderline(style: NSUnderlineStyle.thick, color: .red)
+            attributedDateText.setTextColor(with: .red)
         } else {
-            attributedDateText.removeUnderline()
+            attributedDateText.setTextColor(with: super.getColors(
+                cellState: cellState,
+                date: date,
+                textColorForCurrentDay: Theme.highlightedTextColor,
+                textColorForCurrentMonthExceptCurrentDay: Theme.textColor,
+                textColorForOtherMonths: UIColor.lightGray)["textColor"]!
+            )
         }
         dateLabel.attributedText = attributedDateText
         

@@ -57,19 +57,44 @@ class DateCell: JTACDayCell {
             dateLabel.text = ""
         }
         
+        let colors = getColors(
+            cellState: cellState,
+            date: date,
+            textColorForCurrentDay: textColorForCurrentDay,
+            textColorForCurrentMonthExceptCurrentDay: textColorForCurrentMonthExceptCurrentDay,
+            textColorForOtherMonths: textColorForCurrentMonthExceptCurrentDay
+        )
+        dateLabel.backgroundColor = colors["backgroundColor"]!
+        dateLabel.textColor = colors["textColor"]!
+    }
+}
+
+extension DateCell {
+    
+    // MARK: - Utils
+    
+    func getColors(cellState: CellState, date: Date, textColorForCurrentDay: UIColor = .white, textColorForCurrentMonthExceptCurrentDay: UIColor = Theme.textColor, textColorForOtherMonths: UIColor = Theme.textColor) -> [String : UIColor] {
+                
         if cellState.dateBelongsTo == .thisMonth {
             if Calendar.current.isDateInToday(date) {
-                dateLabel.backgroundColor = DateCell.todayColor
-                dateLabel.textColor = textColorForCurrentDay
+                return [
+                    "backgroundColor" : DateCell.todayColor,
+                    "textColor" : textColorForCurrentDay
+                ]
             } else {
-                dateLabel.backgroundColor = DateCell.commonColor
-                dateLabel.textColor = textColorForCurrentMonthExceptCurrentDay
+                return [
+                    "backgroundColor" : DateCell.commonColor,
+                    "textColor" : textColorForCurrentMonthExceptCurrentDay
+                ]
             }
         } else {
-            dateLabel.backgroundColor = DateCell.commonColor
-            dateLabel.textColor = textColorForOtherMonths
+            return [
+                "backgroundColor" : DateCell.commonColor,
+                "textColor" : textColorForOtherMonths
+            ]
         }
     }
+    
 }
 
 extension DateCell {

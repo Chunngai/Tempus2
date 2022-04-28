@@ -95,10 +95,8 @@ extension Task {
         
         attrString.setTextColor(with: Theme.textColor)
         if type == .due {
-            if isCompleted {
-                attrString.setUnderline(style: [], color: Theme.textColor)
-            } else {
-                attrString.setUnderline(style: .thick, color: .red)
+            if !isCompleted {
+                attrString.setTextColor(with: .red)
             }
         }
         
