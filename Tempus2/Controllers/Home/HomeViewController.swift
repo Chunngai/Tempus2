@@ -437,16 +437,7 @@ extension HomeViewController {
                 identifier: task.identifier + "-will-start",
                 triggerDate: task.dateInterval.start - 10 * TimeInterval.Minute
             ))
-            notificationCenter.add(makeNotificationRequest(
-                title: task.titleRepresentation,
-                body: (task.dateInterval.duration >= 1 * TimeInterval.Minute
-                    ? "Started: "
-                    : ""
-                ) + task.timeAndDurationRepresentation,
-                identifier: task.identifier + "-start",
-                triggerDate: task.dateInterval.start
-            ))
-            if task.dateInterval.duration >= 1 * TimeInterval.Minute {
+            if task.type == .event {
                 notificationCenter.add(makeNotificationRequest(
                     title: task.titleRepresentation,
                     body: "Finished",
