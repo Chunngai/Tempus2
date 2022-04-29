@@ -55,6 +55,8 @@ class TextViewWithPlaceHolder: UITextView {
                 
                 clearButton.isHidden = false
             }
+            
+            delegate?.textViewDidChange?(self)
         }
     }
     
