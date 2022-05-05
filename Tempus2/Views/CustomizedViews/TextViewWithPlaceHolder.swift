@@ -42,8 +42,6 @@ class TextViewWithPlaceHolder: UITextView {
                 text = placeHolder
                 textColor = Theme.placeHolderColor
                 selectBeginning()
-                
-                clearButton.isHidden = true
             } else {
                 text = isShowingPlaceHolder
                     // textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool
@@ -52,9 +50,9 @@ class TextViewWithPlaceHolder: UITextView {
                     ? ""
                     : newValue
                 textColor = Theme.textColor
-                
-                clearButton.isHidden = false
             }
+            
+            setClearButtonVisibility(content: newValue, isFirstResponder: self.isFirstResponder)
             
             delegate?.textViewDidChange?(self)
         }
@@ -100,6 +98,17 @@ extension TextViewWithPlaceHolder {
         if text == placeHolder {
             selectBeginning()
         }
+        
+        setClearButtonVisibility(content: content, isFirstResponder: bool)
+        
+        return bool
+    }
+    
+    override func resignFirstResponder() -> Bool {
+        let bool = super.resignFirstResponder()
+        
+        setClearButtonVisibility(content: content, isFirstResponder: !bool)
+        
         return bool
     }
 }
@@ -111,6 +120,18 @@ extension TextViewWithPlaceHolder {
     @objc func clearButtonTapped() {
         content = ""
     }
+}
+
+extension TextViewWithPlaceHolder {
+    
+    private func setClearButtonVisibility(content: String, isFirstResponder: Bool) {
+        if isFirstResponder && !content.isEmpty {
+            clearButton.isHidden = false
+        } else {
+            clearButton.isHidden = true
+        }
+    }
+    
 }
 
 extension TextViewWithPlaceHolder {
