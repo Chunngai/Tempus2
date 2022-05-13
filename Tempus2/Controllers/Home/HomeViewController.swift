@@ -41,9 +41,12 @@ class HomeViewController: UIViewController {
                 delegate.tasks = tasks
             }
             
-            tasks.sort {
-                $0.dateInterval.start < $1.dateInterval.start
-                    || $0.dateInterval.end < $1.dateInterval.end
+            tasks.sort { (task1, task2) -> Bool in
+                if task1.dateInterval.start != task2.dateInterval.start {
+                    return task1.dateInterval.start < task2.dateInterval.start
+                } else {
+                    return task1.dateInterval.end < task2.dateInterval.end
+                }
             }
             Task.save(tasks)
             prepareForNotifications()
