@@ -16,6 +16,7 @@ class EventEditViewController: UITableViewController {
     private var startDateAndTimePickerCell: DateAndTimePickerCell!
     private var endDateAndTimeSelectionCell: DateAndTimeSelectionCell!
     private var endDateAndTimePickerCell: DateAndTimePickerCell!
+    private var alarmCell: AlarmCell!
     private var locationCell: EventTextViewCell!
     private var descriptionCell: EventTextViewCell!
     
@@ -23,6 +24,7 @@ class EventEditViewController: UITableViewController {
     private var oldType: Task.Type_!
     private var oldStartDateAndTime: Date!
     private var oldEndDateAndTime: Date!
+    private var oldHasAlarm: Bool!
     private var oldLocation: String!
     private var oldDescription: String!
     private var isContentChanged: Bool {
@@ -32,6 +34,7 @@ class EventEditViewController: UITableViewController {
             || oldStartDateAndTime.timeRepresentation() != startDateAndTimePickerCell.dateAndTime.timeRepresentation()
             || oldEndDateAndTime.dateRepresentation() != endDateAndTimePickerCell.dateAndTime.dateRepresentation()
             || oldEndDateAndTime.timeRepresentation() != endDateAndTimePickerCell.dateAndTime.timeRepresentation()
+            || oldHasAlarm != alarmCell.alarmSwitch.isOn
             || oldLocation != locationCell.textView.content
             || oldDescription != descriptionCell.textView.content
     }
@@ -302,23 +305,23 @@ extension EventEditViewController {
         tableView.beginUpdates()
         tableView.endUpdates()
         
-        configCellSeparators()
+//        configCellSeparators()
     }
     
     private func configCellSeparators() {
-        if isDatePickerInRowFourHidden
-            && isTimePickerInRowFourHidden {
-            endDateAndTimeSelectionCell.resetSeparator()
-        } else {
-            endDateAndTimeSelectionCell.removeSeparator()
-            endDateAndTimePickerCell.resetSeparator()
-        }
+//        if isDatePickerInRowFourHidden
+//            && isTimePickerInRowFourHidden {
+//            endDateAndTimeSelectionCell.resetSeparator()
+//        } else {
+//            endDateAndTimeSelectionCell.removeSeparator()
+//            endDateAndTimePickerCell.resetSeparator()
+//        }
     }
 }
 
 extension EventEditViewController {
     
-    private func save(title: String, type: Task.Type_, startDateAndTime: Date, endDateAndTime: Date, location: String, description: String) {
+    private func save(title: String, type: Task.Type_, startDateAndTime: Date, endDateAndTime: Date, hasAlarm: Bool, location: String, description: String) {
         let dateInterval = DateInterval(
             start: startDateAndTime,
             end: endDateAndTime
@@ -329,6 +332,7 @@ extension EventEditViewController {
             title: title,
             type: type,
             dateInterval: dateInterval,
+            hasAlarm: hasAlarm,
             location: location,
             description: description,
             isCompleted: task?.isCompleted ?? false
@@ -399,6 +403,7 @@ extension EventEditViewController {
         let type = typeCell.type!
         let startDateAndTime = startDateAndTimePickerCell.dateAndTime
         let endDateAndTime = endDateAndTimePickerCell.dateAndTime
+        let hasAlarm = alarmCell.alarmSwitch.isOn
         let location = locationCell.textView.content
         let description = descriptionCell.textView.content
         
@@ -423,6 +428,7 @@ extension EventEditViewController {
                         type: type,
                         startDateAndTime: startDateAndTime,
                         endDateAndTime: endDateAndTime,
+                        hasAlarm: hasAlarm,
                         location: location,
                         description: description
                     )
@@ -434,6 +440,7 @@ extension EventEditViewController {
                 type: type,
                 startDateAndTime: startDateAndTime,
                 endDateAndTime: endDateAndTime,
+                hasAlarm: hasAlarm,
                 location: location,
                 description: description
             )
@@ -470,7 +477,7 @@ extension EventEditViewController {
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        8
+        9
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -532,6 +539,7 @@ extension EventEditViewController {
             )
             let dateAndTime = task?.dateInterval.end ?? defaultEndDate
             endDateAndTimeSelectionCell.updateDateAndTimeRepr(with: dateAndTime)
+            endDateAndTimeSelectionCell.removeSeparator()
             return endDateAndTimeSelectionCell
         case EventEditViewController.endDateAndTimePickerCellIndex:
             oldEndDateAndTime = task?.dateInterval.end ?? defaultEndDate
@@ -542,7 +550,18 @@ extension EventEditViewController {
                 delegate: self,
                 dateAndTime: oldEndDateAndTime
             )
+            endDateAndTimePickerCell.removeSeparator()
             return endDateAndTimePickerCell
+        case EventEditViewController.alarmCellIndex:
+            oldHasAlarm = task?.hasAlarm ?? false
+            
+            alarmCell = AlarmCell()
+            alarmCell.updateValues(
+                iconName: "alarm",
+                hasAlarm: oldHasAlarm,
+                delegate: self
+            )
+            return alarmCell
         case EventEditViewController.locationCellIndex:
             oldLocation = task?.location ?? ""
             
@@ -801,7 +820,7 @@ extension EventEditViewController: DateAndTimeSelectionCellDelegate {
         tableView.beginUpdates()
         tableView.endUpdates()
         
-        configCellSeparators()
+//        configCellSeparators()
     }
     
     // MARK: - DateAndTimeSelectionCell Delegate
@@ -835,8 +854,9 @@ extension EventEditViewController {
     static let startDateAndTimePickerCellIndex: Int = 3
     static let endDateAndTimeSelectionCellIndex: Int = 4
     static let endDateAndTimePickerCellIndex: Int = 5
-    static let locationCellIndex: Int = 6
-    static let descriptionCellIndex: Int = 7
+    static let alarmCellIndex: Int = 6
+    static let locationCellIndex: Int = 7
+    static let descriptionCellIndex: Int = 8
     
     static let cellHeight: CGFloat = 60
     static let datePickerCellHeight: CGFloat = 250

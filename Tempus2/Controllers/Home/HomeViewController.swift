@@ -396,7 +396,7 @@ extension HomeViewController {
         let content = UNMutableNotificationContent()
         content.title = title
         content.body = body
-        content.sound = UNNotificationSound.default
+//        content.sound = UNNotificationSound.default
         content.categoryIdentifier = "eventNotification"
 
         let triggerDate = triggerDate

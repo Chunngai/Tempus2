@@ -11,6 +11,10 @@
 		AEA9238F01D0B13B39424058 /* Pods_Tempus2_Tempus2UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 536BC6AAA7E95F3617C79F4C /* Pods_Tempus2_Tempus2UITests.framework */; };
 		C257A921F9BE966E5A94C968 /* Pods_Tempus2Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6C425F389686398F160AEC /* Pods_Tempus2Tests.framework */; };
 		FF475165270F85E60015E862 /* PseudoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF475164270F85E60015E862 /* PseudoCell.swift */; };
+		FF48532E284BB32000BC3783 /* silence.aif in Resources */ = {isa = PBXBuildFile; fileRef = FF48532B284BB32000BC3783 /* silence.aif */; };
+		FF48532F284BB32000BC3783 /* silence.wav in Resources */ = {isa = PBXBuildFile; fileRef = FF48532C284BB32000BC3783 /* silence.wav */; };
+		FF485330284BB32000BC3783 /* silence.caf in Resources */ = {isa = PBXBuildFile; fileRef = FF48532D284BB32000BC3783 /* silence.caf */; };
+		FF4C1BB4284D8EF100988BDA /* AlarmCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4C1BB3284D8EF100988BDA /* AlarmCell.swift */; };
 		FF4C81282801F3AB00A2379F /* TypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4C81272801F3AB00A2379F /* TypeCell.swift */; };
 		FF4C812B2801F6E600A2379F /* TypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4C812A2801F6E600A2379F /* TypeViewController.swift */; };
 		FF4CAE7226DCE3F7009BB111 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE7126DCE3F7009BB111 /* Theme.swift */; };
@@ -111,6 +115,10 @@
 		90AA7456B3591FA5198797F3 /* Pods-Tempus2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tempus2.debug.xcconfig"; path = "Target Support Files/Pods-Tempus2/Pods-Tempus2.debug.xcconfig"; sourceTree = "<group>"; };
 		D8006638FED3B8ECE1A3C4F9 /* Pods_Tempus2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tempus2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF475164270F85E60015E862 /* PseudoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PseudoCell.swift; sourceTree = "<group>"; };
+		FF48532B284BB32000BC3783 /* silence.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = silence.aif; path = ../../../../../../Volumes/SWAP/sounds/silence.aif; sourceTree = "<group>"; };
+		FF48532C284BB32000BC3783 /* silence.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = silence.wav; path = ../../../../../../Volumes/SWAP/sounds/silence.wav; sourceTree = "<group>"; };
+		FF48532D284BB32000BC3783 /* silence.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = silence.caf; path = ../../../../../../Volumes/SWAP/sounds/silence.caf; sourceTree = "<group>"; };
+		FF4C1BB3284D8EF100988BDA /* AlarmCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmCell.swift; sourceTree = "<group>"; };
 		FF4C81272801F3AB00A2379F /* TypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeCell.swift; sourceTree = "<group>"; };
 		FF4C812A2801F6E600A2379F /* TypeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeViewController.swift; sourceTree = "<group>"; };
 		FF4CAE7126DCE3F7009BB111 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -200,6 +208,16 @@
 				459C22A1B2CFA66062295DF1 /* Pods-Tempus2Tests.release.xcconfig */,
 			);
 			path = Pods;
+			sourceTree = "<group>";
+		};
+		FF485328284BB30800BC3783 /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				FF48532B284BB32000BC3783 /* silence.aif */,
+				FF48532D284BB32000BC3783 /* silence.caf */,
+				FF48532C284BB32000BC3783 /* silence.wav */,
+			);
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 		FF4C81292801F6CB00A2379F /* Type */ = {
@@ -322,6 +340,7 @@
 		FF6A09F626DBEA0900A6E09A /* Tempus2 */ = {
 			isa = PBXGroup;
 			children = (
+				FF485328284BB30800BC3783 /* Sounds */,
 				FF6EED7726DD4787009483A2 /* Models */,
 				FF6A0A2926DBEAC300A6E09A /* Controllers */,
 				FF6A0A3226DBED5500A6E09A /* Views */,
@@ -441,6 +460,7 @@
 				FF51D65126DE45220091ABAA /* DateAndTimeSelectionCell.swift */,
 				FF51D65326DE4D340091ABAA /* DateAndTimePickerCell.swift */,
 				FF6E370226DE7FF400464183 /* DateCell.swift */,
+				FF4C1BB3284D8EF100988BDA /* AlarmCell.swift */,
 			);
 			path = EventEdit;
 			sourceTree = "<group>";
@@ -594,8 +614,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF48532E284BB32000BC3783 /* silence.aif in Resources */,
 				FF6A0A0426DBEA0900A6E09A /* LaunchScreen.storyboard in Resources */,
+				FF48532F284BB32000BC3783 /* silence.wav in Resources */,
 				FF6A0A0126DBEA0900A6E09A /* Assets.xcassets in Resources */,
+				FF485330284BB32000BC3783 /* silence.caf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -744,6 +767,7 @@
 				FF4CAE7726DCE459009BB111 /* StringExt.swift in Sources */,
 				FF4C81282801F3AB00A2379F /* TypeCell.swift in Sources */,
 				FF5179EC26DF61BE00CD0272 /* UITextViewExt.swift in Sources */,
+				FF4C1BB4284D8EF100988BDA /* AlarmCell.swift in Sources */,
 				FF50601226DFC3AC00BF1F50 /* EventDisplayViewController.swift in Sources */,
 				FFCB837426E133B7004A4F53 /* UINavigationItem.swift in Sources */,
 				FF4CAE7226DCE3F7009BB111 /* Theme.swift in Sources */,

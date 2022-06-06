@@ -19,6 +19,7 @@ class HomeEventCell: UITableViewCell {
                 : Theme.homeEventCellColor
             titleLabel.attributedText = task.titleAttributedRepresentation
             descriptionImageView.isHidden = task.description.trimmingWhitespacesAndNewlines().isEmpty
+            alarmImageView.isHidden = !task.hasAlarm
             timeAndLocationLabel.text = task.timeAndDurationRepresentation + " " + task.locationRepresentation
         }
     }
@@ -48,12 +49,14 @@ class HomeEventCell: UITableViewCell {
     }()
     
     internal lazy var descriptionImageView = UIImageView(image: UIImage(imageLiteralResourceName: "description"))
+    internal lazy var alarmImageView = UIImageView(image: UIImage(imageLiteralResourceName: "alarm"))
     
     internal lazy var titleStackView: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [titleLabel, descriptionImageView])
+        let stack = UIStackView(arrangedSubviews: [titleLabel, descriptionImageView, alarmImageView])
         stack.alignment = .center
         stack.axis = .horizontal
-        stack.distribution = .equalCentering
+        stack.distribution = .equalSpacing
+        stack.spacing = 10
         return stack
     }()
     
@@ -104,7 +107,11 @@ class HomeEventCell: UITableViewCell {
             make.centerX.equalToSuperview()
         }
         descriptionImageView.snp.makeConstraints { (make) in
-            make.leading.equalTo(titleLabel.snp.trailing).offset(10)
+//            make.leading.equalTo(titleLabel.snp.trailing).offset(10)
+            make.height.width.equalTo(Theme.bodyFont.lineHeight)
+        }
+        alarmImageView.snp.makeConstraints { (make) in
+//            make.leading.equalTo(descriptionImageView.snp.trailing).offset(10)
             make.height.width.equalTo(Theme.bodyFont.lineHeight)
         }
         

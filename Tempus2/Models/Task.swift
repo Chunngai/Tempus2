@@ -20,6 +20,8 @@ struct Task: Codable {
     // Note that It's not appropriate to set a timezone for Date objs.
     var dateInterval: DateInterval
     
+    var hasAlarm: Bool
+    
     var location: String
     
     var description: String
@@ -28,23 +30,25 @@ struct Task: Codable {
     
     // MARK: - Init
     
-    init(identifier: String?, title: String, type: Task.Type_, dateInterval: DateInterval, location: String, description: String, isCompleted: Bool) {
+    init(identifier: String?, title: String, type: Task.Type_, dateInterval: DateInterval, hasAlarm: Bool, location: String, description: String, isCompleted: Bool) {
         self.identifier = identifier ?? String(Date().hashValue)
         
         self.title = title
         self.type = type
         self.dateInterval = dateInterval
+        self.hasAlarm = hasAlarm
         self.location = location
         self.description = description
         self.isCompleted = isCompleted
     }
     
-    init(title: String, type: Task.Type_, dateInterval: DateInterval, location: String, description: String, isCompleted: Bool) {
+    init(title: String, type: Task.Type_, dateInterval: DateInterval, hasAlarm: Bool, location: String, description: String, isCompleted: Bool) {
         self.init(
             identifier: nil,
             title: title,
             type: type,
             dateInterval: dateInterval,
+            hasAlarm: hasAlarm,
             location: location,
             description: description,
             isCompleted: isCompleted
@@ -154,6 +158,7 @@ extension Task {
                     start: makeDate(hour: 8, minute: 0),
                     duration: TimeInterval.Hour * 1
                 ),
+                hasAlarm: false,
                 location: "Cafeteria",
                 description: "breakfast description",
                 isCompleted: false
@@ -164,6 +169,7 @@ extension Task {
                 dateInterval: DateInterval(
                     start: makeDate(hour: 10, minute: 30),
                     duration: TimeInterval.Hour * 1),
+                hasAlarm: false,
                 location: "E201",
                 description: "ai course description",
                 isCompleted: false
@@ -174,6 +180,7 @@ extension Task {
                 dateInterval: DateInterval(
                     start: makeDate(hour: 13, minute: 0),
                     duration: TimeInterval.Hour * 1.5),
+                hasAlarm: false,
                 location: "F203",
                 description: "math course description",
                 isCompleted: true
