@@ -43,6 +43,7 @@ class PseudoCell: HomeEventCell {
             make.centerX.centerY.equalToSuperview()
         }
         descriptionImageView.isHidden = true
+        alarmImageView.isHidden = true
     }
 }
 
