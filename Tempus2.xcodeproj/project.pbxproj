@@ -26,6 +26,7 @@
 		FF4CAE9526DCFD03009BB111 /* TaskExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE9426DCFD03009BB111 /* TaskExt.swift */; };
 		FF4CAE9F26DD2870009BB111 /* EventEditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAE9E26DD2870009BB111 /* EventEditViewController.swift */; };
 		FF4CAEA326DD325C009BB111 /* EventEditNavController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4CAEA226DD325C009BB111 /* EventEditNavController.swift */; };
+		FF4EF2BE284F335E0045F7C5 /* Scheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4EF2BD284F335E0045F7C5 /* Scheduler.swift */; };
 		FF50601226DFC3AC00BF1F50 /* EventDisplayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50601126DFC3AC00BF1F50 /* EventDisplayViewController.swift */; };
 		FF50601C26DFD31C00BF1F50 /* EventDisplayCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50601B26DFD31C00BF1F50 /* EventDisplayCell.swift */; };
 		FF50602126DFDA8200BF1F50 /* NSAttributedStringExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF50602026DFDA8200BF1F50 /* NSAttributedStringExt.swift */; };
@@ -130,6 +131,7 @@
 		FF4CAE9426DCFD03009BB111 /* TaskExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskExt.swift; sourceTree = "<group>"; };
 		FF4CAE9E26DD2870009BB111 /* EventEditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventEditViewController.swift; path = ../Home/EventEditViewController.swift; sourceTree = "<group>"; };
 		FF4CAEA226DD325C009BB111 /* EventEditNavController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventEditNavController.swift; path = ../Home/EventEditNavController.swift; sourceTree = "<group>"; };
+		FF4EF2BD284F335E0045F7C5 /* Scheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scheduler.swift; sourceTree = "<group>"; };
 		FF50601126DFC3AC00BF1F50 /* EventDisplayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDisplayViewController.swift; sourceTree = "<group>"; };
 		FF50601B26DFD31C00BF1F50 /* EventDisplayCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventDisplayCell.swift; sourceTree = "<group>"; };
 		FF50602026DFDA8200BF1F50 /* NSAttributedStringExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSAttributedStringExt.swift; sourceTree = "<group>"; };
@@ -350,6 +352,7 @@
 				FF6A0A0026DBEA0900A6E09A /* Assets.xcassets */,
 				FF6A0A0226DBEA0900A6E09A /* LaunchScreen.storyboard */,
 				FF6A0A0526DBEA0900A6E09A /* Info.plist */,
+				FF4EF2BD284F335E0045F7C5 /* Scheduler.swift */,
 			);
 			path = Tempus2;
 			sourceTree = "<group>";
@@ -746,6 +749,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FF4EF2BE284F335E0045F7C5 /* Scheduler.swift in Sources */,
 				FF6A0A2D26DBEB4B00A6E09A /* NavController.swift in Sources */,
 				FF6EED7626DD4787009483A2 /* HomeViewController.swift in Sources */,
 				FFEA451E26E4954100357126 /* CurrentTimeIndicator.swift in Sources */,

@@ -10,7 +10,11 @@ import Foundation
 import UIKit
 
 extension Array where Element == Task {
-        
+    
+    var tasksOfToday: [Task] {
+        return self.tasksOf(Date())
+    }
+    
     // TODO: - Use another way to get tasks of the same date.
     // TODO: - Rename to avoid ambiguity with .task.
     func tasksOf(_ date: Date) -> [Task] {

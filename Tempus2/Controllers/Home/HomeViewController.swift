@@ -26,9 +26,7 @@ class HomeViewController: UIViewController {
             loopScrollView.contentOffset = CGPoint(x: width, y: 0)
         }
     }
-    
-    private var notificationCenter = UNUserNotificationCenter.current()
-    
+        
     // Convenient for continuous event creation.
     private var endDateAndTimeOfLastAddedTask: Date? = nil
     
@@ -49,17 +47,13 @@ class HomeViewController: UIViewController {
                 }
             }
             Task.save(tasks)
-            prepareForNotifications()
+            prepareForNotifications(alarmNotificationType: .hidden)
             
             // For event adding, deleting and editing.
             if tableView1.frame != .zero {
                 reloadTables(scrollToTop: false)
             }
         }
-    }
-    
-    private var tasksOfToday: [Task] {
-        return tasks.tasksOf(Date())
     }
     
     private var tasksOfLastDate: [Task] {
@@ -391,76 +385,6 @@ extension HomeViewController {
 extension HomeViewController {
     
     // MARK: - Utils
-    
-    private func makeNotificationRequest(title: String, body: String, identifier: String, triggerDate: Date) -> UNNotificationRequest {
-        let content = UNMutableNotificationContent()
-        content.title = title
-        content.body = body
-//        content.sound = UNNotificationSound.default
-        content.categoryIdentifier = "eventNotification"
-
-        let triggerDate = triggerDate
-        // Sets up trigger time.
-        var calendar = Calendar.current
-        calendar.timeZone = TimeZone.current
-        var triggerDateComponents = DateComponents()
-        triggerDateComponents.year = triggerDate.get(.year)
-        triggerDateComponents.month = triggerDate.get(.month)
-        triggerDateComponents.day = triggerDate.get(.day)
-        triggerDateComponents.hour = triggerDate.get(.hour)
-        triggerDateComponents.minute = triggerDate.get(.minute)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
-
-        // Creates request.
-//        let uniqueID = UUID().uuidString
-        let request = UNNotificationRequest(
-            identifier: identifier,
-            content: content,
-            trigger: trigger
-        )
-        return request
-    }
-    
-    // https://stackoverflow.com/questions/52009454/how-do-i-send-local-notifications-at-a-specific-time-in-swift
-    private func prepareForNotifications() {
-        // Removes old notifications.
-        // https://stackoverflow.com/questions/40562912/how-to-cancel-usernotifications
-        UNUserNotificationCenter
-            .current()
-            .removeAllPendingNotificationRequests()
-                
-        for task in tasksOfToday {
-            if task.isCompleted {
-                continue
-            }
-            
-            notificationCenter.add(makeNotificationRequest(
-                title: task.titleRepresentation,
-                body: "Will start at " + task.dateInterval.start.timeRepresentation(),
-                identifier: task.identifier + "-will-start",
-                triggerDate: task.dateInterval.start - 10 * TimeInterval.Minute
-            ))
-            if task.type == .event {
-                notificationCenter.add(makeNotificationRequest(
-                    title: task.titleRepresentation,
-                    body: "Finished",
-                    identifier: task.identifier + "-finish",
-                    triggerDate: task.dateInterval.end
-                ))
-            }
-        }
-        
-        // https://stackoverflow.com/questions/40270598/ios-10-how-to-view-a-list-of-pending-notifications-using-unusernotificationcente
-        notificationCenter.getPendingNotificationRequests(completionHandler: { requests in
-            for request in requests {
-                print(
-                    "request title: \(request.content.title)"
-                        + ", "
-                        + "request body: \(request.content.body)"
-                )
-            }
-        })
-    }
     
     private func reloadTables(scrollToTop: Bool = false) {
         for tableView in [tableView0, tableView1, tableView2] {
