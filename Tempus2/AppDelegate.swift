@@ -17,9 +17,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         print("didFinishLaunchingWithOptions")
-        // Not needed to call prepareForNotifications() here.
-        // The function will be called in didSet of `tasks` in the HomeViewController.
-//        prepareForNotifications(alarmNotificationType: .hidden)
         
         // Asks permission for notifications.
         let center = UNUserNotificationCenter.current()
@@ -51,8 +48,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
 
     func applicationWillTerminate(_ application: UIApplication) {
         print("applicationWillTerminate")
-        // Converts the vibration-only alarm notifications to normal notifications.
-        prepareForNotifications(alarmNotificationType: .normal)
     }
 }
 

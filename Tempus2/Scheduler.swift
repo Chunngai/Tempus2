@@ -11,11 +11,6 @@ import UIKit
 
 var notificationCenter = UNUserNotificationCenter.current()
 
-enum AlarmNotificationType {
-    case normal
-    case hidden
-}
-
 func makeNotificationRequest(title: String, body: String, identifier: String, triggerDate: Date, shouldVibrate: Bool = false) -> UNNotificationRequest {
     let content = UNMutableNotificationContent()
     content.title = title
@@ -33,7 +28,7 @@ func makeNotificationRequest(title: String, body: String, identifier: String, tr
     triggerDateComponents.day = triggerDate.get(.day)
     triggerDateComponents.hour = triggerDate.get(.hour)
     triggerDateComponents.minute = triggerDate.get(.minute)
-    triggerDateComponents.second = triggerDate.get(.second)
+    triggerDateComponents.second = 0
     let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDateComponents, repeats: false)
     
     // Creates request.
@@ -46,7 +41,7 @@ func makeNotificationRequest(title: String, body: String, identifier: String, tr
 }
 
 // https://stackoverflow.com/questions/52009454/how-do-i-send-local-notifications-at-a-specific-time-in-swift
-func prepareForNotifications(alarmNotificationType: AlarmNotificationType) {
+func prepareForNotifications() {
     // Removes old notifications.
     removeAllNotifications()
     
@@ -71,27 +66,27 @@ func prepareForNotifications(alarmNotificationType: AlarmNotificationType) {
                 ))
             }
         } else {
-            for i in 0..<30 {
-                if alarmNotificationType == .normal {
-                    // When the app is not launched.
-                    notificationCenter.add(makeNotificationRequest(
-                        title: task.titleRepresentation,
-                        body: "",
-                        identifier: "\(task.identifier):normal:\(i)",
-                        triggerDate: task.dateInterval.start + Double(i) * 2,
-                        shouldVibrate: true
-                    ))
-                } else if alarmNotificationType == .hidden {
-                    // When in forground or background.
-                    // https://stackoverflow.com/questions/42431171/local-notifications-make-sound-but-do-not-display-swift
-                    notificationCenter.add(makeNotificationRequest(
-                        title: "",
-                        body: "",
-                        identifier: "\(task.identifier):hidden:\(i)",
-                        triggerDate: task.dateInterval.start + Double(i) * 2,
-                        shouldVibrate: true
-                    ))
-                }
+            // Reminds multiple times.
+            
+            for interval in [0, 2, 4, 6, 8, 10] {
+                notificationCenter.add(makeNotificationRequest(
+                    title: task.titleRepresentation,
+                    body: "Starts at: \(task.dateInterval.start.timeRepresentation())",
+                    identifier: "\(task.identifier):alarm:\(interval)",
+                    triggerDate: task.dateInterval.start + TimeInterval.Minute * Double(interval),
+                    shouldVibrate: false
+                ))
+                
+//                for i in 1...30 {
+//                    // https://stackoverflow.com/questions/42431171/local-notifications-make-sound-but-do-not-display-swift
+//                    notificationCenter.add(makeNotificationRequest(
+//                        title: "",
+//                        body: "",
+//                        identifier: "\(task.identifier):alarm:\(interval):\(i)",
+//                        triggerDate: task.dateInterval.start + TimeInterval.Minute * Double(interval + Double(i) * 2,
+//                        shouldVibrate: true
+//                    ))
+//                }
             }
         }
     }

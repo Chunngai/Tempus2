@@ -57,7 +57,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidEnterBackground(_ scene: UIScene) {
         print("sceneDidEnterBackground")
         // Recovers the stopped alarms (if any).
-        prepareForNotifications(alarmNotificationType: .hidden)
+        prepareForNotifications()
     }
 
 

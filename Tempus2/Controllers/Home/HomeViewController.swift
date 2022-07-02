@@ -47,7 +47,7 @@ class HomeViewController: UIViewController {
                 }
             }
             Task.save(tasks)
-            prepareForNotifications(alarmNotificationType: .hidden)
+            prepareForNotifications()
             
             // For event adding, deleting and editing.
             if tableView1.frame != .zero {
