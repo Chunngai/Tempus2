@@ -250,7 +250,7 @@ extension EventEditViewController {
     private func displayDelayTasksWarning(conflictedTask: Task, completion: @escaping (_ shouldDelay: Bool) -> Void) {
         let delayTasksAlert = UIAlertController(
             title: "Date Interval Conflict",
-            message: "The current date interval is conflicted with task:  \(conflictedTask.title)"
+            message: "The current date interval conflicts with task:  \(conflictedTask.title)"
                 + " (\(conflictedTask.timeReprsentation))."
                 + " Should delay all subsequent tasks?",
             preferredStyle: .actionSheet

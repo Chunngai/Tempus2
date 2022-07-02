@@ -42,6 +42,12 @@ class EventDisplayViewController: UITableViewController {
             forCellReuseIdentifier: EventDisplayViewController.eventDisplayCellReusableIdentifier
         )
         
+        let toNextDayButton = UIBarButtonItem(
+            image: UIImage(imageLiteralResourceName: "to_next_day"),
+            style: .plain,
+            target: self,
+            action: #selector(toNextDayButtonTapped)
+        )
         let editButton = UIBarButtonItem(
             image: UIImage(imageLiteralResourceName: "edit"),
             style: .plain,
@@ -54,7 +60,7 @@ class EventDisplayViewController: UITableViewController {
             target: self,
             action: #selector(deleteButtonTapped)
         )
-        navigationItem.rightBarButtonItems = [deleteButton, editButton]
+        navigationItem.rightBarButtonItems = [deleteButton, editButton, toNextDayButton]
         
         tableView.addSubview(eventCompletionTogglingBottomView)
         eventCompletionTogglingBottomView.updateValues(delegate: self)
@@ -159,11 +165,48 @@ extension EventDisplayViewController {
         
         self.present(deletionAlert, animated: true, completion: nil)
     }
+    
+    private func displayToNextDayConflictedWarning(conflictedTask: Task) {
+      let alert = UIAlertController(
+            title: "Date Interval Conflict",
+            message: "Date interval after changing conflicts with task:  \(conflictedTask.title)"
+                + " (\(conflictedTask.timeReprsentation))",
+            preferredStyle: .alert
+        )
+        
+        let okButton = UIAlertAction(
+            title: "OK",
+            style: .default,
+            handler: nil
+        )
+        
+        alert.addAction(okButton)
+        
+        self.present(alert, animated: true, completion: nil)
+    }
 }
 
 extension EventDisplayViewController {
     
     // MARK: - Actions
+    
+    @objc private func toNextDayButtonTapped() {
+        if let task = task {
+            var newTask = task
+            newTask.dateInterval = DateInterval(
+                start: newTask.dateInterval.start + TimeInterval.Day,
+                end: newTask.dateInterval.end + TimeInterval.Day
+            )
+            if let conflictedTask = delegate.taskConflicted(with: newTask) {
+                displayToNextDayConflictedWarning(conflictedTask: conflictedTask)
+                return
+            }
+            delegate.remove(task)
+            delegate.toNextDay()
+            navigationController?.popViewController(animated: true)
+            delegate.add(newTask)
+        }
+    }
     
     @objc private func editButtonTapped() {
         delegate.edit(task)

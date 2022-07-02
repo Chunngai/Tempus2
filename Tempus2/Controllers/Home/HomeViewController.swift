@@ -386,6 +386,10 @@ extension HomeViewController {
     
     // MARK: - Utils
     
+    func toNextDay() {
+        currentDate = currentDate.tomorrow
+    }
+    
     private func reloadTables(scrollToTop: Bool = false) {
         for tableView in [tableView0, tableView1, tableView2] {
             tableView.reloadData()
