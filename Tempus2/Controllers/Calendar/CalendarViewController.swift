@@ -21,8 +21,7 @@ class CalendarViewController: UIViewController {
     
     var tasks: [Task] = Task.load() {
         didSet {
-            // TODO: - Fix here.
-            
+            Task.save(&tasks)
             calendar.reloadData()
         }
     }
@@ -107,7 +106,7 @@ extension CalendarViewController {
                 // Displays the current day.
                 let homeViewController = HomeViewController()
                 homeViewController.viewDidLayoutSubviews()
-                homeViewController.updateValues(tasks: self.tasks, date: currentDate, delegate: self)
+                homeViewController.updateValues(date: currentDate, delegate: self)
                 navigationController?.pushViewController(homeViewController, animated: true)
                 
                 return
@@ -168,7 +167,7 @@ extension CalendarViewController: JTACMonthViewDelegate {
     func calendar(_ calendar: JTACMonthView, didSelectDate date: Date, cell: JTACDayCell?, cellState: CellState, indexPath: IndexPath) {
         let homeViewController = HomeViewController()
         homeViewController.viewDidLayoutSubviews()
-        homeViewController.updateValues(tasks: self.tasks, date: date, delegate: self)
+        homeViewController.updateValues(date: date, delegate: self)
         navigationController?.pushViewController(homeViewController, animated: true)
     }
     

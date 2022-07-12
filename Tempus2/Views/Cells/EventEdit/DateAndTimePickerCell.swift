@@ -9,11 +9,9 @@
 import UIKit
 import JTAppleCalendar
 
-class DateAndTimePickerCell: UITableViewCell {
-    
-    private var targetSelectionRow: Int!
-    
-    var dateAndTime: Date {
+class DateAndTimePickerCell: PickerCell {
+        
+    override var dateAndTime: Date {
         get {
             return Date.combine(
                 date: datePicker.selectedDates[0],
@@ -26,20 +24,17 @@ class DateAndTimePickerCell: UITableViewCell {
         }
     }
     
-    // MARK: - Controllers
-    
-    private var delegate: EventEditViewController!
-    
     // MARK: - Views
     
-    let timePicker: UIDatePicker = {
-        let picker = UIDatePicker()
-        picker.datePickerMode = .time
-        picker.isHidden = true
-        // https://stackoverflow.com/questions/30245341/uidatepicker-15-minute-increments-swift
-        picker.minuteInterval = 5
-        return picker
-    }()
+    // https://stackoverflow.com/questions/24094158
+    override var leftPicker: UIView {
+        get {
+            return datePicker
+        }
+        set {
+            print("Setting date picker")
+        }
+    }
     
     // https://jisng.github.io/2020/01/jtapplecalendar-programmatically/
     let datePicker: JTACMonthView = {
@@ -62,12 +57,6 @@ class DateAndTimePickerCell: UITableViewCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        timePicker.addTarget(
-            self,
-            action: #selector(timePickerValueChanged),
-            for: .valueChanged
-        )
-        
         datePicker.calendarDataSource = self
         datePicker.calendarDelegate = self
         datePicker.register(
@@ -79,22 +68,14 @@ class DateAndTimePickerCell: UITableViewCell {
             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
             withReuseIdentifier: DateAndTimePickerCell.headerReuseIdentifier
         )
+        contentView.addSubview(datePicker)
         
         updateViews()
         updateLayouts()
     }
     
-    func updateViews() {
-        selectionStyle = .none
-        
-        contentView.addSubview(timePicker)
-        contentView.addSubview(datePicker)
-    }
-    
-    func updateLayouts() {
-        timePicker.snp.makeConstraints { (make) in
-            make.top.bottom.leading.trailing.equalToSuperview()
-        }
+    override func updateLayouts() {
+        super.updateLayouts()
         
         datePicker.snp.makeConstraints { (make) in
             make.top.leading.trailing.equalToSuperview()
@@ -102,23 +83,11 @@ class DateAndTimePickerCell: UITableViewCell {
         }
     }
     
-    func updateValues(targetSelectionRow: Int, delegate: EventEditViewController, dateAndTime: Date) {
-        self.targetSelectionRow = targetSelectionRow
-        self.delegate = delegate
+    override func updateValues(targetSelectionRow: Int, delegate: EventEditViewController, dateAndTime: Date) {
+        super.updateValues(targetSelectionRow: targetSelectionRow, delegate: delegate, dateAndTime: dateAndTime)
         
         datePicker.scrollToHeaderForDate(dateAndTime, withAnimation: false)
         datePicker.selectDates([dateAndTime])
-        
-        timePicker.date = dateAndTime
-    }
-}
-
-extension DateAndTimePickerCell {
-    
-    // MARK: - Actions
-    
-    @objc func timePickerValueChanged() {
-        delegate.updateDateAndTime(ofCellInRow: targetSelectionRow, with: dateAndTime)
     }
 }
 
@@ -197,8 +166,4 @@ extension DateAndTimePickerCell: JTACMonthViewDelegate {
 extension DateAndTimePickerCell {
     static let cellReuseIdentifier = "DateCell"
     static let headerReuseIdentifier = "WeekdaysHeader"
-}
-
-protocol DateAndTimePickerDelegate {
-    func updateDateAndTime(ofCellInRow row: Int, with newDateAndTime: Date)
 }

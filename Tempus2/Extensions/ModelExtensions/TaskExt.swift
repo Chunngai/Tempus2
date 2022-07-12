@@ -11,10 +11,6 @@ import UIKit
 
 extension Array where Element == Task {
     
-    var tasksOfToday: [Task] {
-        return self.tasksOf(Date())
-    }
-    
     // TODO: - Use another way to get tasks of the same date.
     // TODO: - Rename to avoid ambiguity with .task.
     func tasksOf(_ date: Date) -> [Task] {
@@ -30,12 +26,62 @@ extension Array where Element == Task {
         }
     }
     
+    func normalTasksOf(_ date: Date) -> [Task] {
+        return tasksOf(date).compactMap { (task) -> Task? in
+            if !task.isTimetableTask {
+                return task
+            } else {
+                return nil
+            }
+        }
+    }
+    
+    var normalTasksOfToday: [Task] {
+        return self.normalTasksOf(Date())
+    }
+    
+    func timetableTasksOf(_ date: Date) -> [Task] {
+        return tasksOf(date).compactMap { (task) -> Task? in
+            if task.isTimetableTask {
+                return task
+            } else {
+                return nil
+            }
+        }
+    }
+    
     func duesOf(_ date: Date) -> [Task] {
         return self.tasksOf(date).compactMap { (task) -> Task? in
             if task.type == .due {
                 return task
             } else {
                 return nil
+            }
+        }
+    }
+}
+
+extension Array where Element == Task {
+    
+    var timetableTasks: [Task] {
+        return self.compactMap { (task) -> Task? in
+            if task.isTimetableTask {
+                return task
+            } else {
+                return nil
+            }
+        }
+    }
+}
+
+extension Array where Element == Task {
+    
+    mutating func sort() {
+        self.sort { (task1, task2) -> Bool in
+            if task1.dateInterval.start != task2.dateInterval.start {
+                return task1.dateInterval.start < task2.dateInterval.start
+            } else {
+                return task1.dateInterval.end < task2.dateInterval.end
             }
         }
     }
@@ -78,6 +124,27 @@ extension Array where Element == Task {
             return
         }
         self.remove(at: index)
+    }
+}
+
+extension Array where Element == Task {
+    func taskConflicted(with newTask: Task) -> Task? {
+        for task in self {
+            if task.identifier == newTask.identifier {
+                continue
+            }
+            
+            if let intersectionInterval = task.dateInterval.intersection(with: newTask.dateInterval) {
+                let componentsToCompare: [Calendar.Component] = [.year, .month, .day, .hour, .minute]
+                if intersectionInterval.start.get(componentsToCompare) == intersectionInterval.end.get(componentsToCompare) {
+                    // 8:00-8:30, 8:30-9:30. Has intersection but is allowed.
+                    continue
+                }
+                
+                return task
+            }
+        }
+        return nil
     }
 }
 

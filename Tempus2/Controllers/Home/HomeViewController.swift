@@ -32,24 +32,15 @@ class HomeViewController: UIViewController {
     
     // MARK: - Models
     
-    private var tasks: [Task]! {
-        didSet {
-            // TODO: - Fix here.
-            if delegate != nil {
-                delegate.tasks = tasks
-            }
+    internal var tasks: [Task]! {
+        get {
+            return delegate?.tasks ?? []
+        }
+        set {
+            delegate.tasks = newValue
             
-            tasks.sort { (task1, task2) -> Bool in
-                if task1.dateInterval.start != task2.dateInterval.start {
-                    return task1.dateInterval.start < task2.dateInterval.start
-                } else {
-                    return task1.dateInterval.end < task2.dateInterval.end
-                }
-            }
-            Task.save(tasks)
-            prepareForNotifications()
-            
-            // For event adding, deleting and editing.
+            prepareForNotifications()  // TODO: - check
+            // For adding, deleting and editing.
             if tableView1.frame != .zero {
                 reloadTables(scrollToTop: false)
             }
@@ -57,15 +48,15 @@ class HomeViewController: UIViewController {
     }
     
     private var tasksOfLastDate: [Task] {
-        return tasks.tasksOf(currentDate.yesterday)
+        return tasks.normalTasksOf(currentDate.yesterday)
     }
     
     private var tasksOfCurrentDate: [Task] {
-        return tasks.tasksOf(currentDate)
+        return tasks.normalTasksOf(currentDate)
     }
     
     private var tasksOfNextDate: [Task] {
-        return tasks.tasksOf(currentDate.tomorrow)
+        return tasks.normalTasksOf(currentDate.tomorrow)
     }
     
     // MARK: - Controllers
@@ -139,20 +130,26 @@ class HomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                
+        
         // The line of code below cannot be placed in `updateViews()`
         // as the func will be called every time the tables are reloaded,
         // making that the date displayed is changed to the date of today.
         navigationItem.title = Date().dateRepresentation()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-//            image: UIImage(systemName: HomeViewController.calendarIconName),
-            image: UIImage(imageLiteralResourceName: "calendar"),  // TODO: - Antoher way to make the icon smaller?
-            style: .plain,
-            target: self,
-            action: #selector(calendarButtonTapped)
-        )
+        navigationItem.leftBarButtonItems = [
+            UIBarButtonItem(
+                image: UIImage(imageLiteralResourceName: "calendar"),
+                style: .plain,
+                target: self,
+                action: #selector(calendarButtonTapped)
+            ),
+            UIBarButtonItem(
+                image: UIImage(imageLiteralResourceName: "timetable"),
+                style: .plain,
+                target: self,
+                action: #selector(timetableButtonTapped)
+            )
+        ]
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-//            title: "Today",
             image: UIImage(imageLiteralResourceName: "home"),
             style: .plain,
             target: self,
@@ -223,6 +220,10 @@ class HomeViewController: UIViewController {
     func updateViews() {
         view.backgroundColor = .white
         
+        // Adjusts spacing between bar button items.
+        // https://stackoverflow.com/questions/22741824/how-to-adjust-space-between-two-uibarbuttonitem-in-rightbarbuttonitems
+        UIStackView.appearance(whenContainedInInstancesOf: [UINavigationBar.self]).spacing = -5
+        
         view.addSubview(loopScrollView)
         loopScrollView.addSubview(tableView0)
         loopScrollView.addSubview(tableView1)
@@ -232,8 +233,7 @@ class HomeViewController: UIViewController {
         newEventButtonShadowView.addSubview(newEventButton)
     }
     
-    func updateValues(tasks: [Task], date: Date, delegate: CalendarViewController) {
-        self.tasks = tasks
+    func updateValues(date: Date, delegate: CalendarViewController) {
         self.currentDate = date
         self.delegate = delegate
     }
@@ -330,6 +330,12 @@ extension HomeViewController {
         
         delegate.updateValues(date: currentDate)
         navigationController?.popViewController(animated: true)
+    }
+    
+    @objc private func timetableButtonTapped() {
+        let timetableViewController = TimetableViewController()
+        timetableViewController.updateValues(delegate: self)
+        navigationController?.pushViewController(timetableViewController, animated: true)
     }
     
     @objc private func todayButtonTapped() {
@@ -478,9 +484,9 @@ extension HomeViewController: UITableViewDelegate {
     }
 }
 
-extension HomeViewController: EventEditViewControllerDelegate {
+extension HomeViewController: HomeTimetableDelegate {
     
-    // MARK: - EventEditViewController Delegate
+    // MARK: - HomeTimetable delegate
     
     internal func add(_ task: Task) {
         tasks.append(task)
@@ -508,38 +514,9 @@ extension HomeViewController: EventEditViewControllerDelegate {
     }
     
     internal func taskConflicted(with newTask: Task) -> Task? {
-        for task in tasks {
-            if task.identifier == newTask.identifier {
-                continue
-            }
-            
-            if let intersectionInterval = task.dateInterval.intersection(with: newTask.dateInterval) {
-                let componentsToCompare: [Calendar.Component] = [.year, .month, .day, .hour, .minute]
-                if intersectionInterval.start.get(componentsToCompare) == intersectionInterval.end.get(componentsToCompare) {
-                    // 8:00-8:30, 8:30-9:30. Has intersection but is allowed.
-                    continue
-                }
-                
-                return task
-            }
-        }
-        return nil
+//        return tasks.taskConflicted(with: newTask)
+        return nil  // TODO: - check.
     }
-    
-//    internal func delay(tasksInTheSameDayAfter targetTask: Task, for secsToDelay: TimeInterval) {
-//        for (i, task) in tasks.enumerated() {
-//            if Calendar.current.isDate(task.dateInterval.start, inSameDayAs: targetTask.dateInterval.start) {
-//                if task.dateInterval.start >= targetTask.dateInterval.start {
-//                    tasks[i].dateInterval.start += secsToDelay
-//                }
-//            }
-//        }
-//    }
-}
-
-extension HomeViewController: HomeEventCellDelegate {
-    
-    // MARK: - HomeEventCell Delegate
     
     internal func display(_ task: Task) {
         navigationItem.hideBackBarButtonItem()
@@ -551,11 +528,6 @@ extension HomeViewController: HomeEventCellDelegate {
             animated: true
         )
     }
-}
-
-extension HomeViewController: EventDisplayViewControllerDelegate {
-    
-    // MARK: - EventDisplayViewController Delegate
     
     internal func edit(_ task: Task) {
         let eventEditViewController = EventEditViewController()
@@ -570,6 +542,11 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
     internal func remove(_ task: Task) {
         tasks.remove(task)
     }
+}
+
+extension HomeViewController: EventDisplayViewControllerDelegate {
+    
+    // MARK: - EventDisplayViewController delegate
     
     internal func toggleCompletion(of task: Task) {
         guard let index = tasks.firstIndex(of: task) else {

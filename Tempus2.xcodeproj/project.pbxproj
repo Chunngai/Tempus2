@@ -14,6 +14,10 @@
 		FF48532E284BB32000BC3783 /* silence.aif in Resources */ = {isa = PBXBuildFile; fileRef = FF48532B284BB32000BC3783 /* silence.aif */; };
 		FF48532F284BB32000BC3783 /* silence.wav in Resources */ = {isa = PBXBuildFile; fileRef = FF48532C284BB32000BC3783 /* silence.wav */; };
 		FF485330284BB32000BC3783 /* silence.caf in Resources */ = {isa = PBXBuildFile; fileRef = FF48532D284BB32000BC3783 /* silence.caf */; };
+		FF49AA99287A2B300084B552 /* TimetableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF49AA98287A2B300084B552 /* TimetableViewController.swift */; };
+		FF49AAA0287A32BE0084B552 /* TimetableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF49AA9F287A32BE0084B552 /* TimetableCell.swift */; };
+		FF4AC7B1287C8E2800125C6C /* WeekdayAndTimePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4AC7AF287C8E2800125C6C /* WeekdayAndTimePickerCell.swift */; };
+		FF4AC7B3287C979D00125C6C /* PickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4AC7B2287C979D00125C6C /* PickerCell.swift */; };
 		FF4C1BB4284D8EF100988BDA /* AlarmCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4C1BB3284D8EF100988BDA /* AlarmCell.swift */; };
 		FF4C81282801F3AB00A2379F /* TypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4C81272801F3AB00A2379F /* TypeCell.swift */; };
 		FF4C812B2801F6E600A2379F /* TypeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF4C812A2801F6E600A2379F /* TypeViewController.swift */; };
@@ -35,8 +39,9 @@
 		FF5179EC26DF61BE00CD0272 /* UITextViewExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5179EB26DF61BE00CD0272 /* UITextViewExt.swift */; };
 		FF5179EF26DF808A00CD0272 /* TimeIntervalExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF5179EE26DF808A00CD0272 /* TimeIntervalExt.swift */; };
 		FF51D64D26DE0F2B0091ABAA /* UIImageExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF51D64C26DE0F2B0091ABAA /* UIImageExt.swift */; };
-		FF51D65226DE45220091ABAA /* DateAndTimeSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF51D65126DE45220091ABAA /* DateAndTimeSelectionCell.swift */; };
+		FF51D65226DE45220091ABAA /* SelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF51D65126DE45220091ABAA /* SelectionCell.swift */; };
 		FF51D65426DE4D340091ABAA /* DateAndTimePickerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF51D65326DE4D340091ABAA /* DateAndTimePickerCell.swift */; };
+		FF67DD4C287ADB1900F324A5 /* HomeTimetableDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF67DD4B287ADB1900F324A5 /* HomeTimetableDelegate.swift */; };
 		FF6A09F826DBEA0900A6E09A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6A09F726DBEA0900A6E09A /* AppDelegate.swift */; };
 		FF6A09FA26DBEA0900A6E09A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6A09F926DBEA0900A6E09A /* SceneDelegate.swift */; };
 		FF6A0A0126DBEA0900A6E09A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FF6A0A0026DBEA0900A6E09A /* Assets.xcassets */; };
@@ -50,6 +55,7 @@
 		FF6E370726DE8CEF00464183 /* WeekdaysHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6E370626DE8CEF00464183 /* WeekdaysHeader.swift */; };
 		FF6EED7626DD4787009483A2 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6EED7526DD4787009483A2 /* HomeViewController.swift */; };
 		FF6EED7A26DD4787009483A2 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF6EED7926DD4787009483A2 /* Task.swift */; };
+		FFA1E6DE287C541C00C7350C /* TimetableTaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFA1E6DD287C541C00C7350C /* TimetableTaskCell.swift */; };
 		FFCB837426E133B7004A4F53 /* UINavigationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB837326E133B7004A4F53 /* UINavigationItem.swift */; };
 		FFCB837926E1D132004A4F53 /* TextViewWithPlaceHolder.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB837826E1D132004A4F53 /* TextViewWithPlaceHolder.swift */; };
 		FFCB837B26E1D5E9004A4F53 /* UINavigationBarExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFCB837A26E1D5E9004A4F53 /* UINavigationBarExt.swift */; };
@@ -58,6 +64,7 @@
 		FFEA451E26E4954100357126 /* CurrentTimeIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEA451D26E4954100357126 /* CurrentTimeIndicator.swift */; };
 		FFEA452726E4B82500357126 /* CalendarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEA452626E4B82500357126 /* CalendarViewController.swift */; };
 		FFEA452A26E4E3EC00357126 /* CalendarCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFEA452926E4E3EC00357126 /* CalendarCell.swift */; };
+		FFECBA92287C3BE000388559 /* CalendarExt.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFECBA91287C3BE000388559 /* CalendarExt.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -119,6 +126,10 @@
 		FF48532B284BB32000BC3783 /* silence.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = silence.aif; path = ../../../../../../Volumes/SWAP/sounds/silence.aif; sourceTree = "<group>"; };
 		FF48532C284BB32000BC3783 /* silence.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = silence.wav; path = ../../../../../../Volumes/SWAP/sounds/silence.wav; sourceTree = "<group>"; };
 		FF48532D284BB32000BC3783 /* silence.caf */ = {isa = PBXFileReference; lastKnownFileType = file; name = silence.caf; path = ../../../../../../Volumes/SWAP/sounds/silence.caf; sourceTree = "<group>"; };
+		FF49AA98287A2B300084B552 /* TimetableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableViewController.swift; sourceTree = "<group>"; };
+		FF49AA9F287A32BE0084B552 /* TimetableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableCell.swift; sourceTree = "<group>"; };
+		FF4AC7AF287C8E2800125C6C /* WeekdayAndTimePickerCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeekdayAndTimePickerCell.swift; sourceTree = "<group>"; };
+		FF4AC7B2287C979D00125C6C /* PickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerCell.swift; sourceTree = "<group>"; };
 		FF4C1BB3284D8EF100988BDA /* AlarmCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlarmCell.swift; sourceTree = "<group>"; };
 		FF4C81272801F3AB00A2379F /* TypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeCell.swift; sourceTree = "<group>"; };
 		FF4C812A2801F6E600A2379F /* TypeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypeViewController.swift; sourceTree = "<group>"; };
@@ -140,8 +151,9 @@
 		FF5179EB26DF61BE00CD0272 /* UITextViewExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextViewExt.swift; sourceTree = "<group>"; };
 		FF5179EE26DF808A00CD0272 /* TimeIntervalExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeIntervalExt.swift; sourceTree = "<group>"; };
 		FF51D64C26DE0F2B0091ABAA /* UIImageExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExt.swift; sourceTree = "<group>"; };
-		FF51D65126DE45220091ABAA /* DateAndTimeSelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimeSelectionCell.swift; sourceTree = "<group>"; };
+		FF51D65126DE45220091ABAA /* SelectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionCell.swift; sourceTree = "<group>"; };
 		FF51D65326DE4D340091ABAA /* DateAndTimePickerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateAndTimePickerCell.swift; sourceTree = "<group>"; };
+		FF67DD4B287ADB1900F324A5 /* HomeTimetableDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTimetableDelegate.swift; sourceTree = "<group>"; };
 		FF6A09F426DBEA0900A6E09A /* Tempus2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tempus2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF6A09F726DBEA0900A6E09A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FF6A09F926DBEA0900A6E09A /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -160,6 +172,7 @@
 		FF6E370626DE8CEF00464183 /* WeekdaysHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekdaysHeader.swift; sourceTree = "<group>"; };
 		FF6EED7526DD4787009483A2 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		FF6EED7926DD4787009483A2 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
+		FFA1E6DD287C541C00C7350C /* TimetableTaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimetableTaskCell.swift; sourceTree = "<group>"; };
 		FFCB837326E133B7004A4F53 /* UINavigationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationItem.swift; sourceTree = "<group>"; };
 		FFCB837826E1D132004A4F53 /* TextViewWithPlaceHolder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewWithPlaceHolder.swift; sourceTree = "<group>"; };
 		FFCB837A26E1D5E9004A4F53 /* UINavigationBarExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UINavigationBarExt.swift; sourceTree = "<group>"; };
@@ -168,6 +181,7 @@
 		FFEA451D26E4954100357126 /* CurrentTimeIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentTimeIndicator.swift; sourceTree = "<group>"; };
 		FFEA452626E4B82500357126 /* CalendarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewController.swift; sourceTree = "<group>"; };
 		FFEA452926E4E3EC00357126 /* CalendarCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarCell.swift; sourceTree = "<group>"; };
+		FFECBA91287C3BE000388559 /* CalendarExt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarExt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -222,6 +236,23 @@
 			path = Sounds;
 			sourceTree = "<group>";
 		};
+		FF49AA95287A2B0A0084B552 /* Timetable */ = {
+			isa = PBXGroup;
+			children = (
+				FF49AA98287A2B300084B552 /* TimetableViewController.swift */,
+			);
+			path = Timetable;
+			sourceTree = "<group>";
+		};
+		FF49AA9E287A328F0084B552 /* Timetable */ = {
+			isa = PBXGroup;
+			children = (
+				FF49AA9F287A32BE0084B552 /* TimetableCell.swift */,
+				FFA1E6DD287C541C00C7350C /* TimetableTaskCell.swift */,
+			);
+			path = Timetable;
+			sourceTree = "<group>";
+		};
 		FF4C81292801F6CB00A2379F /* Type */ = {
 			isa = PBXGroup;
 			children = (
@@ -250,6 +281,7 @@
 				FF4CAE9126DCFC7D009BB111 /* DateExt.swift */,
 				FF5179EE26DF808A00CD0272 /* TimeIntervalExt.swift */,
 				FF50602026DFDA8200BF1F50 /* NSAttributedStringExt.swift */,
+				FFECBA91287C3BE000388559 /* CalendarExt.swift */,
 			);
 			path = TypeExtensions;
 			sourceTree = "<group>";
@@ -316,6 +348,14 @@
 			path = CustomizedViews;
 			sourceTree = "<group>";
 		};
+		FF67DD4A287ADAD900F324A5 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				FF67DD4B287ADB1900F324A5 /* HomeTimetableDelegate.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
 		FF6A09EB26DBEA0900A6E09A = {
 			isa = PBXGroup;
 			children = (
@@ -342,6 +382,7 @@
 		FF6A09F626DBEA0900A6E09A /* Tempus2 */ = {
 			isa = PBXGroup;
 			children = (
+				FF67DD4A287ADAD900F324A5 /* Protocols */,
 				FF485328284BB30800BC3783 /* Sounds */,
 				FF6EED7726DD4787009483A2 /* Models */,
 				FF6A0A2926DBEAC300A6E09A /* Controllers */,
@@ -381,6 +422,7 @@
 				FF6A0A2C26DBEB4B00A6E09A /* NavController.swift */,
 				FFEA452526E4B7FF00357126 /* Calendar */,
 				FF6EED7226DD4787009483A2 /* Home */,
+				FF49AA95287A2B0A0084B552 /* Timetable */,
 				FF4C81292801F6CB00A2379F /* Type */,
 				FF5179E726DF5A7500CD0272 /* EventEdit */,
 				FF50601726DFC3F200BF1F50 /* EventDisplay */,
@@ -447,6 +489,7 @@
 			isa = PBXGroup;
 			children = (
 				FF5179D526DF571000CD0272 /* Home */,
+				FF49AA9E287A328F0084B552 /* Timetable */,
 				FFAB9BA026DF1BA400E57BC6 /* EventEdit */,
 				FF50601D26DFD32000BF1F50 /* EventDisplay */,
 				FFEA452826E4E2B900357126 /* Calendar */,
@@ -460,8 +503,10 @@
 				FFCB837C26E1EC60004A4F53 /* EventBaseCell.swift */,
 				FF5179DC26DF582400CD0272 /* EventTextViewCell.swift */,
 				FF4C81272801F3AB00A2379F /* TypeCell.swift */,
-				FF51D65126DE45220091ABAA /* DateAndTimeSelectionCell.swift */,
+				FF51D65126DE45220091ABAA /* SelectionCell.swift */,
+				FF4AC7B2287C979D00125C6C /* PickerCell.swift */,
 				FF51D65326DE4D340091ABAA /* DateAndTimePickerCell.swift */,
+				FF4AC7AF287C8E2800125C6C /* WeekdayAndTimePickerCell.swift */,
 				FF6E370226DE7FF400464183 /* DateCell.swift */,
 				FF4C1BB3284D8EF100988BDA /* AlarmCell.swift */,
 			);
@@ -752,7 +797,10 @@
 				FF4EF2BE284F335E0045F7C5 /* Scheduler.swift in Sources */,
 				FF6A0A2D26DBEB4B00A6E09A /* NavController.swift in Sources */,
 				FF6EED7626DD4787009483A2 /* HomeViewController.swift in Sources */,
+				FFECBA92287C3BE000388559 /* CalendarExt.swift in Sources */,
 				FFEA451E26E4954100357126 /* CurrentTimeIndicator.swift in Sources */,
+				FF49AA99287A2B300084B552 /* TimetableViewController.swift in Sources */,
+				FF4AC7B1287C8E2800125C6C /* WeekdayAndTimePickerCell.swift in Sources */,
 				FF50602526E0AB2200BF1F50 /* EventCompletionTogglingView.swift in Sources */,
 				FF4CAE9F26DD2870009BB111 /* EventEditViewController.swift in Sources */,
 				FFEA452726E4B82500357126 /* CalendarViewController.swift in Sources */,
@@ -765,9 +813,10 @@
 				FF4CAE7526DCE424009BB111 /* UIColorExt.swift in Sources */,
 				FF4CAE8D26DCF7A9009BB111 /* HomeEventCell.swift in Sources */,
 				FF6A09F826DBEA0900A6E09A /* AppDelegate.swift in Sources */,
+				FFA1E6DE287C541C00C7350C /* TimetableTaskCell.swift in Sources */,
 				FF4CAE7926DCE505009BB111 /* Separator.swift in Sources */,
 				FF51D64D26DE0F2B0091ABAA /* UIImageExt.swift in Sources */,
-				FF51D65226DE45220091ABAA /* DateAndTimeSelectionCell.swift in Sources */,
+				FF51D65226DE45220091ABAA /* SelectionCell.swift in Sources */,
 				FF4CAE7726DCE459009BB111 /* StringExt.swift in Sources */,
 				FF4C81282801F3AB00A2379F /* TypeCell.swift in Sources */,
 				FF5179EC26DF61BE00CD0272 /* UITextViewExt.swift in Sources */,
@@ -782,12 +831,15 @@
 				FF4CAE9526DCFD03009BB111 /* TaskExt.swift in Sources */,
 				FFCB837926E1D132004A4F53 /* TextViewWithPlaceHolder.swift in Sources */,
 				FF50601C26DFD31C00BF1F50 /* EventDisplayCell.swift in Sources */,
+				FF67DD4C287ADB1900F324A5 /* HomeTimetableDelegate.swift in Sources */,
 				FFEA452A26E4E3EC00357126 /* CalendarCell.swift in Sources */,
 				FF4CAEA326DD325C009BB111 /* EventEditNavController.swift in Sources */,
 				FF6E370726DE8CEF00464183 /* WeekdaysHeader.swift in Sources */,
 				FF4C812B2801F6E600A2379F /* TypeViewController.swift in Sources */,
 				FFCB837D26E1EC60004A4F53 /* EventBaseCell.swift in Sources */,
+				FF49AAA0287A32BE0084B552 /* TimetableCell.swift in Sources */,
 				FF4CAE9226DCFC7D009BB111 /* DateExt.swift in Sources */,
+				FF4AC7B3287C979D00125C6C /* PickerCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

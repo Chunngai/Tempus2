@@ -25,7 +25,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let homeViewController = HomeViewController()
         homeViewController.viewDidLayoutSubviews()
-        homeViewController.updateValues(tasks: calendarViewController.tasks, date: Date(), delegate: calendarViewController)
+        homeViewController.updateValues(date: Date(), delegate: calendarViewController)
         navController.pushViewController(homeViewController, animated: false)
         
         guard let _ = (scene as? UIWindowScene) else { return }

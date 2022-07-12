@@ -13,6 +13,8 @@ class EventDisplayViewController: UITableViewController {
     private var titleCell: EventDisplayCell!
     private var descriptionCell: EventDisplayCell!
         
+    private var isTimetableMode: Bool!
+    
     // MARK: - Models
     
     private var task: Task! {
@@ -23,7 +25,7 @@ class EventDisplayViewController: UITableViewController {
     
     // MARK: - Controllers
     
-    private var delegate: HomeViewController!
+    private var delegate: HomeTimetableDelegate!
     
     // MARK: - Views
     
@@ -42,11 +44,11 @@ class EventDisplayViewController: UITableViewController {
             forCellReuseIdentifier: EventDisplayViewController.eventDisplayCellReusableIdentifier
         )
         
-        let toNextDayButton = UIBarButtonItem(
-            image: UIImage(imageLiteralResourceName: "to_next_day"),
+        let deleteButton = UIBarButtonItem(
+            image: UIImage(imageLiteralResourceName: "delete"),
             style: .plain,
             target: self,
-            action: #selector(toNextDayButtonTapped)
+            action: #selector(deleteButtonTapped)
         )
         let editButton = UIBarButtonItem(
             image: UIImage(imageLiteralResourceName: "edit"),
@@ -54,16 +56,7 @@ class EventDisplayViewController: UITableViewController {
             target: self,
             action: #selector(editButtonTapped)
         )
-        let deleteButton = UIBarButtonItem(
-            image: UIImage(imageLiteralResourceName: "delete"),
-            style: .plain,
-            target: self,
-            action: #selector(deleteButtonTapped)
-        )
-        navigationItem.rightBarButtonItems = [deleteButton, editButton, toNextDayButton]
-        
-        tableView.addSubview(eventCompletionTogglingBottomView)
-        eventCompletionTogglingBottomView.updateValues(delegate: self)
+        navigationItem.rightBarButtonItems = [deleteButton, editButton]
         
         updateViews()
         updateLayouts()
@@ -82,17 +75,31 @@ class EventDisplayViewController: UITableViewController {
     }
     
     func updateLayouts() {
-        eventCompletionTogglingBottomView.snp.makeConstraints { (make) in
-            let bottomSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
-            make.leading.trailing.equalTo(tableView.safeAreaLayoutGuide)
-            make.bottom.equalTo(tableView.safeAreaLayoutGuide).offset(bottomSafeAreaInset)
-            make.height.equalTo(80)
-        }
     }
     
-    func updateValues(task: Task, delegate: HomeViewController) {
+    func updateValues(task: Task, delegate: HomeTimetableDelegate, isTimetableMode: Bool = false) {
         self.task = task
         self.delegate = delegate
+        
+        self.isTimetableMode = isTimetableMode
+        if !self.isTimetableMode {
+            let toNextDayButton = UIBarButtonItem(
+                image: UIImage(imageLiteralResourceName: "to_next_day"),
+                style: .plain,
+                target: self,
+                action: #selector(toNextDayButtonTapped)
+            )
+            navigationItem.rightBarButtonItems?.append(toNextDayButton)
+            
+            tableView.addSubview(eventCompletionTogglingBottomView)
+            eventCompletionTogglingBottomView.updateValues(delegate: self)
+            eventCompletionTogglingBottomView.snp.makeConstraints { (make) in
+                let bottomSafeAreaInset = UIApplication.shared.windows.first?.safeAreaInsets.bottom ?? 0
+                make.leading.trailing.equalTo(tableView.safeAreaLayoutGuide)
+                make.bottom.equalTo(tableView.safeAreaLayoutGuide).offset(bottomSafeAreaInset)
+                make.height.equalTo(80)
+            }
+        }
         
         eventCompletionTogglingBottomView.isCompleted = task.isCompleted
     }
@@ -202,7 +209,7 @@ extension EventDisplayViewController {
                 return
             }
             delegate.remove(task)
-            delegate.toNextDay()
+            (delegate as! HomeViewController).toNextDay()
             navigationController?.popViewController(animated: true)
             delegate.add(newTask)
         }
@@ -230,7 +237,7 @@ extension EventDisplayViewController: EventCompletionTogglingViewDelegate {
     
     internal func toggleCompletion() {
         self.task.isCompleted.toggle()
-        self.delegate.toggleCompletion(of: task)
+        (self.delegate as! HomeViewController).toggleCompletion(of: task)
         navigationController?.popViewController(animated: true)
     }
 }
@@ -249,8 +256,5 @@ extension EventDisplayViewController {
 }
 
 protocol EventDisplayViewControllerDelegate {
-    func edit(_ task: Task)
-    func remove(_ task: Task)
-    
     func toggleCompletion(of task: Task)
 }

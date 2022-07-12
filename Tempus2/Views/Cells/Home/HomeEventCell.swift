@@ -107,11 +107,9 @@ class HomeEventCell: UITableViewCell {
             make.centerX.equalToSuperview()
         }
         descriptionImageView.snp.makeConstraints { (make) in
-//            make.leading.equalTo(titleLabel.snp.trailing).offset(10)
             make.height.width.equalTo(Theme.bodyFont.lineHeight)
         }
         alarmImageView.snp.makeConstraints { (make) in
-//            make.leading.equalTo(descriptionImageView.snp.trailing).offset(10)
             make.height.width.equalTo(Theme.bodyFont.lineHeight)
         }
         
@@ -132,8 +130,4 @@ extension HomeEventCell {
     @objc private func tapped() {
         delegate.display(task)
     }
-}
-
-protocol HomeEventCellDelegate {
-    func display(_ task: Task)
 }

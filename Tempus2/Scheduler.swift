@@ -45,7 +45,7 @@ func prepareForNotifications() {
     // Removes old notifications.
     removeAllNotifications()
     
-    for task in Task.load().tasksOfToday {
+    for task in Task.load().normalTasksOfToday {
         if task.isCompleted {
             continue
         }

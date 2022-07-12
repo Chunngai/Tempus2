@@ -28,9 +28,11 @@ struct Task: Codable {
     
     var isCompleted: Bool
     
+    var isTimetableTask: Bool
+    
     // MARK: - Init
     
-    init(identifier: String?, title: String, type: Task.Type_, dateInterval: DateInterval, hasAlarm: Bool, location: String, description: String, isCompleted: Bool) {
+    init(identifier: String?, title: String, type: Task.Type_, dateInterval: DateInterval, hasAlarm: Bool, location: String, description: String, isCompleted: Bool, isTimetableTask: Bool) {
         self.identifier = identifier ?? String(Date().hashValue)
         
         self.title = title
@@ -40,9 +42,10 @@ struct Task: Codable {
         self.location = location
         self.description = description
         self.isCompleted = isCompleted
+        self.isTimetableTask = isTimetableTask
     }
     
-    init(title: String, type: Task.Type_, dateInterval: DateInterval, hasAlarm: Bool, location: String, description: String, isCompleted: Bool) {
+    init(title: String, type: Task.Type_, dateInterval: DateInterval, hasAlarm: Bool, location: String, description: String, isCompleted: Bool, isTimetableTask: Bool) {
         self.init(
             identifier: nil,
             title: title,
@@ -51,7 +54,8 @@ struct Task: Codable {
             hasAlarm: hasAlarm,
             location: location,
             description: description,
-            isCompleted: isCompleted
+            isCompleted: isCompleted,
+            isTimetableTask: isTimetableTask
         )
     }
 }
@@ -91,13 +95,11 @@ extension Task {
             return tasks
         } catch {
             print(error)
-            // return []
-            
-            // TODO: - rm here.
             exit(1)
         }
     }
-    static func save(_ tasks: [Task]) {
+    static func save(_ tasks: inout [Task]) {
+        tasks.sort()
         do {
             let fileURL = try FileManager
                 .default
@@ -114,8 +116,6 @@ extension Task {
                 .write(to: fileURL)
         } catch {
             print(error)
-            
-            // TODO: - rm here.
             exit(1)
         }
     }
@@ -161,7 +161,8 @@ extension Task {
                 hasAlarm: false,
                 location: "Cafeteria",
                 description: "breakfast description",
-                isCompleted: false
+                isCompleted: false,
+                isTimetableTask: false
             ),
             Task(
                 title: "AI course",
@@ -172,7 +173,8 @@ extension Task {
                 hasAlarm: false,
                 location: "E201",
                 description: "ai course description",
-                isCompleted: false
+                isCompleted: false,
+                isTimetableTask: false
             ),
             Task(
                 title: "Math course",
@@ -183,7 +185,8 @@ extension Task {
                 hasAlarm: false,
                 location: "F203",
                 description: "math course description",
-                isCompleted: true
+                isCompleted: true,
+                isTimetableTask: false
             )
         ]
     }

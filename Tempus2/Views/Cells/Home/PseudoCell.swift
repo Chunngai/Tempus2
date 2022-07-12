@@ -46,9 +46,3 @@ class PseudoCell: HomeEventCell {
         alarmImageView.isHidden = true
     }
 }
-
-extension PseudoCell {
-    @objc private func tapped() {
-        
-    }
-}

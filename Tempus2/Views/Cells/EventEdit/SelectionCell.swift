@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DateAndTimeSelectionCell: EventBaseCell {
+class SelectionCell: EventBaseCell {
     
     private var targetPickerRow: Int!
     
@@ -24,6 +24,8 @@ class DateAndTimeSelectionCell: EventBaseCell {
             timeButton.setTitleColor(color, for: .normal)
         }
     }
+    
+    private var shouldHideDate: Bool!
     
     // MARK: - Controllers
     
@@ -113,13 +115,17 @@ class DateAndTimeSelectionCell: EventBaseCell {
         self.targetPickerRow = targetPickerRow
     }
     
-    func updateDateAndTimeRepr(with dateAndTime: Date) {
-        dateButton.text = dateAndTime.dateRepresentation()
+    func updateDateAndTimeRepr(with dateAndTime: Date, displayWeek: Bool = false) {
+        if !displayWeek {
+            dateButton.text = dateAndTime.dateRepresentation()
+        } else {
+            dateButton.text = Calendar.current.weekdaySymbol(of: dateAndTime)
+        }
         timeButton.setTitle(dateAndTime.timeRepresentation(), for: .normal)
     }
 }
 
-extension DateAndTimeSelectionCell {
+extension SelectionCell {
     
     // MARK: - Actions
     
