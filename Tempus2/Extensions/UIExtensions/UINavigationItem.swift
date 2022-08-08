@@ -14,7 +14,7 @@ extension UINavigationItem {
     // https://stackoverflow.com/questions/28471164/how-to-set-back-button-text-in-swift
     func hideBackBarButtonItem() {
         let backItem = UIBarButtonItem()
-        backItem.title = ""
+        backItem.title = "Back"
         self.backBarButtonItem = backItem
     }
 }

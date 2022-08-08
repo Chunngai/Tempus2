@@ -9,7 +9,7 @@
 import UIKit
 
 class TimetableCell: UICollectionViewCell {
-    
+        
     // MARK: - Views
     
     internal lazy var label: UILabel = {
@@ -21,6 +21,8 @@ class TimetableCell: UICollectionViewCell {
         return label
     }()
     
+    private lazy var hSepLine = Separator(color: UIColor.systemGray5)
+    
     // MARK: - Init
     
     required init?(coder: NSCoder) {
@@ -31,13 +33,14 @@ class TimetableCell: UICollectionViewCell {
         super.init(frame: frame)
         
         addSubview(label)
+        addSubview(hSepLine)
         
         updateViews()
         updateLayouts()
     }
     
     private func updateViews() {
-
+        
     }
     
     private func updateLayouts() {
@@ -48,7 +51,15 @@ class TimetableCell: UICollectionViewCell {
         }
     }
     
-    func updateValues(text: String) {
-        label.text = text
+    func updateValues(text: String = "", drawHSepLine: Bool = false) {
+        self.label.text = text
+        
+        if drawHSepLine {
+            hSepLine.snp.makeConstraints { (make) in
+                make.height.equalTo(0.5)
+                make.leading.top.equalToSuperview()
+                make.width.equalToSuperview()
+            }
+        }
     }
 }

@@ -10,25 +10,6 @@ import UIKit
 
 class TimetableViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout, HomeTimetableDelegate {
     
-    // MARK: - Models
-    
-    private var tasks: [Task]! {
-        get {
-            return delegate.tasks
-        }
-        set {
-            delegate.tasks = newValue
-            
-            // Reloads earliest and latest time.
-            timetableCollectionView.reloadData()
-            draw()
-        }
-    }
-    
-    private var timetableTasks: [Task] {
-        return tasks.timetableTasks
-    }
-    
     private var earliestStart: Int {
         var earliestStart: Int = 25
         for task in timetableTasks {
@@ -51,6 +32,25 @@ class TimetableViewController: UIViewController, UICollectionViewDataSource, UIC
         latestEnd = max(latestEnd, 22)
         
         return latestEnd
+    }
+    
+    // MARK: - Models
+    
+    private var tasks: [Task]! {
+        get {
+            return delegate.tasks
+        }
+        set {
+            delegate.tasks = newValue
+            
+            // Reloads earliest and latest time.
+            timetableCollectionView.reloadData()
+            draw()
+        }
+    }
+    
+    private var timetableTasks: [Task] {
+        return tasks.timetableTasks
     }
     
     // MARK: - Delegates
@@ -332,7 +332,7 @@ extension TimetableViewController {
             if indexPath.row == 0 {
                 cell.updateValues(text: "\(indexPath.section + earliestStart):00")
             } else {
-                cell.updateValues(text: "")
+                cell.updateValues(drawHSepLine: true)
             }
         }
 

@@ -27,16 +27,18 @@ class TimetableTaskCell: UIView {
     private var mainView: UIView = {
         let view = UIView()
         view.backgroundColor = Theme.lightBlue
+        view.layer.masksToBounds = true
+        view.layer.cornerRadius = 5
         return view
     }()
     
     private var label: UILabel = {
         let label = UILabel()
         label.textColor = Theme.textColor
-        label.font = Theme.footNoteFont
+        label.font = Theme.smallerThanFootNoteFont
         label.numberOfLines = 0
-        label.textAlignment = .center
-        label.lineBreakMode = .byTruncatingTail
+        label.textAlignment = .left
+        label.lineBreakMode = .byCharWrapping
         label.isUserInteractionEnabled = true
         return label
     }()
@@ -76,7 +78,7 @@ class TimetableTaskCell: UIView {
         
         label.snp.makeConstraints { (make) in
             make.centerX.centerY.equalToSuperview()
-            make.width.height.equalToSuperview().multipliedBy(0.95)
+            make.width.height.equalToSuperview().multipliedBy(0.85)
         }
     }
     

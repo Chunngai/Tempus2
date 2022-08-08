@@ -19,6 +19,7 @@ struct Theme {
     static let headlineFont = UIFont.preferredFont(forTextStyle: .headline)
     static let bodyFont = UIFont.preferredFont(forTextStyle: .body)
     static let footNoteFont = UIFont.preferredFont(forTextStyle: .footnote)
+    static let smallerThanFootNoteFont = UIFont.systemFont(ofSize: Theme.footNoteFont.pointSize * 0.9)
     
     // MARK: - Colors
     
