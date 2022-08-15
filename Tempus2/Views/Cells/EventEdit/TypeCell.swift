@@ -45,20 +45,13 @@ class TypeCell: EventBaseCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        textView.addGestureRecognizer(UITapGestureRecognizer(
-            target: self,
-            action: #selector(cellTapped)
-        ))
-        
         updateViews()
         updateLayouts()
     }
     
     override func updateViews() {
         super.updateViews()
-        
-        accessoryType = .disclosureIndicator
-        
+                
         rightView.addSubview(textView)
     }
     
@@ -80,11 +73,21 @@ class TypeCell: EventBaseCell {
         }
     }
     
-    func updateValues(iconName: String, type: Task.Type_, delegate: EventEditViewController) {
+    func updateValues(iconName: String, type: Task.Type_, delegate: EventEditViewController, shouldDisplayAccessory: Bool = true) {
         super.updateValues(iconName: iconName)
         
         self.type = type
         self.delegate = delegate
+        
+        if shouldDisplayAccessory {
+            accessoryType = .disclosureIndicator
+            textView.addGestureRecognizer(UITapGestureRecognizer(
+                target: self,
+                action: #selector(cellTapped)
+            ))
+        } else {
+            accessoryType = .none
+        }
     }
 }
 

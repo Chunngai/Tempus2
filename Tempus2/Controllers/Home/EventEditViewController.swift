@@ -459,7 +459,8 @@ extension EventEditViewController {
             typeCell.updateValues(
                 iconName: "time",
                 type: oldType,
-                delegate: self
+                delegate: self,
+                shouldDisplayAccessory: !isTimetableMode
             )
             typeCell.removeSeparator()
             return typeCell
