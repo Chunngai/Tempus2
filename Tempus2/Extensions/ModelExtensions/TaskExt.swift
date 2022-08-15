@@ -91,7 +91,7 @@ extension Array where Element == Task {
     
     func unfinishedTasksOf(_ date: Date) -> [Task] {
         return self.tasksOf(date).compactMap { (task) -> Task? in
-            if !task.isCompleted {
+            if !task.isCompleted && !task.isTimetableTask {
                 return task
             } else {
                 return nil
@@ -101,7 +101,7 @@ extension Array where Element == Task {
     
     func unfinishedDues(on date: Date) -> [Task] {
         return self.duesOf(date).compactMap { (task) -> Task? in
-            if !task.isCompleted {
+            if !task.isCompleted && !task.isTimetableTask {
                 return task
             } else {
                 return nil

@@ -20,9 +20,7 @@ class TimetableCell: UICollectionViewCell {
         label.sizeToFit()
         return label
     }()
-    
-    private lazy var hSepLine = Separator(color: UIColor.systemGray5)
-    
+        
     // MARK: - Init
     
     required init?(coder: NSCoder) {
@@ -33,7 +31,6 @@ class TimetableCell: UICollectionViewCell {
         super.init(frame: frame)
         
         addSubview(label)
-        addSubview(hSepLine)
         
         updateViews()
         updateLayouts()
@@ -54,7 +51,19 @@ class TimetableCell: UICollectionViewCell {
     func updateValues(text: String = "", drawHSepLine: Bool = false) {
         self.label.text = text
         
+        // TODO: - Update jere.
+        // It's a tmp solution coz the color of the sep cannot be altered.
         if drawHSepLine {
+            let hSepLine = Separator(color: UIColor.systemGray5)
+            addSubview(hSepLine)
+            hSepLine.snp.makeConstraints { (make) in
+                make.height.equalTo(0.5)
+                make.leading.top.equalToSuperview()
+                make.width.equalToSuperview()
+            }
+        } else {
+            let hSepLine = Separator(color: .white)
+            addSubview(hSepLine)
             hSepLine.snp.makeConstraints { (make) in
                 make.height.equalTo(0.5)
                 make.leading.top.equalToSuperview()
