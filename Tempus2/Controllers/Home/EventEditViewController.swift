@@ -571,7 +571,11 @@ extension EventEditViewController {
             } else if isDatePickerInRowTwoHidden {
                 return EventEditViewController.timePickerCellHeight
             } else if isTimePickerInRowTwoHidden {
-                return EventEditViewController.datePickerCellHeight
+                if !isTimetableMode {
+                    return EventEditViewController.datePickerCellHeight
+                } else {
+                    return EventEditViewController.weekdayPickerCellHeight
+                }
             }
         } else if row == EventEditViewController.endDateAndTimePickerCellIndex {
             if isDatePickerInRowFourHidden
@@ -580,7 +584,11 @@ extension EventEditViewController {
             } else if isDatePickerInRowFourHidden {
                 return EventEditViewController.timePickerCellHeight
             } else if isTimePickerInRowFourHidden {
-                return EventEditViewController.datePickerCellHeight
+                if !isTimetableMode {
+                    return EventEditViewController.datePickerCellHeight
+                } else {
+                    return EventEditViewController.weekdayPickerCellHeight
+                }
             }
         }
         
@@ -788,6 +796,7 @@ extension EventEditViewController {
     
     static let cellHeight: CGFloat = 60
     static let datePickerCellHeight: CGFloat = 250
+    static let weekdayPickerCellHeight: CGFloat = 150
     static let timePickerCellHeight: CGFloat = 200
     
     static var defaultStartDate: Date {

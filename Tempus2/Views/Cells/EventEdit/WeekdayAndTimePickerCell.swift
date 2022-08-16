@@ -70,7 +70,7 @@ class WeekdayAndTimePickerCell: PickerCell, UIPickerViewDataSource, UIPickerView
         
         weekdayPicker.snp.makeConstraints { (make) in
             make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(EventEditViewController.datePickerCellHeight)
+            make.height.equalTo(EventEditViewController.weekdayPickerCellHeight)
         }
     }
     
