@@ -294,3 +294,41 @@ extension Task {
         return repr
     }
 }
+
+extension Task {
+    
+    var dateAndTimeAndDurationRepresentationForTimetableTask: String {
+        return dateInterval.start.dateRepresentation(ofFormat: "EE")
+            + " · "
+            + timeAndDurationRepresentation
+    }
+    
+    var attributedRepresentationForTimetableTask: NSAttributedString {
+        let repr = NSMutableAttributedString(
+            string: (
+                titleRepresentation
+                    + "\n"
+                    + dateAndTimeAndDurationRepresentationForTimetableTask
+                    + "\n"
+                    + locationRepresentation
+                ).trimmingWhitespacesAndNewlines()
+        )
+        
+        repr.set(
+            attributes: isCompleted
+                ? completedTextAttributes
+                : uncompletedTextAttributes,
+            for: titleRepresentation
+        )
+        repr.set(
+            attributes: dateAndTimeAndDurationTextAttributes,
+            for: dateAndTimeAndDurationRepresentationForTimetableTask
+        )
+        repr.set(
+            attributes: taskTextAttributes
+        )
+        
+        return repr
+    }
+    
+}
