@@ -12,7 +12,7 @@ class HomeViewController: UIViewController {
     
     private var width: CGFloat!
     private var height: CGFloat!
-    private var currentDate: Date! {
+    internal var currentDate: Date! {
         didSet {
             navigationItem.title = currentDate.dateRepresentation()
             

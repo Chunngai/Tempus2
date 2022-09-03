@@ -106,6 +106,13 @@ class TimetableViewController: UIViewController, UICollectionViewDataSource, UIC
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(imageLiteralResourceName: "link"),
+            style: .plain,
+            target: self,
+            action: #selector(linkButtonTapped)
+        )
+        
         view.addSubview(weekdaysCollectionView)
         weekdaysCollectionView.dataSource = self
         weekdaysCollectionView.delegate = self
@@ -247,6 +254,45 @@ extension TimetableViewController {
             animated: true,
             completion: nil
         )
+    }
+    
+    @objc private func linkButtonTapped() {
+        let currentDate = delegate.currentDate ?? Date()
+        let currentWeekdaySymbolIndex = Calendar.current.weekdaySymbolIndex(of: currentDate)
+        for task in tasks.timetableTasks {
+            if currentWeekdaySymbolIndex == Calendar.current.weekdaySymbolIndex(of: task.dateInterval.start) {
+                let start = Date.combine(date: currentDate, with: task.dateInterval.start)
+                let end = Date.combine(date: currentDate, with: task.dateInterval.end)
+                let identifier = String(task.dateInterval.start.hashValue)  // TODO: - update here.
+                
+                // TODO: - update.
+                var shouldContinue = false
+                for task_ in tasks {
+                    if task_.identifier == identifier {
+                        shouldContinue = true
+                    }
+                }
+                if shouldContinue {
+                    continue
+                }
+                
+                delegate.add(Task(
+                    identifier: identifier,
+                    title: task.title,
+                    type: task.type,
+                    dateInterval: DateInterval(
+                        start: start,
+                        end: end
+                    ),
+                    hasAlarm: task.hasAlarm,
+                    location: task.location,
+                    description: task.description,
+                    isCompleted: false,
+                    isTimetableTask: false
+                ))
+            }
+        }
+        self.navigationController?.popViewController(animated: true)
     }
 }
 
