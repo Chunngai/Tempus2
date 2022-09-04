@@ -124,7 +124,9 @@ extension EventDisplayViewController {
             titleCell = EventDisplayCell()
             titleCell.updateValues(
                 iconName: "title",
-                attributedText: task.attributedRepresentationForTimetableTask
+                attributedText: task.isTimetableTask ?
+                    task.attributedRepresentationForTimetableTask :
+                    task.attributedRepresentation
             )
             return titleCell
         case 1:
