@@ -263,7 +263,7 @@ extension TimetableViewController {
             if currentWeekdaySymbolIndex == Calendar.current.weekdaySymbolIndex(of: task.dateInterval.start) {
                 let start = Date.combine(date: currentDate, with: task.dateInterval.start)
                 let end = Date.combine(date: currentDate, with: task.dateInterval.end)
-                let identifier = String(task.dateInterval.start.hashValue)  // TODO: - update here.
+                let identifier = "\(task.identifier)-\(delegate.currentDate.get(.year))\(delegate.currentDate.get(.month))\(delegate.currentDate.get(.day))"
                 
                 // TODO: - update.
                 var shouldContinue = false
