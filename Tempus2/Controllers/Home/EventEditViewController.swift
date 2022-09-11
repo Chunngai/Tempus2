@@ -553,6 +553,15 @@ extension EventEditViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let row = indexPath.row
 
+        if row == EventEditViewController.typeCellIndex {
+            if let isTimetableMode = isTimetableMode {
+                typeCell.isHidden = isTimetableMode
+                if isTimetableMode {
+                    return 0
+                }
+            }
+        }
+        
         if row == EventEditViewController.startDateAndTimeSelectionCellIndex
             || row == EventEditViewController.startDateAndTimePickerCellIndex {
             if let isEvent = isEvent {

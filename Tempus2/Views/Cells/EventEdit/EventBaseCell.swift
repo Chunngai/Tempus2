@@ -15,6 +15,7 @@ class EventBaseCell: UITableViewCell {
     internal var iconImageView = UIImageView()
     private let iconBackView: UILabel = {
         let label = UILabel()
+        label.isUserInteractionEnabled = false
         return label
     }()
     
