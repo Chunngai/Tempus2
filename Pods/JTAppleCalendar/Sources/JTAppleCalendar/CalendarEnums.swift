@@ -72,7 +72,7 @@ public enum ScrollingMode: Equatable {
     case nonStopToSection(withResistance: CGFloat)
     /// nonStopToCell - continuous scrolling that will stop at a cell
     case nonStopToCell(withResistance: CGFloat)
-    /// nonStopTo - continuous scrolling that will stop at acustom interval
+    /// nonStopTo - continuous scrolling that will stop at acustom interval, do not use 0 as custom interval
     case nonStopTo(customInterval: CGFloat, withResistance: CGFloat)
     /// none - continuous scrolling that will eventually stop at a point
     case none
@@ -108,7 +108,7 @@ public enum DateOwner: Int {
         followingMonthOutsideBoundary
 }
 /// Months of the year
-public enum MonthsOfYear: Int {
+public enum MonthsOfYear: Int, CaseIterable {
     case jan, feb, mar, apr, may, jun, jul, aug, sep, oct, nov, dec
 }
 
@@ -129,9 +129,9 @@ public enum SelectionType: String {
     case programatic, userInitiated
 }
 
-/// Days of the week. By setting you calandar's first day of week,
-/// you can change which day is the first for the week. Sunday is by default.
-public enum DaysOfWeek: Int {
+/// Days of the week. By setting your calendar's first day of the week,
+/// you can change which day is the first for the week. Sunday is the default value.
+public enum DaysOfWeek: Int, CaseIterable {
     /// Days of the week.
     case sunday = 1, monday, tuesday, wednesday, thursday, friday, saturday
 }

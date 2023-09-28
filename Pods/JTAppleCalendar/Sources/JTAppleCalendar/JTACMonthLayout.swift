@@ -316,8 +316,8 @@ class JTACMonthLayout: UICollectionViewLayout, JTACMonthLayoutProtocol {
         let attrib = UICollectionViewLayoutAttributes(forCellWith: IndexPath(item: item, section: section))
         
         attrib.frame = CGRect(x: cachedValue.xOffset, y: cachedValue.yOffset, width: cachedValue.width, height: cachedValue.height)
-        if minimumInteritemSpacing > -1, minimumLineSpacing > -1 {
-            var frame = attrib.frame.insetBy(dx: minimumInteritemSpacing, dy: minimumLineSpacing)
+        if minimumInteritemSpacing > 0, minimumLineSpacing > 0 {
+            var frame = attrib.frame.insetBy(dx: minimumInteritemSpacing / 2, dy: minimumLineSpacing / 2)
             if frame == .null { frame = attrib.frame.insetBy(dx: 0, dy: 0) }
             attrib.frame = frame
         }
