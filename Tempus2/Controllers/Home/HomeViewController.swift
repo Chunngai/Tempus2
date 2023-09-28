@@ -561,7 +561,7 @@ extension HomeViewController: EventDisplayViewControllerDelegate {
 extension HomeViewController {
     static var homeEventCellReuseIdentifier = "HomeEventCell"
     static var homeEventCellHeight: CGFloat = 90
-    static var headerHeight: CGFloat = 30
+    static var headerHeight: CGFloat = 10
     
     static let pseudoCellReuseIdentifier = "PseudoCell"
     

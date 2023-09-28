@@ -85,7 +85,7 @@ class HomeEventCell: UITableViewCell {
     func updateViews() {
         selectionStyle = .none
         
-        addSubview(mainView)
+        contentView.addSubview(mainView)
         mainView.addSubview(titleStackView)
         mainView.addSubview(timeAndLocationLabel)
         mainView.addGestureRecognizer(UITapGestureRecognizer(
@@ -128,6 +128,10 @@ class HomeEventCell: UITableViewCell {
 
 extension HomeEventCell {
     @objc private func tapped() {
+        guard delegate != nil else {
+            return
+        }
+        
         delegate.display(task)
     }
 }
