@@ -33,7 +33,7 @@ struct Task: Codable {
     // MARK: - Init
     
     init(identifier: String?, title: String, type: Task.Type_, dateInterval: DateInterval, hasAlarm: Bool, location: String, description: String, isCompleted: Bool, isTimetableTask: Bool) {
-        self.identifier = identifier ?? String(Date().hashValue)
+        self.identifier = identifier ?? UUID().uuidString
         
         self.title = title
         self.type = type
