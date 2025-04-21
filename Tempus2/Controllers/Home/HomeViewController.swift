@@ -18,7 +18,7 @@ class HomeViewController: UIViewController {
             
             // Resets to nil.
             // Otherwise the date of it remains
-            // the date before `currentDate` is updaated.
+            // the date before `currentDate` is updated.
             endDateAndTimeOfLastAddedTask = nil
             
             // For loop view.
@@ -124,7 +124,7 @@ class HomeViewController: UIViewController {
         return button
     }()
     
-    private let currentTimeIndicator = CurrentTimeIndicator()
+//    private let currentTimeIndicator = CurrentTimeIndicator()
 
     // MARK: - Init
     
@@ -142,12 +142,12 @@ class HomeViewController: UIViewController {
                 target: self,
                 action: #selector(calendarButtonTapped)
             ),
-            UIBarButtonItem(
-                image: UIImage(imageLiteralResourceName: "timetable"),
-                style: .plain,
-                target: self,
-                action: #selector(timetableButtonTapped)
-            )
+//            UIBarButtonItem(
+//                image: UIImage(imageLiteralResourceName: "timetable"),
+//                style: .plain,
+//                target: self,
+//                action: #selector(timetableButtonTapped)
+//            )
         ]
         navigationItem.rightBarButtonItem = UIBarButtonItem(
             image: UIImage(imageLiteralResourceName: "home"),
@@ -168,6 +168,7 @@ class HomeViewController: UIViewController {
             PseudoCell.classForCoder(),
             forCellReuseIdentifier: HomeViewController.pseudoCellReuseIdentifier
         )
+        
         tableView1.dataSource = self
         tableView1.delegate = self
         tableView1.register(
@@ -178,6 +179,7 @@ class HomeViewController: UIViewController {
             PseudoCell.classForCoder(),
             forCellReuseIdentifier: HomeViewController.pseudoCellReuseIdentifier
         )
+        
         tableView2.dataSource = self
         tableView2.delegate = self
         tableView2.register(
@@ -197,10 +199,12 @@ class HomeViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         navigationController?.navigationBar.hideBarSeparator()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
         navigationController?.navigationBar.showBarSeparator()
     }
     
@@ -379,7 +383,12 @@ extension HomeViewController {
         }
         
         let taskViewController = EventEditViewController()
-        taskViewController.updateValues(delegate: self, defaultStartDate: defaultStartDate, defaultEndDate: defaultEndDate, isDateSelectable: false)
+        taskViewController.updateValues(
+            delegate: self,
+            defaultStartDate: defaultStartDate,
+            defaultEndDate: defaultEndDate,
+            isDateSelectable: false
+        )
         navigationController?.present(
             EventEditNavController(rootViewController: taskViewController),
             animated: true,
@@ -451,7 +460,10 @@ extension HomeViewController: UITableViewDataSource {
         if !tasksToLoad.isEmpty {
             let cell = tableView.dequeueReusableCell(withIdentifier: HomeViewController.homeEventCellReuseIdentifier)
                 as! HomeEventCell
-            cell.updateValues(task: tasksToLoad[indexPath.row], delegate: self)
+            cell.updateValues(
+                task: tasksToLoad[indexPath.row],
+                delegate: self
+            )
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: HomeViewController.pseudoCellReuseIdentifier)
@@ -494,18 +506,20 @@ extension HomeViewController: HomeTimetableDelegate {
         endDateAndTimeOfLastAddedTask = task.dateInterval.end
         
         // Scrolls to the newly added cell.
-        let indexOfAddedCell = tasksOfCurrentDate.firstIndex { (currentTask) -> Bool in
+        if let indexOfAddedCell = tasksOfCurrentDate.firstIndex(where: { (currentTask) -> Bool in
             return currentTask.dateInterval == task.dateInterval
-        }!
-        tableView1.scrollToRow(
-            at: IndexPath(row: indexOfAddedCell, section: 0),
-            at: .bottom,
-            animated: true
-        )
+        }) {
+            tableView1.scrollToRow(
+                at: IndexPath(row: indexOfAddedCell, section: 0),
+                at: .bottom,
+                animated: true
+            )
+        }
     }
     
     internal func replace(_ oldTask: Task, with newTask: Task) {
         tasks.replace(oldTask, with: newTask)
+        
         // Updates the displaying event.
         if let eventDisplayController = navigationController?.topViewController
             as? EventDisplayViewController {
