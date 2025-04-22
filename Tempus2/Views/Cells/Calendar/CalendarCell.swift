@@ -65,35 +65,43 @@ class CalendarCell: DateCell {
     
     func updateValues(date: Date, cellState: CellState, tasks: [Task], shouldDrawBottomLine: Bool) {
         super.updateValues(
-            date: date, cellState: cellState,
-            textColorForCurrentDay: Theme.highlightedTextColor, textColorForCurrentMonthExceptCurrentDay: Theme.textColor, textColorForOtherMonths: UIColor.lightGray
+            date: date, 
+            cellState: cellState,
+            textColorForCurrentDay: Theme.highlightedTextColor, 
+            textColorForCurrentMonthExceptCurrentDay: Theme.textColor,
+            textColorForOtherMonths: Theme.weakTextColor
         )
                 
         if !tasks.tasksOf(date).isEmpty {
-            if !tasks.unfinishedTasksOf(date).isEmpty {
-                contentView.backgroundColor = Theme.lightBlue
-                dateLabel.backgroundColor = Theme.lightBlue
-            } else {
-                contentView.backgroundColor = Theme.lightBlue2
-                dateLabel.backgroundColor = Theme.lightBlue2
-            }
+            contentView.backgroundColor = Theme.lightBlue
+            dateLabel.backgroundColor = Theme.lightBlue
         } else {
             contentView.backgroundColor = .white
             dateLabel.backgroundColor = .white
         }
         
         let attributedDateText = NSMutableAttributedString(string: dateLabel.text!)
+        
+        var textColor: UIColor
         if !tasks.unfinishedDues(on: date).isEmpty {
-            attributedDateText.setTextColor(with: .red)
+            textColor = .red
         } else {
-            attributedDateText.setTextColor(with: super.getColors(
+            textColor = super.getColors(
                 cellState: cellState,
                 date: date,
                 textColorForCurrentDay: Theme.highlightedTextColor,
                 textColorForCurrentMonthExceptCurrentDay: Theme.textColor,
-                textColorForOtherMonths: UIColor.lightGray)["textColor"]!
-            )
+                textColorForOtherMonths: UIColor.lightGray
+            )["textColor"]!
         }
+        attributedDateText.setTextColor(with: textColor)
+        
+        if !tasks.unfinishedTasksOf(date).isEmpty {
+            attributedDateText.setUnderline(color: textColor)
+        } else {
+            attributedDateText.removeUnderline()
+        }
+        
         dateLabel.attributedText = attributedDateText
         
         if !shouldDrawBottomLine {

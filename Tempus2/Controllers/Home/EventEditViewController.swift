@@ -906,7 +906,7 @@ extension EventEditViewController {
     static let dateAndTimeSelectionCellReuseIdentifier = "DateAndTimeSelectionCell"
     static let dateAndTimePickerCellReuseIdentifier = "DateAndTimePickerCell"
     
-    static let titlePlaceHolder = "Add title"
-    static let locationPlaceHolder = "Add location"
-    static let descriptionPlaceHolder = "Add description"
+    static let titlePlaceHolder = "Title"
+    static let locationPlaceHolder = "Location"
+    static let descriptionPlaceHolder = "Description"
 }

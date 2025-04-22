@@ -26,16 +26,16 @@ struct Theme {
 //    static let backgroundColor = UIColor.systemGroupedBackground
 //    static let lightBlue = UIColor.intRGB2UIColor(red: 210, green: 239, blue: 255)
     static let lightBlue: UIColor = UIColor.intRGB2UIColor(red: 205, green: 229, blue: 255)
-    static let lightBlue2 = UIColor.intRGB2UIColor(red: 185, green: 209, blue: 245)
+//    static let lightBlue2 = UIColor.intRGB2UIColor(red: 185, green: 209, blue: 245)
     
     static let textColor = UIColor.black
-    static let weakTextColor = UIColor.darkGray
+    static let weakTextColor = UIColor.lightGray
     static let highlightedTextColor = UIColor.systemBlue
     static let placeHolderColor = Theme.weakTextColor
     static let errorTextColor = UIColor.systemRed
     
     static let homeEventCellColor = Theme.lightBlue
-    static let homeEventCellCompletionColor = Theme.lightBlue2
+    static let homeEventCellCompletionColor = Theme.pseudoCellColor
     static let pseudoCellColor = UIColor.systemGray6
     static let dateCellBgColor = Theme.lightBlue
     
