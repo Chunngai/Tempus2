@@ -186,12 +186,24 @@ extension Task {
     }
     
     var timeAndDurationRepresentation: String {
-        if type == .task || type == .due {
-            return String(timeReprsentation.split(separator: "-")[0]).trimmingWhitespacesAndNewlines()
-        } else {
-            return timeReprsentation
+        
+        if type == .event {
+            return (
+                timeReprsentation
                 + " "
-                + "[\(dateInterval.duration.durationRepr)]"
+                + "(\(dateInterval.duration.durationRepr))"
+            )
+        } else if type == .task || type == .due {
+            let s = String(timeReprsentation.split(separator: "-")[0]).trimmingWhitespacesAndNewlines()
+            if type == .task {
+                return s
+            } else {
+                return "Before \(s)"
+            }
+        } else if type == .anytime {
+            return "Within the Day"
+        } else {
+            return ""
         }
     }
     

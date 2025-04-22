@@ -503,7 +503,9 @@ extension HomeViewController: HomeTimetableDelegate {
     internal func add(_ task: Task) {
         tasks.append(task)
         
-        endDateAndTimeOfLastAddedTask = task.dateInterval.end
+        if task.type != .anytime {
+            endDateAndTimeOfLastAddedTask = task.dateInterval.end
+        }
         
         // Scrolls to the newly added cell.
         if let indexOfAddedCell = tasksOfCurrentDate.firstIndex(where: { (currentTask) -> Bool in

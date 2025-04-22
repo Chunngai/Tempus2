@@ -12,33 +12,21 @@ class TypeViewController: UITableViewController {
 
     // MARK: - Controllers
     
-    private var delegate: TypeCell!
+    private var delegate: TypeViewControllerDelegate!
     
     // MARK: - Views
     
-    private var eventCell: UITableViewCell = {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-        cell.textLabel?.text = "Event"
-        cell.selectionStyle = .none
-        return cell
-    }()
-    private var taskCell: UITableViewCell = {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-        cell.textLabel?.text = "Task"
-        cell.selectionStyle = .none
-        return cell
-    }()
-    private var dueCell: UITableViewCell = {
-        let cell = UITableViewCell(style: .default, reuseIdentifier: nil)
-        cell.textLabel?.text = "Due"
-        cell.selectionStyle = .none
-        return cell
-    }()
-    private lazy var cells: [UITableViewCell] = [
-        eventCell,
-        taskCell,
-        dueCell
-    ]
+    private var cells: [UITableViewCell] = Task.typeStrings.map { typeString in
+        {
+            let cell = UITableViewCell(
+                style: .default,
+                reuseIdentifier: nil
+            )
+            cell.textLabel?.text = typeString
+            cell.selectionStyle = .none
+            return cell
+        }()
+    }
     
     // MARK: - Init
     
@@ -86,9 +74,14 @@ extension TypeViewController {
         }
         cells[indexPath.row].accessoryType = .checkmark
         
-        // Updates type by the delegate.
-        delegate.type = Task.Type_(rawValue: indexPath.row)
-        
-        delegate.delegate.navigationController?.popViewController(animated: true)
+        if let taskType = Task.Type_(rawValue: indexPath.row) {
+            delegate.updateType(as: taskType)
+        }
     }
+}
+
+protocol TypeViewControllerDelegate {
+    
+    func updateType(as taskType: Task.Type_)
+    
 }

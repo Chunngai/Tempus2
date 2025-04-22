@@ -15,7 +15,6 @@ class TypeCell: EventBaseCell {
     internal var type: Task.Type_! {
         didSet {
             textView.text = Task.typeStrings[type.rawValue]
-            delegate?.isEvent = type == .event
         }
     }
     
@@ -100,4 +99,13 @@ extension TypeCell {
         typeViewController.updateValues(type: type, delegate: self)
         delegate.navigationController?.pushViewController(typeViewController, animated: true)
     }
+}
+
+extension TypeCell: TypeViewControllerDelegate {
+    
+    func updateType(as taskType: Task.Type_) {
+        self.type = taskType
+        delegate.navigationController?.popViewController(animated: true)
+    }
+    
 }

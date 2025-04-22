@@ -61,15 +61,21 @@ struct Task: Codable {
 }
 
 extension Task {
+    
     enum Type_: Int, Codable {
-        case event
-        case task
+        case event  // Time period.
+        case task  // Time point.
+        case anytime  // Anytime of the day.
         case due
     }
     
-    static var typeStrings: [String] {
-        ["Event", "Task", "Due"]
-    }
+    static let typeStrings: [String] = [
+        "Event - Time Period",
+        "Event - Time Point",
+        "Event - Within the Day",
+        "Due"
+    ]
+    
 }
 
 extension Task {

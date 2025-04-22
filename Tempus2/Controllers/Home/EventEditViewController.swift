@@ -59,7 +59,18 @@ class EventEditViewController: UITableViewController {
     
     private var isDateSelectable: Bool!
         
-    internal var isEvent: Bool!  // Controls whether the startDateAndTime* should be displayed.
+    private var shouldDisplayStart: Bool! {  // Controls whether the startDateAndTime* should be displayed.
+        guard let typeCell = typeCell else {
+            return false
+        }
+        return typeCell.type == .event
+    }
+    private var shouldDisplayEnd: Bool! {  // Controls whether the endDateAndTime* should be displayed.
+        guard let typeCell = typeCell else {
+            return false
+        }
+        return typeCell.type != .anytime
+    }
     
     private var isTimetableMode: Bool!
     
@@ -114,7 +125,7 @@ class EventEditViewController: UITableViewController {
             image: UIImage(imageLiteralResourceName: "done"),
             style: .done,
             target: self,
-            action: #selector(saveBarButtonItemTapped)
+            action: #selector(saveButtonTapped)
         )
         
         tableView.tableFooterView = UIView()
@@ -303,17 +314,24 @@ extension EventEditViewController {
 
 extension EventEditViewController {
     
-    private func save(title: String, type: Task.Type_, startDateAndTime: Date, endDateAndTime: Date, hasAlarm: Bool, location: String, description: String) {
-        let dateInterval = DateInterval(
-            start: startDateAndTime,
-            end: endDateAndTime
-        )
-        
+    private func save(
+        title: String,
+        type: Task.Type_,
+        startDateAndTime: Date, 
+        endDateAndTime: Date,
+        hasAlarm: Bool,
+        location: String,
+        description: String
+    ) {
+                
         let newTask = Task(
             identifier: task?.identifier,
             title: title,
             type: type,
-            dateInterval: dateInterval,
+            dateInterval: DateInterval(
+                start: startDateAndTime,
+                end: endDateAndTime
+            ),
             hasAlarm: hasAlarm,
             location: location,
             description: description,
@@ -327,11 +345,17 @@ extension EventEditViewController {
         }
         
         if let task = task {
-            delegate.replace(task, with: newTask)
+            delegate.replace(
+                task,
+                with: newTask
+            )
         } else {
             delegate.add(newTask)
         }
-        delegate.dismiss(animated: true, completion: nil)
+        delegate.dismiss(
+            animated: true,
+            completion: nil
+        )
     }
     
     // MARK: - Actions
@@ -352,14 +376,29 @@ extension EventEditViewController {
         }
     }
     
-    @objc private func saveBarButtonItemTapped() {
+    @objc private func saveButtonTapped() {
         let title = titleCell.textView.content
         let type = typeCell.type!
-        let startDateAndTime = startPickerCell.dateAndTime
-        let endDateAndTime = endPickerCell.dateAndTime
+        var startDateAndTime = startPickerCell.dateAndTime
+        var endDateAndTime = endPickerCell.dateAndTime
         let hasAlarm = alarmCell.alarmSwitch.isOn
         let location = locationCell.textView.content
         let description = descriptionCell.textView.content
+        
+        if type == .anytime {
+            startDateAndTime = Calendar.current.date(
+                bySettingHour: 0,
+                minute: 0,
+                second: 0,
+                of: startDateAndTime
+            )!
+            endDateAndTime = Calendar.current.date(
+                bySettingHour: 23,
+                minute: 55,
+                second: 59,
+                of: endDateAndTime
+            )!
+        }
         
         if startDateAndTime > endDateAndTime {
             displayInvalidDateIntervalWarning()
@@ -373,21 +412,21 @@ extension EventEditViewController {
         
         if startDateAndTime + TimeInterval.Minute < Date()
             && task == nil
-            && !isTimetableMode {
+            && !isTimetableMode
+            && type != .anytime {
             displayStartBeforeCurrentWarning { (isOk) in
                 if !isOk {
                     return
-                } else {
-                    self.save(
-                        title: title,
-                        type: type,
-                        startDateAndTime: startDateAndTime,
-                        endDateAndTime: endDateAndTime,
-                        hasAlarm: hasAlarm,
-                        location: location,
-                        description: description
-                    )
                 }
+                self.save(
+                    title: title,
+                    type: type,
+                    startDateAndTime: startDateAndTime,
+                    endDateAndTime: endDateAndTime,
+                    hasAlarm: hasAlarm,
+                    location: location,
+                    description: description
+                )
             }
         } else {
             self.save(
@@ -453,7 +492,6 @@ extension EventEditViewController {
             return titleCell
         case EventEditViewController.typeCellIndex:
             oldType = task?.type ?? .event
-            isEvent = oldType == .event
             
             typeCell = TypeCell()
             typeCell.updateValues(
@@ -564,43 +602,60 @@ extension EventEditViewController {
         
         if row == EventEditViewController.startDateAndTimeSelectionCellIndex
             || row == EventEditViewController.startDateAndTimePickerCellIndex {
-            if let isEvent = isEvent {
-                startSelectionCell?.isHidden = !isEvent
-                startPickerCell?.isHidden = !isEvent
-                if !isEvent {
-                    return 0
+            if shouldDisplayStart {
+                startSelectionCell?.isHidden = false
+                startPickerCell?.isHidden = false
+                
+                if row == EventEditViewController.startDateAndTimePickerCellIndex {
+                    if isDatePickerInRowTwoHidden
+                        && isTimePickerInRowTwoHidden {
+                        return 0
+                    } else if isDatePickerInRowTwoHidden {
+                        return EventEditViewController.timePickerCellHeight
+                    } else if isTimePickerInRowTwoHidden {
+                        if !isTimetableMode {
+                            return EventEditViewController.datePickerCellHeight
+                        } else {
+                            return EventEditViewController.weekdayPickerCellHeight
+                        }
+                    }
                 }
+            } else {
+                startSelectionCell?.isHidden = true
+                startPickerCell?.isHidden = true
+                
+                return 0
             }
         }
         
-        if row == EventEditViewController.startDateAndTimePickerCellIndex {
-            if isDatePickerInRowTwoHidden
-                && isTimePickerInRowTwoHidden {
+        if row == EventEditViewController.endDateAndTimeSelectionCellIndex
+            || row == EventEditViewController.endDateAndTimePickerCellIndex {
+            if shouldDisplayEnd {
+                endSelectionCell?.isHidden = false
+                endPickerCell?.isHidden = false
+                
+                if row == EventEditViewController.endDateAndTimePickerCellIndex {
+                   if isDatePickerInRowFourHidden
+                       && isTimePickerInRowFourHidden {
+                       return 0
+                   } else if isDatePickerInRowFourHidden {
+                       return EventEditViewController.timePickerCellHeight
+                   } else if isTimePickerInRowFourHidden {
+                       if !isTimetableMode {
+                           return EventEditViewController.datePickerCellHeight
+                       } else {
+                           return EventEditViewController.weekdayPickerCellHeight
+                       }
+                   }
+               }
+            } else {
+                endSelectionCell?.isHidden = true
+                endPickerCell?.isHidden = true
+                
                 return 0
-            } else if isDatePickerInRowTwoHidden {
-                return EventEditViewController.timePickerCellHeight
-            } else if isTimePickerInRowTwoHidden {
-                if !isTimetableMode {
-                    return EventEditViewController.datePickerCellHeight
-                } else {
-                    return EventEditViewController.weekdayPickerCellHeight
-                }
-            }
-        } else if row == EventEditViewController.endDateAndTimePickerCellIndex {
-            if isDatePickerInRowFourHidden
-                && isTimePickerInRowFourHidden {
-                return 0
-            } else if isDatePickerInRowFourHidden {
-                return EventEditViewController.timePickerCellHeight
-            } else if isTimePickerInRowFourHidden {
-                if !isTimetableMode {
-                    return EventEditViewController.datePickerCellHeight
-                } else {
-                    return EventEditViewController.weekdayPickerCellHeight
-                }
             }
         }
-        
+                
         return UITableView.automaticDimension
     }
 }
@@ -622,7 +677,7 @@ extension EventEditViewController: PickerDelegate {
                     minute: 55,
                     second: 59,
                     of: startDateAndTime
-                    )!
+                )!
             }
             
             endPickerCell.dateAndTime = newEndDateAndTime
@@ -643,8 +698,9 @@ extension EventEditViewController: PickerDelegate {
     // MARK: - Picker Delegate
     
     internal func updateDateAndTime(ofCellInRow row: Int, with newDateAndTime: Date) {
+        
         // Handles the start if it is hidden.
-        if !isEvent {
+        if !shouldDisplayStart {
             if !isTimetableMode {
                 (startPickerCell.leftPicker as! JTACMonthView).selectDates(
                     [newDateAndTime],
@@ -655,15 +711,46 @@ extension EventEditViewController: PickerDelegate {
             
             startPickerCell.timePicker.date = newDateAndTime
             
-            startSelectionCell.updateDateAndTimeRepr(with: newDateAndTime, displayWeek: isTimetableMode)
+            startSelectionCell.updateDateAndTimeRepr(
+                with: newDateAndTime,
+                displayWeek: isTimetableMode
+            )
             validateStartDateAndTime()
         }
         
+        // Handles the end if it is hidden.
+        if !shouldDisplayEnd
+            && endSelectionCell != nil
+            && endPickerCell != nil
+        {
+            if !isTimetableMode {
+                (endPickerCell.leftPicker as! JTACMonthView).selectDates(
+                    [newDateAndTime],
+                    triggerSelectionDelegate: false,
+                    keepSelectionIfMultiSelectionAllowed: false
+                )
+            }
+            
+            endPickerCell.timePicker.date = newDateAndTime
+            
+            endSelectionCell.updateDateAndTimeRepr(
+                with: newDateAndTime,
+                displayWeek: isTimetableMode
+            )
+            validateEndDateAndTime()
+        }
+        
         if row == EventEditViewController.startDateAndTimeSelectionCellIndex {
-            startSelectionCell.updateDateAndTimeRepr(with: newDateAndTime, displayWeek: isTimetableMode)
+            startSelectionCell.updateDateAndTimeRepr(
+                with: newDateAndTime,
+                displayWeek: isTimetableMode
+            )
             validateStartDateAndTime()
         } else if row == EventEditViewController.endDateAndTimeSelectionCellIndex {
-            endSelectionCell.updateDateAndTimeRepr(with: newDateAndTime, displayWeek: isTimetableMode)
+            endSelectionCell.updateDateAndTimeRepr(
+                with: newDateAndTime,
+                displayWeek: isTimetableMode
+            )
             validateEndDateAndTime()
         } else {
             return
