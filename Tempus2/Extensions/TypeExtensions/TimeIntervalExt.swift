@@ -12,6 +12,10 @@ extension TimeInterval {
     
     // MARK: - Seconds of Time Units
     
+    static var Second: TimeInterval {
+        return 1
+    }
+    
     static var Minute: TimeInterval {
         return 60
     }

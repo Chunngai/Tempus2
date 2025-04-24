@@ -44,7 +44,7 @@ class PickerCell: UITableViewCell {
         picker.datePickerMode = .time
         picker.isHidden = true
         // https://stackoverflow.com/questions/30245341/uidatepicker-15-minute-increments-swift
-        picker.minuteInterval = 5
+        picker.minuteInterval = 1
         return picker
     }()
     

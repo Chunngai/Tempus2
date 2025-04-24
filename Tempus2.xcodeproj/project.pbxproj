@@ -10,6 +10,8 @@
 		0E31C038C430D6F5A5678C88 /* Pods_Tempus2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8006638FED3B8ECE1A3C4F9 /* Pods_Tempus2.framework */; };
 		AEA9238F01D0B13B39424058 /* Pods_Tempus2_Tempus2UITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 536BC6AAA7E95F3617C79F4C /* Pods_Tempus2_Tempus2UITests.framework */; };
 		C257A921F9BE966E5A94C968 /* Pods_Tempus2Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A6C425F389686398F160AEC /* Pods_Tempus2Tests.framework */; };
+		C6C2D8C72DB8C457007A43A6 /* tickle.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C6C2D8C42DB8C457007A43A6 /* tickle.mp3 */; };
+		C6C2D8C92DB95185007A43A6 /* BackgroundVibrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C2D8C82DB95185007A43A6 /* BackgroundVibrationManager.swift */; };
 		FF475165270F85E60015E862 /* PseudoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF475164270F85E60015E862 /* PseudoCell.swift */; };
 		FF48532E284BB32000BC3783 /* silence.aif in Resources */ = {isa = PBXBuildFile; fileRef = FF48532B284BB32000BC3783 /* silence.aif */; };
 		FF48532F284BB32000BC3783 /* silence.wav in Resources */ = {isa = PBXBuildFile; fileRef = FF48532C284BB32000BC3783 /* silence.wav */; };
@@ -121,6 +123,8 @@
 		58AE8641FE6D8F698F2C89B5 /* Pods-Tempus2-Tempus2UITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tempus2-Tempus2UITests.debug.xcconfig"; path = "Target Support Files/Pods-Tempus2-Tempus2UITests/Pods-Tempus2-Tempus2UITests.debug.xcconfig"; sourceTree = "<group>"; };
 		771943421009012C558B189B /* Pods-Tempus2Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tempus2Tests.debug.xcconfig"; path = "Target Support Files/Pods-Tempus2Tests/Pods-Tempus2Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		90AA7456B3591FA5198797F3 /* Pods-Tempus2.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tempus2.debug.xcconfig"; path = "Target Support Files/Pods-Tempus2/Pods-Tempus2.debug.xcconfig"; sourceTree = "<group>"; };
+		C6C2D8C42DB8C457007A43A6 /* tickle.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = tickle.mp3; path = "../../../../Downloads/Alarm-ios-swift-main/MVC/Alarm/tickle.mp3"; sourceTree = "<group>"; };
+		C6C2D8C82DB95185007A43A6 /* BackgroundVibrationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundVibrationManager.swift; sourceTree = "<group>"; };
 		D8006638FED3B8ECE1A3C4F9 /* Pods_Tempus2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tempus2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF475164270F85E60015E862 /* PseudoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PseudoCell.swift; sourceTree = "<group>"; };
 		FF48532B284BB32000BC3783 /* silence.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = silence.aif; path = ../../../../../../Volumes/SWAP/sounds/silence.aif; sourceTree = "<group>"; };
@@ -229,6 +233,7 @@
 		FF485328284BB30800BC3783 /* Sounds */ = {
 			isa = PBXGroup;
 			children = (
+				C6C2D8C42DB8C457007A43A6 /* tickle.mp3 */,
 				FF48532B284BB32000BC3783 /* silence.aif */,
 				FF48532D284BB32000BC3783 /* silence.caf */,
 				FF48532C284BB32000BC3783 /* silence.wav */,
@@ -394,6 +399,7 @@
 				FF6A0A0226DBEA0900A6E09A /* LaunchScreen.storyboard */,
 				FF6A0A0526DBEA0900A6E09A /* Info.plist */,
 				FF4EF2BD284F335E0045F7C5 /* Scheduler.swift */,
+				C6C2D8C82DB95185007A43A6 /* BackgroundVibrationManager.swift */,
 			);
 			path = Tempus2;
 			sourceTree = "<group>";
@@ -664,6 +670,7 @@
 			files = (
 				FF48532E284BB32000BC3783 /* silence.aif in Resources */,
 				FF6A0A0426DBEA0900A6E09A /* LaunchScreen.storyboard in Resources */,
+				C6C2D8C72DB8C457007A43A6 /* tickle.mp3 in Resources */,
 				FF48532F284BB32000BC3783 /* silence.wav in Resources */,
 				FF6A0A0126DBEA0900A6E09A /* Assets.xcassets in Resources */,
 				FF485330284BB32000BC3783 /* silence.caf in Resources */,
@@ -824,6 +831,7 @@
 				FF50601226DFC3AC00BF1F50 /* EventDisplayViewController.swift in Sources */,
 				FFCB837426E133B7004A4F53 /* UINavigationItem.swift in Sources */,
 				FF4CAE7226DCE3F7009BB111 /* Theme.swift in Sources */,
+				C6C2D8C92DB95185007A43A6 /* BackgroundVibrationManager.swift in Sources */,
 				FF475165270F85E60015E862 /* PseudoCell.swift in Sources */,
 				FF6A09FA26DBEA0900A6E09A /* SceneDelegate.swift in Sources */,
 				FF6E370326DE7FF400464183 /* DateCell.swift in Sources */,

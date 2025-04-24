@@ -385,6 +385,8 @@ extension EventEditViewController {
         let location = locationCell.textView.content
         let description = descriptionCell.textView.content
         
+        startDateAndTime = startDateAndTime.setSecondToZero()
+        endDateAndTime = endDateAndTime.setSecondToZero()
         if type == .anytime {
             startDateAndTime = Calendar.current.date(
                 bySettingHour: 0,

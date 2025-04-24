@@ -27,6 +27,20 @@ extension Date {
             get(component)
         }
     }
+    
+    func components(of components: Set<Calendar.Component> = [.year, .month, .day, .hour, .minute, .second]) -> DateComponents {
+        return Calendar.current.dateComponents(
+            components,
+            from: self
+        )
+    }
+    
+    func setSecondToZero() -> Date {
+        var components = self.components()
+        components.second = 0
+        return Calendar.current.date(from: components) ?? self
+    }
+    
 }
  
 extension Date {
@@ -39,6 +53,10 @@ extension Date {
     
     private var defaultTimeFormat: String {
         return "HH:mm"
+    }
+    
+    private var defaultDateAndTimeFormat: String {
+        return defaultDateFormat + " " + defaultTimeFormat
     }
     
     private var defaultMonthFormat: String {
@@ -64,6 +82,13 @@ extension Date {
             ? defaultTimeFormat
             : format
         return makeRepresentation(with: timeFormat)
+    }
+    
+    func dateAndTimeRepresentation(ofFormat format: String = "") -> String {
+        let dateAndTimeFormat = format.isEmpty
+            ?  defaultDateAndTimeFormat
+            : format
+        return makeRepresentation(with: dateAndTimeFormat)
     }
     
     func monthRepresentation(ofFormat format: String = "") -> String {
