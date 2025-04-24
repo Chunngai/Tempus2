@@ -13,7 +13,7 @@ class EventBaseCell: UITableViewCell {
     // MARK: - Views
     
     internal var iconImageView = UIImageView()
-    private let iconBackView: UILabel = {
+    internal let iconBackView: UILabel = {
         let label = UILabel()
         label.isUserInteractionEnabled = false
         return label
@@ -47,15 +47,17 @@ class EventBaseCell: UITableViewCell {
     }
     
     func updateLayouts() {
+        
+        let verticalPadding = Theme.bodyFont.pointSize
+        
         iconBackView.snp.makeConstraints { (make) in
             make.leading.equalToSuperview()
-            make.top.equalToSuperview().inset(10)
-            make.bottom.equalToSuperview().inset(10)
+            make.top.equalToSuperview().inset(verticalPadding)
+            make.bottom.equalToSuperview().inset(verticalPadding)
             make.width.equalTo(EventBaseCell.widthUnit)
         }
         
         iconImageView.snp.makeConstraints { (make) in
-//            make.centerY.centerX.equalToSuperview()
             make.centerX.equalToSuperview()
             make.height.width.equalTo(Theme.bodyFont.lineHeight * 1.2)
         }

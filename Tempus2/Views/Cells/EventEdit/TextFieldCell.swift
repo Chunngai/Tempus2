@@ -1,24 +1,20 @@
 //
-//  EventTextViewCell.swift
+//  TextFieldCell.swift
 //  Tempus2
 //
-//  Created by Sola on 2021/8/30.
-//  Copyright © 2021 Sola. All rights reserved.
+//  Created by Ho on 4/24/25.
+//  Copyright © 2025 Sola. All rights reserved.
 //
 
 import UIKit
 
-class EventTextViewCell: EventBaseCell {
+class TextFieldCell: EventBaseCell {
     
     // MARK: - Views
     
-    internal let textView: TextViewWithPlaceHolder = {
-        let textView = TextViewWithPlaceHolder()
-        textView.isScrollEnabled = false
-        textView.textColor = Theme.textColor
-        textView.textContainer.lineFragmentPadding = 0
-        textView.textContainerInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-        return textView
+    internal let textField: UITextField = {
+        let textField = UITextField()
+        return textField
     }()
     
     // MARK: - Init
@@ -37,13 +33,13 @@ class EventTextViewCell: EventBaseCell {
     override func updateViews() {
         super.updateViews()
                 
-        rightView.addSubview(textView)
+        rightView.addSubview(textField)
     }
     
     override func updateLayouts() {
         super.updateLayouts()
         
-        textView.snp.makeConstraints { (make) in
+        textField.snp.makeConstraints { (make) in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.top.equalToSuperview()
@@ -53,14 +49,15 @@ class EventTextViewCell: EventBaseCell {
     
     func updateValues(
         iconName: String,
-        placeHolder: String, text: String, font: UIFont = Theme.bodyFont,
-        delegate: UITableViewController
+        placeHolder: String, text: String, font: UIFont = Theme.bodyFont
     ) {
         super.updateValues(iconName: iconName)
         
-        textView.placeHolder = placeHolder
-        textView.content = text
-        textView.font = font
-        textView.delegate = delegate as? UITextViewDelegate
+        textField.attributedPlaceholder = NSAttributedString(
+            string: placeHolder,
+            attributes: [.foregroundColor: Theme.placeHolderColor]
+        )
+        textField.text = text
+        textField.font = font
     }
 }

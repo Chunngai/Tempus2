@@ -11,14 +11,14 @@ import JTAppleCalendar
 
 class EventEditViewController: UITableViewController {
     
-    private var titleCell: EventTextViewCell!
+    private var titleCell: TextFieldCell!
     private var typeCell: TypeCell!
     private var startSelectionCell: SelectionCell!
     private var startPickerCell: PickerCell!
     private var endSelectionCell: SelectionCell!
     private var endPickerCell: PickerCell!
     private var alarmCell: AlarmCell!
-    private var locationCell: EventTextViewCell!
+    private var locationCell: TextFieldCell!
     private var descriptionCell: EventTextViewCell!
     
     private var oldTitle: String!
@@ -29,14 +29,14 @@ class EventEditViewController: UITableViewController {
     private var oldLocation: String!
     private var oldDescription: String!
     private var isContentChanged: Bool {
-        return oldTitle != titleCell.textView.content
+        return oldTitle != titleCell.textField.text
             || oldType != typeCell.type
             || oldStart.dateRepresentation() != startPickerCell.dateAndTime.dateRepresentation()
             || oldStart.timeRepresentation() != startPickerCell.dateAndTime.timeRepresentation()
             || oldEnd.dateRepresentation() != endPickerCell.dateAndTime.dateRepresentation()
             || oldEnd.timeRepresentation() != endPickerCell.dateAndTime.timeRepresentation()
             || oldHasAlarm != alarmCell.alarmSwitch.isOn
-            || oldLocation != locationCell.textView.content
+        || oldLocation != locationCell.textField.text
             || oldDescription != descriptionCell.textView.content
     }
     
@@ -110,7 +110,7 @@ class EventEditViewController: UITableViewController {
     override func viewDidAppear(_ animated: Bool) {
         // https://stackoverflow.com/questions/27652227/add-placeholder-text-inside-uitextview-in-swift
         // "(Note: Since the OP wanted to have the text view selected as soon as the view loads, I incorporated text view selection into the above code. If this is not your desired behavior and you do not want the text view selected upon view load, remove the last two lines from the above code chunk.)"
-        let _ = titleCell.textView.becomeFirstResponder()
+        let _ = titleCell.textField.becomeFirstResponder()
     }
     
     func updateViews() {
@@ -377,12 +377,12 @@ extension EventEditViewController {
     }
     
     @objc private func saveButtonTapped() {
-        let title = titleCell.textView.content
+        let title = titleCell.textField.text ?? ""
         let type = typeCell.type!
         var startDateAndTime = startPickerCell.dateAndTime
         var endDateAndTime = endPickerCell.dateAndTime
         let hasAlarm = alarmCell.alarmSwitch.isOn
-        let location = locationCell.textView.content
+        let location = locationCell.textField.text ?? ""
         let description = descriptionCell.textView.content
         
         startDateAndTime = startDateAndTime.setSecondToZero()
@@ -483,14 +483,24 @@ extension EventEditViewController {
         case EventEditViewController.titleCellIndex:
             oldTitle = task?.title ?? ""
             
-            titleCell = EventTextViewCell()
+            titleCell = TextFieldCell()
             titleCell.updateValues(
                 iconName: "title",
                 placeHolder: EventEditViewController.titlePlaceHolder,
-                text: oldTitle,
-                delegate: self
+                text: oldTitle
             )
-            titleCell.textView.font = Theme.title2Font
+            titleCell.textField.font = Theme.title2Font
+            // Hide the icon and resize the text field.
+            titleCell.iconBackView.isHidden = true
+            titleCell.iconImageView.isHidden = true
+            titleCell.rightView.snp.remakeConstraints { (make) in
+                make.leading.equalTo(titleCell.iconImageView.snp.leading)
+                make.trailing.equalToSuperview()
+                let verticalPadding = Theme.bodyFont.pointSize
+                make.top.equalToSuperview().inset(verticalPadding)
+                make.bottom.equalToSuperview().inset(verticalPadding)
+            }
+            
             return titleCell
         case EventEditViewController.typeCellIndex:
             oldType = task?.type ?? .event
@@ -537,7 +547,6 @@ extension EventEditViewController {
             )
             let dateAndTime = task?.dateInterval.end ?? defaultEndDate
             endSelectionCell.updateDateAndTimeRepr(with: dateAndTime, displayWeek: isTimetableMode)
-            endSelectionCell.removeSeparator()
             return endSelectionCell
         case EventEditViewController.endDateAndTimePickerCellIndex:
             oldEnd = task?.dateInterval.end ?? defaultEndDate
@@ -565,12 +574,11 @@ extension EventEditViewController {
         case EventEditViewController.locationCellIndex:
             oldLocation = task?.location ?? ""
             
-            locationCell = EventTextViewCell()
+            locationCell = TextFieldCell()
             locationCell.updateValues(
                 iconName: "location",
                 placeHolder: EventEditViewController.locationPlaceHolder,
-                text: oldLocation,
-                delegate: self
+                text: oldLocation
             )
             return locationCell
         case EventEditViewController.descriptionCellIndex:
@@ -842,28 +850,50 @@ extension EventEditViewController: DateAndTimeSelectionCellDelegate {
     }
     
     private func togglePickersVisibility(in row: Int, shouldToggleDatePicker: Bool, shouldToggleTimePicker: Bool) {
+        
         // Without the two lines of code below,
         // the keyboard will be displayed when
         // one of the pickers are tapped.
-        titleCell.textView.resignFirstResponder()
-        descriptionCell.textView.resignFirstResponder()
+        titleCell.textField.resignFirstResponder()
+        let _ = descriptionCell.textView.resignFirstResponder()
         
         let currentPickerCell = currentPickerCellOf(row)
         let theOtherPickerCell = theOtherPickerCellOf(row)
         
-        if shouldToggleDatePicker {
-            currentPickerCell.leftPicker.isHidden.toggle()
-            currentPickerCell.timePicker.isHidden = true
-        } else {
-            currentPickerCell.timePicker.isHidden.toggle()
-            currentPickerCell.leftPicker.isHidden = true
+        tableView.performBatchUpdates {
+            if shouldToggleDatePicker {
+                currentPickerCell.leftPicker.isHidden.toggle()
+                currentPickerCell.timePicker.isHidden = true
+            } else {
+                currentPickerCell.timePicker.isHidden.toggle()
+                currentPickerCell.leftPicker.isHidden = true
+            }
+            
+            theOtherPickerCell.leftPicker.isHidden = true
+            theOtherPickerCell.timePicker.isHidden = true
+            
+            // Hide then animate.
+            if row == EventEditViewController.endDateAndTimePickerCellIndex
+                && (currentPickerCell.leftPicker.isHidden == false
+                || currentPickerCell.timePicker.isHidden == false)
+            {
+                self.endSelectionCell.removeSeparator()
+                self.endPickerCell.resetSeparator()
+            }
+            
+        } completion: { _ in
+            
+            // Animate then show.
+            if row == EventEditViewController.endDateAndTimePickerCellIndex
+                && (currentPickerCell.leftPicker.isHidden == true
+                && currentPickerCell.timePicker.isHidden == true)
+            {
+                self.endSelectionCell.resetSeparator()
+                self.endPickerCell.removeSeparator()
+            }
+            
         }
         
-        theOtherPickerCell.leftPicker.isHidden = true
-        theOtherPickerCell.timePicker.isHidden = true
-        
-        tableView.beginUpdates()
-        tableView.endUpdates()
     }
     
     // MARK: - DateAndTimeSelectionCell Delegate

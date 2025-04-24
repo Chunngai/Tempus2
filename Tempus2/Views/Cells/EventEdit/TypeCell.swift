@@ -14,7 +14,7 @@ class TypeCell: EventBaseCell {
     
     internal var type: Task.Type_! {
         didSet {
-            textView.text = Task.typeStrings[type.rawValue]
+            label.text = Task.typeStrings[type.rawValue]
         }
     }
     
@@ -24,15 +24,14 @@ class TypeCell: EventBaseCell {
     
     // MARK: - Views
     
-    internal let textView: UITextView = {  // For left alignment consistence.
-        let textView = UITextView()
-        textView.isScrollEnabled = false
-        textView.textColor = Theme.textColor
-        textView.textAlignment = .left
-        textView.font = Theme.bodyFont
-        textView.isEditable = false
-        textView.sizeToFit()
-        return textView
+    internal let label: UILabel = {
+        let label = UILabel()
+        label.textColor = Theme.textColor
+        label.textAlignment = .left
+        label.font = Theme.bodyFont
+        label.isUserInteractionEnabled = true
+        label.sizeToFit()
+        return label
     }()
     
     // MARK: - Init
@@ -51,20 +50,13 @@ class TypeCell: EventBaseCell {
     override func updateViews() {
         super.updateViews()
                 
-        rightView.addSubview(textView)
+        rightView.addSubview(label)
     }
     
     override func updateLayouts() {
         super.updateLayouts()
-        
-        iconImageView.snp.makeConstraints { (make) in
-            make.centerX.equalToSuperview()
-            // Aligns with the top of the text view container inset.
-            make.top.equalToSuperview().inset(TextViewWithPlaceHolder().textContainerInset.top)
-            make.height.width.equalTo(Theme.bodyFont.lineHeight * 1.2)
-        }
-        
-        textView.snp.makeConstraints { (make) in
+
+        label.snp.makeConstraints { (make) in
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.top.equalToSuperview()
@@ -80,7 +72,7 @@ class TypeCell: EventBaseCell {
         
         if shouldDisplayAccessory {
             accessoryType = .disclosureIndicator
-            textView.addGestureRecognizer(UITapGestureRecognizer(
+            label.addGestureRecognizer(UITapGestureRecognizer(
                 target: self,
                 action: #selector(cellTapped)
             ))

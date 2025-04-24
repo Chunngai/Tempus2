@@ -16,17 +16,15 @@ class AlarmCell: EventBaseCell {
     
     // MARK: - Views
     
-    private let label: UITextView = {  // For left alignment consistence.
-        let textView = UITextView()
-        textView.text = "Alarm"
-        textView.isScrollEnabled = false
-        textView.textColor = Theme.textColor
-        textView.textAlignment = .left
-        textView.font = Theme.bodyFont
-        textView.isEditable = false
-        textView.isSelectable = false
-        textView.sizeToFit()
-        return textView
+    private let label: UILabel = {
+        let label = UILabel()
+        label.text = "Alarm"
+        label.textColor = Theme.textColor
+        label.textAlignment = .left
+        label.font = Theme.bodyFont
+        label.isUserInteractionEnabled = true
+        label.sizeToFit()
+        return label
     }()
     
     let alarmSwitch: UISwitch = {
@@ -57,13 +55,6 @@ class AlarmCell: EventBaseCell {
     
     override func updateLayouts() {
         super.updateLayouts()
-        
-        iconImageView.snp.makeConstraints { (make) in
-            make.centerX.equalToSuperview()
-            // Aligns with the top of the text view container inset.
-            make.top.equalToSuperview().inset(TextViewWithPlaceHolder().textContainerInset.top)
-            make.height.width.equalTo(Theme.bodyFont.lineHeight * 1.2)
-        }
         
         alarmSwitch.snp.makeConstraints { (make) in
             make.centerY.equalToSuperview()

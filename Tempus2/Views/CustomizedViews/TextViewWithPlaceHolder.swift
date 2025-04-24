@@ -10,12 +10,12 @@ import UIKit
 
 class TextViewWithPlaceHolder: UITextView {
     
-    var clearButton: UIButton = {
-        let clearButton = UIButton(type: .custom)
-        clearButton.setImage(UIImage(imageLiteralResourceName: "clear"), for: .normal)
-        clearButton.setImage(UIImage(imageLiteralResourceName: "clear_pressed"), for: .highlighted)
-        return clearButton
-    }()
+//    var clearButton: UIButton = {
+//        let clearButton = UIButton(type: .custom)
+//        clearButton.setImage(UIImage(imageLiteralResourceName: "clear"), for: .normal)
+//        clearButton.setImage(UIImage(imageLiteralResourceName: "clear_pressed"), for: .highlighted)
+//        return clearButton
+//    }()
     
     var placeHolder: String?
     var isShowingPlaceHolder: Bool {
@@ -63,8 +63,8 @@ class TextViewWithPlaceHolder: UITextView {
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
         
-        clearButton.addTarget(self, action: #selector(clearButtonTapped), for: .touchUpInside)
-        self.addSubview(clearButton)
+//        clearButton.addTarget(self, action: #selector(clearButtonTapped), for: .touchUpInside)
+//        self.addSubview(clearButton)
         
         updateViews()
     }
@@ -74,11 +74,11 @@ class TextViewWithPlaceHolder: UITextView {
     }
     
     override func layoutSubviews() {
-        clearButton.snp.makeConstraints { (make) in
-            make.leading.equalToSuperview().inset(self.frame.width - TextViewWithPlaceHolder.clearButtonDiameter * 2)
-            make.centerY.equalToSuperview()
-            make.width.height.equalTo(TextViewWithPlaceHolder.clearButtonDiameter)
-        }
+//        clearButton.snp.makeConstraints { (make) in
+//            make.leading.equalToSuperview().inset(self.frame.width - TextViewWithPlaceHolder.clearButtonDiameter * 2)
+//            make.centerY.equalToSuperview()
+//            make.width.height.equalTo(TextViewWithPlaceHolder.clearButtonDiameter)
+//        }
     }
     
     func updateViews() {
@@ -125,11 +125,11 @@ extension TextViewWithPlaceHolder {
 extension TextViewWithPlaceHolder {
     
     private func setClearButtonVisibility(content: String, isFirstResponder: Bool) {
-        if isFirstResponder && !content.isEmpty {
-            clearButton.isHidden = false
-        } else {
-            clearButton.isHidden = true
-        }
+//        if isFirstResponder && !content.isEmpty {
+//            clearButton.isHidden = false
+//        } else {
+//            clearButton.isHidden = true
+//        }
     }
     
 }

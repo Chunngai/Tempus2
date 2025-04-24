@@ -20,7 +20,7 @@ class SelectionCell: EventBaseCell {
             } else {
                 color = Theme.errorTextColor
             }
-            dateButton.textColor = color
+            dateButton.setTitleColor(color, for: .normal)
             timeButton.setTitleColor(color, for: .normal)
         }
     }
@@ -33,16 +33,13 @@ class SelectionCell: EventBaseCell {
     
     // MARK: - Views
     
-    private let dateButton: UITextView = {  // For left alignment consistence.
-        let textView = UITextView()
-        textView.isScrollEnabled = false
-        textView.textColor = Theme.textColor
-        textView.textAlignment = .left
-        textView.font = Theme.bodyFont
-        textView.isEditable = false
-        textView.isSelectable = false
-        textView.sizeToFit()
-        return textView
+    private let dateButton: UIButton = {
+        let button = UIButton()
+        button.setTitleColor(Theme.textColor, for: .normal)
+        button.contentHorizontalAlignment = .left
+        button.titleLabel?.font = Theme.bodyFont
+        button.sizeToFit()
+        return button
     }()
     
     private let timeButton: UIButton = {
@@ -63,10 +60,11 @@ class SelectionCell: EventBaseCell {
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        dateButton.addGestureRecognizer(UITapGestureRecognizer(
-            target: self,
-            action: #selector(dateTapped)
-        ))
+        dateButton.addTarget(
+            self,
+            action: #selector(dateTapped),
+            for: .touchUpInside
+        )
         timeButton.addTarget(
             self,
             action: #selector(timeTapped),
@@ -86,19 +84,18 @@ class SelectionCell: EventBaseCell {
     
     override func updateLayouts() {
         super.updateLayouts()
-        
-        iconImageView.snp.makeConstraints { (make) in
-            make.centerX.equalToSuperview()
-            // Aligns with the top of the text view (dateButton) container inset.
-            make.top.equalToSuperview().inset(TextViewWithPlaceHolder().textContainerInset.top)
-            make.height.width.equalTo(Theme.bodyFont.lineHeight * 1.2)
+
+        rightView.snp.remakeConstraints { (make) in
+            make.leading.equalTo(iconBackView.snp.trailing)
+            make.trailing.equalToSuperview()
+            make.top.equalToSuperview().inset(0)
+            make.bottom.equalToSuperview().inset(Theme.bodyFont.pointSize)
         }
         
         timeButton.snp.makeConstraints { (make) in
             make.top.bottom.trailing.equalToSuperview()
             make.width.equalTo(EventBaseCell.widthUnit)
         }
-        
         dateButton.snp.makeConstraints { (make) in
             make.top.bottom.leading.equalToSuperview()
             make.trailing.equalTo(timeButton.snp.leading)
@@ -117,9 +114,9 @@ class SelectionCell: EventBaseCell {
     
     func updateDateAndTimeRepr(with dateAndTime: Date, displayWeek: Bool = false) {
         if !displayWeek {
-            dateButton.text = dateAndTime.dateRepresentation()
+            dateButton.setTitle(dateAndTime.dateRepresentation(), for: .normal)
         } else {
-            dateButton.text = Calendar.current.weekdaySymbol(of: dateAndTime)
+            dateButton.setTitle(Calendar.current.weekdaySymbol(of: dateAndTime), for: .normal)
         }
         timeButton.setTitle(dateAndTime.timeRepresentation(), for: .normal)
     }
