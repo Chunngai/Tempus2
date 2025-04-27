@@ -509,9 +509,9 @@ extension EventEditViewController {
             typeCell.updateValues(
                 iconName: "time",
                 type: oldType,
-                delegate: self,
                 shouldDisplayAccessory: !isTimetableMode
             )
+            typeCell.delegate = self
             typeCell.removeSeparator()
             return typeCell
         case EventEditViewController.startDateAndTimeSelectionCellIndex:
@@ -909,6 +909,25 @@ extension EventEditViewController: DateAndTimeSelectionCellDelegate {
     internal func toggleTimePickerVisibility(inRow row: Int) {
         togglePickersVisibility(in: row, shouldToggleDatePicker: false, shouldToggleTimePicker: true)
     }
+}
+
+extension EventEditViewController: TypeCellDelegate {
+    
+    func reload(for newType: Task.Type_) {
+        tableView.reloadRows(
+            at: [
+                Self.startDateAndTimeSelectionCellIndex,
+                Self.endDateAndTimeSelectionCellIndex,
+            ].map({ row in
+                IndexPath(
+                    row: row,
+                    section: 0
+                )
+            }),
+            with: .automatic
+        )
+    }
+    
 }
 
 extension EventEditViewController {

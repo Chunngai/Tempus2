@@ -20,7 +20,7 @@ class TypeCell: EventBaseCell {
     
     // MARK: - Controllers
     
-    internal var delegate: EventEditViewController!
+    internal var delegate: TypeCellDelegate!
     
     // MARK: - Views
     
@@ -64,11 +64,10 @@ class TypeCell: EventBaseCell {
         }
     }
     
-    func updateValues(iconName: String, type: Task.Type_, delegate: EventEditViewController, shouldDisplayAccessory: Bool = true) {
+    func updateValues(iconName: String, type: Task.Type_, shouldDisplayAccessory: Bool = true) {
         super.updateValues(iconName: iconName)
         
         self.type = type
-        self.delegate = delegate
         
         if shouldDisplayAccessory {
             accessoryType = .disclosureIndicator
@@ -97,7 +96,15 @@ extension TypeCell: TypeViewControllerDelegate {
     
     func updateType(as taskType: Task.Type_) {
         self.type = taskType
+        
+        delegate.reload(for: taskType)
         delegate.navigationController?.popViewController(animated: true)
     }
+    
+}
+
+protocol TypeCellDelegate: UIViewController {
+        
+    func reload(for newType: Task.Type_)
     
 }
