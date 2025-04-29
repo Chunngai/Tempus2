@@ -13,6 +13,7 @@
 		C6C2D8C72DB8C457007A43A6 /* tickle.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = C6C2D8C42DB8C457007A43A6 /* tickle.mp3 */; };
 		C6C2D8C92DB95185007A43A6 /* BackgroundVibrationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C2D8C82DB95185007A43A6 /* BackgroundVibrationManager.swift */; };
 		C6C2D8CB2DBA3200007A43A6 /* TextFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C2D8CA2DBA3200007A43A6 /* TextFieldCell.swift */; };
+		C6D2E5722DC106B0008FB30A /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6D2E5712DC106B0008FB30A /* Logger.swift */; };
 		FF475165270F85E60015E862 /* PseudoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF475164270F85E60015E862 /* PseudoCell.swift */; };
 		FF48532E284BB32000BC3783 /* silence.aif in Resources */ = {isa = PBXBuildFile; fileRef = FF48532B284BB32000BC3783 /* silence.aif */; };
 		FF48532F284BB32000BC3783 /* silence.wav in Resources */ = {isa = PBXBuildFile; fileRef = FF48532C284BB32000BC3783 /* silence.wav */; };
@@ -127,6 +128,7 @@
 		C6C2D8C42DB8C457007A43A6 /* tickle.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; name = tickle.mp3; path = "../../../../Downloads/Alarm-ios-swift-main/MVC/Alarm/tickle.mp3"; sourceTree = "<group>"; };
 		C6C2D8C82DB95185007A43A6 /* BackgroundVibrationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundVibrationManager.swift; sourceTree = "<group>"; };
 		C6C2D8CA2DBA3200007A43A6 /* TextFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldCell.swift; sourceTree = "<group>"; };
+		C6D2E5712DC106B0008FB30A /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		D8006638FED3B8ECE1A3C4F9 /* Pods_Tempus2.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tempus2.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FF475164270F85E60015E862 /* PseudoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PseudoCell.swift; sourceTree = "<group>"; };
 		FF48532B284BB32000BC3783 /* silence.aif */ = {isa = PBXFileReference; lastKnownFileType = file; name = silence.aif; path = ../../../../../../Volumes/SWAP/sounds/silence.aif; sourceTree = "<group>"; };
@@ -402,6 +404,7 @@
 				FF6A0A0526DBEA0900A6E09A /* Info.plist */,
 				FF4EF2BD284F335E0045F7C5 /* Scheduler.swift */,
 				C6C2D8C82DB95185007A43A6 /* BackgroundVibrationManager.swift */,
+				C6D2E5712DC106B0008FB30A /* Logger.swift */,
 			);
 			path = Tempus2;
 			sourceTree = "<group>";
@@ -829,6 +832,7 @@
 				FF51D65226DE45220091ABAA /* SelectionCell.swift in Sources */,
 				C6C2D8CB2DBA3200007A43A6 /* TextFieldCell.swift in Sources */,
 				FF4CAE7726DCE459009BB111 /* StringExt.swift in Sources */,
+				C6D2E5722DC106B0008FB30A /* Logger.swift in Sources */,
 				FF4C81282801F3AB00A2379F /* TypeCell.swift in Sources */,
 				FF5179EC26DF61BE00CD0272 /* UITextViewExt.swift in Sources */,
 				FF4C1BB4284D8EF100988BDA /* AlarmCell.swift in Sources */,

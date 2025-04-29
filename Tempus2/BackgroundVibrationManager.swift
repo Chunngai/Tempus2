@@ -78,88 +78,56 @@ class BackgroundVibrationManager {
     }
     
     private func startVibrationTimer(identifier: String) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
             
-            // 确保音频播放
-            if self.audioPlayer?.isPlaying == false {
-                self.audioPlayer?.play()
-            }
-            
-            // 创建新定时器
-            let timer = Timer.scheduledTimer(
-                withTimeInterval: 1 * TimeInterval.Second,
-                repeats: true
-            ) { [weak self] _ in
-                
-                if self?.vibrationTimers[identifier] == nil {
-                    // Fails to stop the vibration without this condition!
-                    return
-                }
-                
-                // No vibration in foreground.
-                if UIApplication.shared.applicationState == .active {
-                    self?.stopVibration(for: identifier)
-                    return
-                }
-                
-                AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
-                print("Vibrating for \(identifier) at \(Date())")
-            }
-            
-            // 存储定时器
-            self.vibrationTimers[identifier] = timer
-            RunLoop.current.add(
-                timer,
-                forMode: .common
-            )
-            
-            print("Started vibration timer for \(identifier)")
+        // 确保音频播放
+        if self.audioPlayer?.isPlaying == false {
+            self.audioPlayer?.play()
         }
+        
+        // 创建新定时器
+        let timer = Timer.scheduledTimer(
+            withTimeInterval: 1 * TimeInterval.Second,
+            repeats: true
+        ) { [weak self] _ in
+            
+            if self?.vibrationTimers[identifier] == nil {
+                // Fails to stop the vibration without this condition!
+                return
+            }
+            
+            // No vibration in foreground.
+            if UIApplication.shared.applicationState == .active {
+                self?.stopVibration(for: identifier)
+                return
+            }
+            
+            AudioServicesPlaySystemSound(kSystemSoundID_Vibrate)
+            print("Vibrating for \(identifier) at \(Date())")
+        }
+        
+        // 存储定时器
+        self.vibrationTimers[identifier] = timer
+        RunLoop.current.add(
+            timer,
+            forMode: .common
+        )
+        
+        print("Started vibration timer for \(identifier)")
+        
     }
     
     func stopVibration(for identifier: String) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            // 停止特定定时器
-            if let timer = self.vibrationTimers[identifier] {
-                timer.invalidate()
-                self.vibrationTimers.removeValue(forKey: identifier)
-            }
-            
-            // 如果没有其他定时器运行，停止音频和后台任务
-            if self.vibrationTimers.isEmpty {
-                self.audioPlayer?.stop()
-                
-                do {
-                    try AVAudioSession.sharedInstance().setActive(
-                        false,
-                        options: .notifyOthersOnDeactivation
-                    )
-                } catch {
-                    print("Failed to deactivate audio session: \(error)")
-                }
-                
-                self.endBackgroundTask()
-            }
-            
-            print("Stopped vibration for \(identifier)")
+
+        // 停止特定定时器
+        if let timer = self.vibrationTimers[identifier] {
+            timer.invalidate()
+            self.vibrationTimers.removeValue(forKey: identifier)
         }
-    }
-    
-    func stopAllVibrations() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            
-            // 停止所有定时器
-            self.vibrationTimers.values.forEach { $0.invalidate() }
-            self.vibrationTimers.removeAll()
-            
-            // 停止音频播放
+        
+        // 如果没有其他定时器运行，停止音频和后台任务
+        if self.vibrationTimers.isEmpty {
             self.audioPlayer?.stop()
             
-            // 重置音频会话
             do {
                 try AVAudioSession.sharedInstance().setActive(
                     false,
@@ -169,11 +137,37 @@ class BackgroundVibrationManager {
                 print("Failed to deactivate audio session: \(error)")
             }
             
-            // 结束后台任务
             self.endBackgroundTask()
-            
-            print("Stopped all vibrations")
         }
+        
+        print("Stopped vibration for \(identifier)")
+
+    }
+    
+    func stopAllVibrations() {
+            
+        // 停止所有定时器
+        self.vibrationTimers.values.forEach { $0.invalidate() }
+        self.vibrationTimers.removeAll()
+        
+        // 停止音频播放
+        self.audioPlayer?.stop()
+        
+        // 重置音频会话
+        do {
+            try AVAudioSession.sharedInstance().setActive(
+                false,
+                options: .notifyOthersOnDeactivation
+            )
+        } catch {
+            print("Failed to deactivate audio session: \(error)")
+        }
+        
+        // 结束后台任务
+        self.endBackgroundTask()
+        
+        print("Stopped all vibrations")
+
     }
     
     private func requestBackgroundTask() {
